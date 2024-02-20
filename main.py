@@ -1,8 +1,7 @@
 import os
-
+from functions import *
 import pygame as py
 from sys import exit
-
 
 COLOR={'lightbleu':(240,248,255), 
        "almond":(240,255,240), 
@@ -19,6 +18,8 @@ py.display.set_caption('Game')
 background = py.Surface((600,600))
 background.fill(COLOR["gray"])
 
+player = Character()
+
 while True:
     for event in py.event.get():
         if event.type == py.QUIT:
@@ -26,5 +27,7 @@ while True:
             exit()
     
     screen.blit(background, (0,0))
+    screen.blit(player.square, player.rect) #cette ligne est un test
     py.display.update()
     clock.tick(60)
+
