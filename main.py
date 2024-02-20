@@ -26,8 +26,20 @@ while True:
             py.quit()
             exit()
     
+    keys_pressed = py.key.get_pressed()
+
+    if keys_pressed[py.K_UP] and player.rect.y>0:
+        player.rect.y -= 5
+    if keys_pressed[py.K_DOWN] and player.rect.y< 580 :
+        player.rect.y += 5
+    if keys_pressed[py.K_LEFT] and player.rect.x>0:
+        player.rect.x -= 5
+    if keys_pressed[py.K_RIGHT] and player.rect.x<580 :
+        player.rect.x += 5
+
+    
     screen.blit(background, (0,0))
-    screen.blit(player.square, player.rect) #cette ligne est un test
+    screen.blit(player.square, player.rect)
     py.display.update()
     clock.tick(60)
 
