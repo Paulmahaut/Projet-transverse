@@ -11,12 +11,15 @@ COLOR={'lightbleu':(240,248,255),
 
 py.init()
 clock = py.time.Clock()
-screen = py.display.set_mode((600,600))
+screen = py.display.set_mode((1600,1000))
 py.display.set_caption('Game')
 
 # Background design
-background = py.Surface((600,600))
-background.fill(COLOR["gray"])
+#background = py.Surface((600,600))
+#background.fill(COLOR["gray"])
+
+#background unicorn
+im=py.image.load("Backgroundunicorn.png")
 
 player = Character()
 
@@ -35,16 +38,16 @@ while True:
 
     if keys_pressed[py.K_UP] and player.rect.y>0:
         player.rect.y -= 5
-    if keys_pressed[py.K_DOWN] and player.rect.y< 580 :
+    if keys_pressed[py.K_DOWN] and player.rect.y< 980 :
         player.rect.y += 5
     if keys_pressed[py.K_LEFT] and player.rect.x>0:
         player.rect.x -= 5
-    if keys_pressed[py.K_RIGHT] and player.rect.x<580 :
+    if keys_pressed[py.K_RIGHT] and player.rect.x<1580 :
         player.rect.x += 5
 
     
-    screen.blit(background, (0,0))
+    screen.blit(im, (0,0)) #remplacer im par background si problèmes
     screen.blit(player.square, player.rect)
     py.display.update()
     clock.tick(60)
-
+    
