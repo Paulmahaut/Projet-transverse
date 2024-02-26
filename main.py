@@ -20,12 +20,17 @@ background.fill(COLOR["gray"])
 
 player = Character()
 
+
+#sound
+song = py.mixer.Sound("tqt.mp3")
+
 while True:
     for event in py.event.get():
         if event.type == py.QUIT:
             py.quit()
             exit()
     
+    song.play()
     keys_pressed = py.key.get_pressed()
 
     if keys_pressed[py.K_UP] and player.rect.y>0:
