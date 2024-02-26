@@ -38,16 +38,16 @@ while True:
 
     if keys_pressed[py.K_UP] and player.rect.y>0:
         player.rect.y -= 5
-    if keys_pressed[py.K_DOWN] and player.rect.y< 980 :
+    if keys_pressed[py.K_DOWN] and player.rect.y< 920 :
         player.rect.y += 5
     if keys_pressed[py.K_LEFT] and player.rect.x>0:
         player.rect.x -= 5
-    if keys_pressed[py.K_RIGHT] and player.rect.x<1580 :
+    if keys_pressed[py.K_RIGHT] and player.rect.x<1520 :
         player.rect.x += 5
 
     
     screen.blit(im, (0,0)) #remplacer im par background si problèmes
-    screen.blit(player.square, player.rect)
+    screen.blit(player.image, player.rect)
     py.display.update()
     clock.tick(60)
     
