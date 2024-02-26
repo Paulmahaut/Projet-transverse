@@ -5,7 +5,7 @@ class Character(py.sprite.Sprite):
         super(Character, self).__init__()  # Initialise la classe parente Sprite
         # Charger l'image originale
         original_image = py.image.load("playerlicorne.png").convert_alpha()
-        # Redimensionner l'image à 40x40 pixels
+        # Redimensionner l'image à 80x80 pixels
         self.image = py.transform.scale(original_image, (80, 80))
         self.rect = self.image.get_rect()
         self.rect.x = 100  # Position initiale x
