@@ -11,25 +11,45 @@ COLOR={'lightbleu':(240,248,255),
 
 py.init()
 clock = py.time.Clock()
-screen = py.display.set_mode((1600,1000))
+current_time = py.time.get_ticks()
+screen = py.display.set_mode((1000,700))
 py.display.set_caption('Game')
 screamer=py.USEREVENT+1
 py.time.set_timer(screamer, 10000)
 # Background design
-#background = py.Surface((600,600))
-#background.fill(COLOR["gray"])
+background = py.Surface((1000,700))
+background.fill(COLOR["gray"])
 
 #background unicorn
 im=py.image.load("Backgroundunicorn.png")
 test=py.image.load("screamer.jpg")
-player = Character()
 image_display_start = None
 special_image = py.transform.scale(test, (300, 300))
 #sound
 song = py.mixer.Sound("tqt.mp3")
 
+#instances
+player = Character()
+enemy = Enemy()
+# gather all enemies in one group
+group_enemy = py.sprite.Group()
+group_enemy.add(enemy)
+
+
 while True:
-    current_time = py.time.get_ticks()
+
+    # DISPLAY
+    #screen.blit(im, (0,0)) #remplacer im par background si problèmes
+    screen.blit(background, (0,0))
+    screen.blit(player.image, player.rect)
+
+    for enemy in group_enemy:
+        enemy.move()
+    
+    # display all enmies in the group
+    group_enemy.draw(screen)
+    
+    print(current_time)
     for event in py.event.get():
         if event.type == py.QUIT:
             py.quit()
@@ -37,13 +57,17 @@ while True:
         elif event.type==screamer:
                         # Marquer le début de l'affichage de l'image
             image_display_start = current_time
-    
+
+
     if image_display_start:
         if current_time - image_display_start <= 1000:  # 100 ms = 1/10 de seconde
             screen.blit(special_image, (900, 900))  
         else:
             image_display_start = None  # Réinitialiser pour le prochain affichage
-    song.play()
+    
+    #song.play()
+            
+    # KEYBOARD
     keys_pressed = py.key.get_pressed()
 
     if keys_pressed[py.K_UP] and player.rect.y>0:
@@ -55,9 +79,6 @@ while True:
     if keys_pressed[py.K_RIGHT] and player.rect.x<1520 :
         player.rect.x += 5
 
-    
-    screen.blit(im, (0,0)) #remplacer im par background si problèmes
-    screen.blit(player.image, player.rect)
     py.display.update()
     clock.tick(60)
     
