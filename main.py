@@ -12,10 +12,12 @@ COLOR={'lightbleu':(240,248,255),
 py.init()
 clock = py.time.Clock()
 current_time = py.time.get_ticks()
+
 screen = py.display.set_mode((1000,700))
 py.display.set_caption('Game')
 screamer=py.USEREVENT+1
 py.time.set_timer(screamer, 10000)
+
 # Background design
 background = py.Surface((1000,700))
 background.fill(COLOR["gray"])
@@ -25,12 +27,17 @@ im=py.image.load("Backgroundunicorn.png")
 test=py.image.load("screamer.jpg")
 image_display_start = None
 special_image = py.transform.scale(test, (300, 300))
+
 #sound
 song = py.mixer.Sound("tqt.mp3")
 
-#instances
+# INSTANCES
 player = Character()
-enemy = Enemy()
+# put the player in a group in order to compare it with enemies for collision
+group_player = py.sprite.Group()
+group_player.add(player)
+
+enemy = Enemy(group_player)
 # gather all enemies in one group
 group_enemy = py.sprite.Group()
 group_enemy.add(enemy)
@@ -44,12 +51,11 @@ while True:
     screen.blit(player.image, player.rect)
 
     for enemy in group_enemy:
-        enemy.move()
+        enemy.move(group_player)
     
     # display all enmies in the group
     group_enemy.draw(screen)
     
-    print(current_time)
     for event in py.event.get():
         if event.type == py.QUIT:
             py.quit()
@@ -70,14 +76,16 @@ while True:
     # KEYBOARD
     keys_pressed = py.key.get_pressed()
 
-    if keys_pressed[py.K_UP] and player.rect.y>0:
-        player.rect.y -= 5
-    if keys_pressed[py.K_DOWN] and player.rect.y< 920 :
-        player.rect.y += 5
+    #if keys_pressed[py.K_UP] and player.rect.y>0:
+        #player.rect.y -= 5
+    #if keys_pressed[py.K_DOWN] and player.rect.y< 920 :
+        #player.rect.y += 5
     if keys_pressed[py.K_LEFT] and player.rect.x>0:
         player.rect.x -= 5
     if keys_pressed[py.K_RIGHT] and player.rect.x<1520 :
-        player.rect.x += 5
+        # collision check 
+        if not py.sprite.spritecollide(player,group_enemy, False, py.sprite.collide_mask): 
+            player.rect.x += 5
 
     py.display.update()
     clock.tick(60)
