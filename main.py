@@ -1,8 +1,10 @@
 import os
 from functions import *
+from Licorne import *
+from Ennemy import *
 import pygame as py
 from sys import exit
-
+ 
 COLOR={'lightbleu':(240,248,255), 
        "almond":(240,255,240), 
        "lavander": (230,230,250), 
@@ -35,18 +37,9 @@ special_image = py.transform.scale(test, (300, 300))
 #sound
 song = py.mixer.Sound("tqt.mp3")
 
-# INSTANCES
-player = Character()
-# put the player in a group in order to compare it with enemies for collision
-group_player = py.sprite.Group()
-group_player.add(player)
 
-enemy = Enemy(group_player)
-# gather all enemies in one group
-group_enemy = py.sprite.Group()
-group_enemy.add(enemy)
 
-projectil=Projectil(player)
+projectil = Projectil(player)
 
 
 while True:
