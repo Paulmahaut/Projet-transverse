@@ -46,6 +46,8 @@ enemy = Enemy(group_player)
 group_enemy = py.sprite.Group()
 group_enemy.add(enemy)
 
+projectil=Projectil(player)
+
 
 while True:
 
@@ -64,6 +66,9 @@ while True:
         if event.type == py.QUIT:
             py.quit()
             exit()
+
+        if event.key == py.K_SPACE:
+            projectil.move()
 
         # à modifeier avec LOOSE
         elif event.type==screamer:
@@ -92,6 +97,7 @@ while True:
         # collision check 
         if not py.sprite.spritecollide(player,group_enemy, False, py.sprite.collide_mask): 
             player.rect.x += 5
+    
 
     py.display.update()
     clock.tick(60)
