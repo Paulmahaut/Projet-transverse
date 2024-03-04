@@ -34,7 +34,7 @@ class Projectil(py.sprite.Sprite):
 
         self.velocity = 5
         rainbow_image = py.image.load("rainbow.png").convert_alpha()
-        self.image = py.transform.scale(rainbow_image, (50, 50))
+        self.image = py.transform.scale(rainbow_image, (20, 20))
         self.rect = self.image.get_rect()
         self.rect.x = player.rect.x 
         self.rect.y = player.rect.y

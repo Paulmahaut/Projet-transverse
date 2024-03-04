@@ -55,6 +55,7 @@ while True:
     #screen.blit(im, (0,0)) #remplacer im par background si problèmes
     screen.blit(background, (0,0))
     screen.blit(player.image, player.rect)
+    
 
     for enemy in group_enemy:
         enemy.move(group_player)
@@ -65,10 +66,7 @@ while True:
     for event in py.event.get():
         if event.type == py.QUIT:
             py.quit()
-            exit()
-
-        if event.key == py.K_SPACE:
-            projectil.move()
+            exit()  
 
         # à modifeier avec LOOSE
         elif event.type==screamer:
@@ -85,6 +83,7 @@ while True:
     #song.play()
             
     # KEYBOARD
+            
     keys_pressed = py.key.get_pressed()
 
     #if keys_pressed[py.K_UP] and player.rect.y>0:
@@ -97,6 +96,9 @@ while True:
         # collision check 
         if not py.sprite.spritecollide(player,group_enemy, False, py.sprite.collide_mask): 
             player.rect.x += 5
+    if keys_pressed[py.K_SPACE]:
+        screen.blit(projectil.image, projectil.rect)
+        projectil.move()
     
 
     py.display.update()
