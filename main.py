@@ -9,12 +9,16 @@ COLOR={'lightbleu':(240,248,255),
        "gray":(119,136,153),
        "sandy": (244,164,96)}
 
+# VARIABLES
+LOOSE = False
+
 py.init()
 clock = py.time.Clock()
 current_time = py.time.get_ticks()
 
 screen = py.display.set_mode((1000,700))
 py.display.set_caption('Game')
+# à modifier
 screamer=py.USEREVENT+1
 py.time.set_timer(screamer, 10000)
 
@@ -60,6 +64,8 @@ while True:
         if event.type == py.QUIT:
             py.quit()
             exit()
+
+        # à modifeier avec LOOSE
         elif event.type==screamer:
                         # Marquer le début de l'affichage de l'image
             image_display_start = current_time
