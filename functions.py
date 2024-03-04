@@ -1,4 +1,6 @@
 import pygame as py
+from Ennemy import *
+from Licorne import *
 
 # INSTANCES
 player = Character()
@@ -10,6 +12,8 @@ enemy = Enemy(group_player)
 # gather all enemies in one group
 group_enemy = py.sprite.Group()
 group_enemy.add(enemy)
+
+projectil = Projectil(player)
 
 
 

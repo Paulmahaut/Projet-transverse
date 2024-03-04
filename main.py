@@ -1,7 +1,6 @@
 import os
-from functions import *
-from Licorne import *
 from Ennemy import *
+from Licorne import *
 import pygame as py
 from sys import exit
  
@@ -38,9 +37,18 @@ special_image = py.transform.scale(test, (300, 300))
 song = py.mixer.Sound("tqt.mp3")
 
 
+# INSTANCES
+player = Character()
+# put the player in a group in order to compare it with enemies for collision
+group_player = py.sprite.Group()
+group_player.add(player)
+
+enemy = Enemy(group_player)
+# gather all enemies in one group
+group_enemy = py.sprite.Group()
+group_enemy.add(enemy)
 
 projectil = Projectil(player)
-
 
 while True:
 
@@ -59,8 +67,9 @@ while True:
     for event in py.event.get():
         if event.type == py.QUIT:
             py.quit()
-            exit()  
-
+            exit()
+        
+        
         # à modifeier avec LOOSE
         elif event.type==screamer:
                         # Marquer le début de l'affichage de l'image

@@ -17,3 +17,12 @@ class Enemy(py.sprite.Sprite):
     # collision check
         if not py.sprite.spritecollide(self, group_player,False,  py.sprite.collide_mask):
             self.rect.x-=1
+
+#class Tank_projectil(py.sprite.sprite):
+    
+ #   def 
+
+
+
+
+
