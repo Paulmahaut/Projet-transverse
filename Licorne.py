@@ -14,6 +14,11 @@ class Character(py.sprite.Sprite):
         self.rect.x = 100  # Position initiale x
         self.rect.y = 430  # Position initiale y
 
+        self.group_projectil = py.sprite.Group()
+    
+    def launch_projectile(self):
+        self.group_projectil.add(Projectil(self))
+
 
 class Projectil(py.sprite.Sprite):
 
@@ -24,8 +29,8 @@ class Projectil(py.sprite.Sprite):
         rainbow_image = py.image.load("rainbow.png").convert_alpha()
         self.image = py.transform.scale(rainbow_image, (20, 20))
         self.rect = self.image.get_rect()
-        self.rect.x = player.rect.x 
-        self.rect.y = player.rect.y
+        self.rect.x = player.rect.x +20
+        self.rect.y = player.rect.y +20
 
     def move(self):
         self.rect.x+=self.velocity

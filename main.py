@@ -1,5 +1,5 @@
 import os
-from Ennemy import *
+from Enemy import *
 from Licorne import *
 import pygame as py
 from sys import exit
@@ -60,9 +60,13 @@ while True:
 
     for enemy in group_enemy:
         enemy.move(group_player)
+
+    for projectile in player.group_projectil:
+        projectile.move()
     
-    # display all enmies in the group
+    # display all enmies and projectiles groups
     group_enemy.draw(screen)
+    player.group_projectil.draw(screen)
     
     for event in py.event.get():
         if event.type == py.QUIT:
@@ -85,7 +89,6 @@ while True:
     #song.play()
             
     # KEYBOARD
-            
     keys_pressed = py.key.get_pressed()
 
     #if keys_pressed[py.K_UP] and player.rect.y>0:
@@ -99,8 +102,7 @@ while True:
         if not py.sprite.spritecollide(player,group_enemy, False, py.sprite.collide_mask): 
             player.rect.x += 5
     if keys_pressed[py.K_SPACE]:
-        screen.blit(projectil.image, projectil.rect)
-        projectil.move()
+        player.launch_projectile()
     
 
     py.display.update()
