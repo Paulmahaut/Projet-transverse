@@ -1,7 +1,6 @@
 #Ici se trouve tout ce qui est lié à l'ennemi
 import pygame as py
 
-
 class Enemy(py.sprite.Sprite):
 
     def __init__(self, group_player):
@@ -34,16 +33,14 @@ class Tank_project: #projectiles du Tank
           #je sais pas trop ce que ca fait je vais verifier apres mais c'est cense etre la trajectoire
         time_of_flight = (2 * self.force * math.sin(math.radians(self.angle))) / 9.8
         horizontal_distance = self.force * math.cos(math.radians(self.angle)) * time_of_flight
-        
-    
+           
 Tank= Tank_project()
 
 # pour que ca continue l'action automatiquement
+'''
 while True:
     Tank.throw_projectile()
     time.sleep(random.randint(0,10)) #pour qu'il y'ait un delai entre les lancers de projectiles
-
-
-
+'''
 
 

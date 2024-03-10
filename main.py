@@ -48,6 +48,12 @@ enemy = Enemy(group_player)
 group_enemy = py.sprite.Group()
 group_enemy.add(enemy)
 
+
+TANK_SHOOT = py.USEREVENT + 2
+py.time.set_timer(TANK_SHOOT, 10000)  # Exemple : Lance un projectile toutes les 10 secondes
+
+
+
 projectil = Projectil(player)
 
 while True:
@@ -103,8 +109,11 @@ while True:
             player.rect.x += 5
     if keys_pressed[py.K_SPACE]:
         player.launch_projectile()
-    
-
+    #event déclenchant la fonction d'Ariel
+    if event.type == TANK_SHOOT:
+        Tank.throw_projectile()
+        time.sleep(random.randint(0,10))
+   
     py.display.update()
     clock.tick(60)
     
