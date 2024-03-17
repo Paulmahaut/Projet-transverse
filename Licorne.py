@@ -31,10 +31,6 @@ class Character(py.sprite.Sprite):
         if self.current_health >= self.maximum_health:
             self.current_health = self.maximum_health # Evite que la valeur de labarre de vie dépasse le maximum
     
-    def character_health(self):
-        pygame.draw.rect(screen, (255,0,0), (10,10,self.current_health/self.health_ratio,25)) # Rectangle de la barre de vie
-        pygame.draw.rect(screen, (255,255,255), (10,10,self.health_bar_lenght,25),4) # Bordure de la barre de vie
-
     def update(self):
         self.basic_health()
         
