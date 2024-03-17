@@ -23,6 +23,10 @@ py.display.set_caption('Game')
 screamer=py.USEREVENT+1
 py.time.set_timer(screamer, 10000)
 
+def character_health(self):
+ py.draw.rect(screen, (255,0,0), (10,10,self.current_health/self.health_ratio,25)) # Rectangle de la barre de vie
+ py.draw.rect(screen, (255,255,255), (10,10,self.health_bar_lenght,25),4) # Bordure de la barre de vie
+
 # Background design
 background = py.Surface((1000,700))
 background.fill(COLOR["gray"])
