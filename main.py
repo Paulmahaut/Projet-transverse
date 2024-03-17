@@ -62,7 +62,8 @@ while True:
     #screen.blit(im, (0,0)) #remplacer im par background si problèmes
     screen.blit(background, (0,0))
     screen.blit(player.image, player.rect)
-    
+
+    player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
 
     for enemy in group_enemy:
         enemy.move(group_player)
