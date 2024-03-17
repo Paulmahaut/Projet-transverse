@@ -14,25 +14,25 @@ class Character(py.sprite.Sprite):
         self.rect.x = 100  # Position initiale x
         self.rect.y = 430  # Position initiale y
         
-        self.current_health = 500 # Valeur initial de la barre de vie
-        self.maximum_health = 1000 # Valeur maximum de la barre de vie
-        self.health_bar_lenght = 400 # Longeur maximal en pixel de la barre de vie
-        self.health_ratio = self.maximum_health / self.health_bar_lenght # Ratio utiliser pour remplir la barre de vie
+        #self.current_health = 500 # Valeur initial de la barre de vie
+        #self.maximum_health = 1000 # Valeur maximum de la barre de vie
+        #self.health_bar_lenght = 400 # Longeur maximal en pixel de la barre de vie
+        #self.health_ratio = self.maximum_health / self.health_bar_lenght # Ratio utiliser pour remplir la barre de vie
     
-    def get_damage(self,amount):
-        if self.current_health > 0:
-            self.current_health -= amount # Baisse la valeur de la barre de vie de X 
-        if self.current_health <= 0:
-            self.current_health =0 # Eviter que la valeur de la barre de vie soit inférieur à 0
+    #def get_damage(self,amount):
+        #if self.current_health > 0:
+            #self.current_health -= amount # Baisse la valeur de la barre de vie de X 
+        #if self.current_health <= 0:
+            #self.current_health =0 # Eviter que la valeur de la barre de vie soit inférieur à 0
     
-    def get_health(self,amount):
-        if self.current_health < self.maximum_health:
-            self.current_health += amount # Augmente la valeur de la barre de vie de X
-        if self.current_health >= self.maximum_health:
-            self.current_health = self.maximum_health # Evite que la valeur de labarre de vie dépasse le maximum
+    #def get_health(self,amount):
+        #if self.current_health < self.maximum_health:
+            #self.current_health += amount # Augmente la valeur de la barre de vie de X
+        #if self.current_health >= self.maximum_health:
+            #self.current_health = self.maximum_health # Evite que la valeur de labarre de vie dépasse le maximum
     
-    def update(self):
-        self.basic_health()
+    #def update(self):
+        #self.basic_health()
         
 
         self.group_projectil = py.sprite.Group()
