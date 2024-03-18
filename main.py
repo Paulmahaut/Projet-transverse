@@ -49,10 +49,11 @@ group_enemy = py.sprite.Group()
 group_enemy.add(enemy)
 
 
-TANK_SHOOT = py.USEREVENT + 2
-py.time.set_timer(TANK_SHOOT, 10000)  # Exemple : Lance un projectile toutes les 10 secondes
+#TANK_SHOOT = py.USEREVENT + 2
+#py.time.set_timer(TANK_SHOOT, 10000)  # Exemple : Lance un projectile toutes les 10 secondes
 
 projectil = Projectil(player)
+tank_proj = Tank_project(enemy)
 
 while True:
 
@@ -61,21 +62,25 @@ while True:
     screen.blit(background, (0,0))
     screen.blit(player.image, player.rect)
 
-
     player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
 
+    # Move projectils and enemies in groups
     for enemy in group_enemy:
         enemy.move(group_player)
 
     for projectile in player.group_projectil:
         projectile.move()
     
+    for projectile_tank in enemy.group_projectil:
+        tank_proj.throw_projectile()
+
     # display all enmies and projectiles groups
     group_enemy.draw(screen)
     player.group_projectil.draw(screen)
+    enemy.group_projectil.draw(screen)
 
     #-------------
-    py.draw.rect(screen, (255,0,0), (10,10,player.current_health/player.health_ratio,25)) # Rectangle de la barre de vie
+    py.draw.rect(screen, (255,0,0), (10,10,player.current_health_2,25)) # Rectangle de la barre de vie
     py.draw.rect(screen, (255,255,255), (10,10,player.health_bar_lenght,25),4) # Bordure de la barre de vie
     #----------------
 
@@ -99,6 +104,8 @@ while True:
     
     #song.play()
             
+        
+            
     # KEYBOARD
     keys_pressed = py.key.get_pressed()
 
@@ -114,10 +121,15 @@ while True:
             player.rect.x += 5
     if keys_pressed[py.K_SPACE]:
         player.launch_projectile()
+
+    if keys_pressed[py.K_UP]:
+        enemy.launch_projectile()
+
+        
     #event déclenchant la fonction d'Ariel
-    if event.type == TANK_SHOOT:
-        Tank.throw_projectile()
-        time.sleep(random.randint(0,10))
+    #if event.type == TANK_SHOOT:
+        #Tank.throw_projectile()
+        #time.sleep(random.randint(0,10))
    
     py.display.update()
     clock.tick(60)
