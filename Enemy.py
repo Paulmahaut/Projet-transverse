@@ -15,46 +15,12 @@ class Enemy(py.sprite.Sprite):
         self.rect.x = 900  # Position initiale x
         self.rect.y = 400  # Position initiale y
         self.group_projectil = py.sprite.Group()
-    
-    def move(self,group_player):
-    # collision check
-        if not py.sprite.spritecollide(self, group_player,False,  py.sprite.collide_mask):
-            self.rect.x-=1
-
-    def throw_projectile(self):
-        self.group_projectil.add(Tank_project(self))
-
-
-
-class Tank_project(py.sprite.Sprite): #projectiles du Tank 
-
-    def __init__(self, enemy):
-        super(Tank_project, self).__init__() 
-
-        self.angle = 0
-        self.force = 0
-        
-        self.velocity = 4
-        tank_project_image= py.image.load("Tank_proje.png")
-        self.image = py.transform.scale(tank_project_image, (10, 10))
-        self.rect = self.image.get_rect()
-        self.rect.x = enemy.rect.x
-        self.rect.y = enemy.rect.y +60    
         self.current_health = 1000 # Valeur initial de la barre de vie
         self.maximum_health = 1000 # Valeur maximum de la barre de vie
         self.health_bar_length = 200 # Longeur maximal en pixel de la barre de vie
         self.health_ratio = self.maximum_health / self.health_bar_length # Ratio utiliser pour remplir la barre de vie
         self.current_health_2 = self.current_health/self.health_ratio
-    def throw_projectile(self): #lancer les projectiles avec un angle variable choisit aleatoirement
-        #self.angle = random.uniform(0, 90)  
-        #self.force = random.uniform(10, 50) 
-        self.rect.x-=self.velocity
-        #je sais pas trop ce que ca fait je vais verifier apres mais c'est cense etre la trajectoire
-        #time_of_flight = (2 * self.force * math.sin(math.radians(self.angle))) / 9.8
-        #horizontal_distance = self.force * math.cos(math.radians(self.angle)) * time_of_flight
-             
-
-    #--------------------------------------------
+            #--------------------------------------------
     def get_damage(self,amount):
         if self.current_health > 0:
             self.current_health -= amount # Baisse la valeur de la barre de vie de X 
@@ -82,6 +48,44 @@ class Tank_project(py.sprite.Sprite): #projectiles du Tank
         py.draw.rect(surface, (255, 0, 0), (self.rect.x, self.rect.y - 20, self.current_health / self.health_ratio, 10))
         py.draw.rect(surface, (255, 255, 255), (self.rect.x, self.rect.y - 20, self.health_bar_length, 10), 2)
               
+        
+        
+        
+    def move(self,group_player):
+    # collision check
+        if not py.sprite.spritecollide(self, group_player,False,  py.sprite.collide_mask):
+            self.rect.x-=1
+
+    def throw_projectile(self):
+        self.group_projectil.add(Tank_project(self))
+
+
+
+class Tank_project(py.sprite.Sprite): #projectiles du Tank 
+
+    def __init__(self, enemy):
+        super(Tank_project, self).__init__() 
+
+        self.angle = 0
+        self.force = 0
+        
+        self.velocity = 4
+        tank_project_image= py.image.load("Tank_proje.png")
+        self.image = py.transform.scale(tank_project_image, (10, 10))
+        self.rect = self.image.get_rect()
+        self.rect.x = enemy.rect.x
+        self.rect.y = enemy.rect.y +60    
+       
+    def throw_projectile(self): #lancer les projectiles avec un angle variable choisit aleatoirement
+        #self.angle = random.uniform(0, 90)  
+        #self.force = random.uniform(10, 50) 
+        self.rect.x-=self.velocity
+        #je sais pas trop ce que ca fait je vais verifier apres mais c'est cense etre la trajectoire
+        #time_of_flight = (2 * self.force * math.sin(math.radians(self.angle))) / 9.8
+        #horizontal_distance = self.force * math.cos(math.radians(self.angle)) * time_of_flight
+             
+
+
         
 
 # pour que ca continue l'action automatiquement

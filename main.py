@@ -66,6 +66,7 @@ while True:
     screen.blit(background, (0,0))
     screen.blit(player.image, player.rect)
     player.update_health_bar(screen)
+    enemy.update_health_bar(screen)
 
     player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
 
@@ -134,10 +135,27 @@ while True:
         enemy.throw_projectile()
     
     TANK_SHOOT = random.randint(0,100)
-    #event déclenchant la fonction d'Ariel
+    #event déclenchant la fonction throw proj
     if TANK_SHOOT%10 ==0:
         enemy.throw_projectile()
+        
+        
+    for projectile in enemy.group_projectil:
+    # Vérifie si le projectile entre en collision avec la licorne
+        if py.sprite.collide_rect(projectile, player):
+            # Gérer la collision ici (par exemple, infliger des dégâts)
+            player.get_damage(30)  # Supposons que vous avez une méthode get_damage
+            projectile.kill()  # Supprime le projectile après la collision pour éviter des dégâts multiples
+    
+    for projectile in player.group_projectil:
+    # Vérifie si le projectile entre en collision avec la licorne
+        if py.sprite.collide_rect(projectile, enemy):
+            # Gérer la collision ici (par exemple, infliger des dégâts)
+            enemy.get_damage(30)  # Supposons que vous avez une méthode get_damage
+            projectile.kill()  # Supprime le projectile après la collision pour éviter des dégâts multiples
    
+    
+    
     py.display.update()
     clock.tick(60)
     
