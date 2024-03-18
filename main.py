@@ -23,10 +23,6 @@ py.display.set_caption('Game')
 screamer=py.USEREVENT+1
 py.time.set_timer(screamer, 10000)
 
-#def character_health(self):
- #py.draw.rect(screen, (255,0,0), (10,10,self.current_health/self.health_ratio,25)) # Rectangle de la barre de vie
- #py.draw.rect(screen, (255,255,255), (10,10,self.health_bar_lenght,25),4) # Bordure de la barre de vie
-
 # Background design
 background = py.Surface((1000,700))
 background.fill(COLOR["gray"])
@@ -56,8 +52,6 @@ group_enemy.add(enemy)
 TANK_SHOOT = py.USEREVENT + 2
 py.time.set_timer(TANK_SHOOT, 10000)  # Exemple : Lance un projectile toutes les 10 secondes
 
-
-
 projectil = Projectil(player)
 
 while True:
@@ -66,6 +60,7 @@ while True:
     #screen.blit(im, (0,0)) #remplacer im par background si problèmes
     screen.blit(background, (0,0))
     screen.blit(player.image, player.rect)
+
 
     player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
 
@@ -78,7 +73,12 @@ while True:
     # display all enmies and projectiles groups
     group_enemy.draw(screen)
     player.group_projectil.draw(screen)
-    
+
+    #-------------
+    py.draw.rect(screen, (255,0,0), (10,10,player.current_health/player.health_ratio,25)) # Rectangle de la barre de vie
+    py.draw.rect(screen, (255,255,255), (10,10,player.health_bar_lenght,25),4) # Bordure de la barre de vie
+    #----------------
+
     for event in py.event.get():
         if event.type == py.QUIT:
             py.quit()
