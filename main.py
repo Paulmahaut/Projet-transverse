@@ -65,7 +65,6 @@ while True:
     #screen.blit(im, (0,0)) #remplacer im par background si problèmes
     screen.blit(background, (0,0))
     screen.blit(player.image, player.rect)
-    player.update_health_bar(screen)
 
     player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
 
@@ -89,7 +88,7 @@ while True:
 
     #-------------
     #py.draw.rect(screen, (255,0,0), (10,10,player.current_health_2,25)) # Rectangle de la barre de vie
-    #py.draw.rect(screen, (255,255,255), (10,10,player.health_bar_length,25),4) # Bordure de la barre de vie
+    #py.draw.rect(screen, (255,255,255), (10,10,player.health_bar_lenght,25),4) # Bordure de la barre de vie
     #----------------
 
     for event in py.event.get():

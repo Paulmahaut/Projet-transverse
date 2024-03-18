@@ -40,11 +40,7 @@ class Tank_project(py.sprite.Sprite): #projectiles du Tank
         self.rect = self.image.get_rect()
         self.rect.x = enemy.rect.x
         self.rect.y = enemy.rect.y +60    
-        self.current_health = 1000 # Valeur initial de la barre de vie
-        self.maximum_health = 1000 # Valeur maximum de la barre de vie
-        self.health_bar_length = 200 # Longeur maximal en pixel de la barre de vie
-        self.health_ratio = self.maximum_health / self.health_bar_length # Ratio utiliser pour remplir la barre de vie
-        self.current_health_2 = self.current_health/self.health_ratio
+
     def throw_projectile(self): #lancer les projectiles avec un angle variable choisit aleatoirement
         #self.angle = random.uniform(0, 90)  
         #self.force = random.uniform(10, 50) 
@@ -52,37 +48,8 @@ class Tank_project(py.sprite.Sprite): #projectiles du Tank
         #je sais pas trop ce que ca fait je vais verifier apres mais c'est cense etre la trajectoire
         #time_of_flight = (2 * self.force * math.sin(math.radians(self.angle))) / 9.8
         #horizontal_distance = self.force * math.cos(math.radians(self.angle)) * time_of_flight
-             
+           
 
-    #--------------------------------------------
-    def get_damage(self,amount):
-        if self.current_health > 0:
-            self.current_health -= amount # Baisse la valeur de la barre de vie de X 
-        #if self.current_health <= 0:
-            #self.current_health =0 # Eviter que la valeur de la barre de vie soit inférieur à 0
-    
-    #def get_health(self,amount):
-        #if self.current_health < self.maximum_health:
-            #self.current_health += amount # Augmente la valeur de la barre de vie de X
-        #if self.current_health >= self.maximum_health:
-            #self.current_health = self.maximum_health # Evite que la valeur de labarre de vie dépasse le maximum
-    
-    #def update(self):
-        #self.current_health()
-    
-    def update_health_bar(self, surface):
-        screen_width, screen_height = surface.get_size()
-        # Position et dimensions de la barre de vie
-        bar_width = self.health_bar_length
-        bar_height = 10  # Hauteur de la barre de vie
-        x_position = screen_width - bar_width - 10  # 10 pixels de marge du bord droit
-        y_position = 10  # 10 pixels de marge du haut
-
-        # Dessiner la barre de vie
-        py.draw.rect(surface, (255, 0, 0), (self.rect.x, self.rect.y - 20, self.current_health / self.health_ratio, 10))
-        py.draw.rect(surface, (255, 255, 255), (self.rect.x, self.rect.y - 20, self.health_bar_length, 10), 2)
-              
-        
 
 # pour que ca continue l'action automatiquement
 '''
