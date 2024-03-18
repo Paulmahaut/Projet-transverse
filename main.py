@@ -144,16 +144,15 @@ while True:
     # Vérifie si le projectile entre en collision avec la licorne
         if py.sprite.collide_rect(projectile, player):
             # Gérer la collision ici (par exemple, infliger des dégâts)
-            player.get_damage(30)  # Supposons que vous avez une méthode get_damage
-            projectile.kill()  # Supprime le projectile après la collision pour éviter des dégâts multiples
+            player.get_damage(30)
+            projectile.kill()  # Supprime le projectile après la collision 
     
     for projectile in player.group_projectil:
     # Vérifie si le projectile entre en collision avec la licorne
         if py.sprite.collide_rect(projectile, enemy):
             # Gérer la collision ici (par exemple, infliger des dégâts)
-            enemy.get_damage(30)  # Supposons que vous avez une méthode get_damage
-            projectile.kill()  # Supprime le projectile après la collision pour éviter des dégâts multiples
-   
+            enemy.get_damage(30) 
+            projectile.kill()  # Supprime le projectile après la collision 
     
     
     py.display.update()
