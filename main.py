@@ -32,12 +32,17 @@ background.fill(COLOR["gray"])
 #background unicorn
 im=py.image.load("Backgroundunicorn.png")
 test=py.image.load("screamer.jpg")
+explosion=py.image.load("explosion.png")
+explosion = py.transform.scale(explosion, (200, 200))
 image_display_start = None
 special_image = py.transform.scale(test, (300, 300))
 
 #sound
 song = py.mixer.Sound("tqt.mp3")
+explosion_sound = py.mixer.Sound("Explosion sound.mp3")
 
+#Chan1=py.mixer.Channel(0)
+#Chan2=py.mixer.Channel(1)
 
 # INSTANCES
 player = Character()
@@ -111,8 +116,7 @@ while True:
         else:
             image_display_start = None  # Réinitialiser pour le prochain affichage
     
-    #song.play()
-            
+   # song.play()        
         
             
     # KEYBOARD
@@ -136,7 +140,7 @@ while True:
     
     TANK_SHOOT = random.randint(0,100)
     #event déclenchant la fonction throw proj
-    if TANK_SHOOT%10 ==0:
+    if TANK_SHOOT%10 ==0 and enemy.current_health >0:
         enemy.throw_projectile()
         
         
@@ -154,7 +158,13 @@ while True:
             enemy.get_damage(30) 
             projectile.kill()  # Supprime le projectile après la collision 
     
-    
+    if enemy.current_health <=0:
+        enemy.kill()
+        screen.blit(explosion,(enemy.rect.x, enemy.rect.y))
+        explosion_sound.play()
+        
+        
+        
     py.display.update()
     clock.tick(60)
-    
+                                
