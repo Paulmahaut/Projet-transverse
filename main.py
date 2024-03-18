@@ -3,6 +3,7 @@ from Enemy import *
 from Licorne import *
 import pygame as py
 from sys import exit
+import random
  
 COLOR={'lightbleu':(240,248,255), 
        "almond":(240,255,240), 
@@ -13,6 +14,7 @@ COLOR={'lightbleu':(240,248,255),
 # VARIABLES
 LOOSE = False
 
+random.seed()
 py.init()
 clock = py.time.Clock()
 current_time = py.time.get_ticks()
@@ -49,8 +51,10 @@ group_enemy = py.sprite.Group()
 group_enemy.add(enemy)
 
 
-TANK_SHOOT = py.USEREVENT + 2
-py.time.set_timer(TANK_SHOOT, 10000)  # Exemple : Lance un projectile toutes les 10 secondes
+#TANK_SHOOT = py.USEREVENT + 2
+#py.time.set_timer(TANK_SHOOT, 10000)  # Exemple : Lance un projectile toutes les 10 secondes
+
+TANK_SHOOT =0
 
 projectil = Projectil(player)
 tank_proj = Tank_project(enemy)
@@ -127,11 +131,11 @@ while True:
 
     if keys_pressed[py.K_UP]:
         enemy.throw_projectile()
-        
+    
+    TANK_SHOOT = random.randint(0,100)
     #event déclenchant la fonction d'Ariel
-    #if event.type == TANK_SHOOT:
-        #enemy.throw_projectile()
-        #time.sleep(random.randint(0,10))
+    if TANK_SHOOT%10 ==0:
+        enemy.throw_projectile()
    
     py.display.update()
     clock.tick(60)
