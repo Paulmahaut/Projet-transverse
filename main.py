@@ -49,8 +49,8 @@ group_enemy = py.sprite.Group()
 group_enemy.add(enemy)
 
 
-#TANK_SHOOT = py.USEREVENT + 2
-#py.time.set_timer(TANK_SHOOT, 10000)  # Exemple : Lance un projectile toutes les 10 secondes
+TANK_SHOOT = py.USEREVENT + 2
+py.time.set_timer(TANK_SHOOT, 10000)  # Exemple : Lance un projectile toutes les 10 secondes
 
 projectil = Projectil(player)
 tank_proj = Tank_project(enemy)
@@ -72,12 +72,15 @@ while True:
         projectile.move()
     
     for projectile_tank in enemy.group_projectil:
-        tank_proj.throw_projectile()
+        projectile_tank.throw_projectile()
+    
 
     # display all enmies and projectiles groups
     group_enemy.draw(screen)
     player.group_projectil.draw(screen)
     enemy.group_projectil.draw(screen)
+
+    
 
     #-------------
     #py.draw.rect(screen, (255,0,0), (10,10,player.current_health_2,25)) # Rectangle de la barre de vie
@@ -122,12 +125,12 @@ while True:
     if keys_pressed[py.K_SPACE]:
         player.launch_projectile()
 
-    enemy.launch_projectile()
-
+    if keys_pressed[py.K_UP]:
+        enemy.throw_projectile()
         
     #event déclenchant la fonction d'Ariel
     #if event.type == TANK_SHOOT:
-        #Tank.throw_projectile()
+        #enemy.throw_projectile()
         #time.sleep(random.randint(0,10))
    
     py.display.update()
