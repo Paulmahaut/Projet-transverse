@@ -38,7 +38,6 @@ special_image = py.transform.scale(test, (300, 300))
 #sound
 song = py.mixer.Sound("tqt.mp3")
 
-
 # INSTANCES
 player = Character()
 # put the player in a group in order to compare it with enemies for collision
@@ -54,8 +53,7 @@ group_enemy.add(enemy)
 #TANK_SHOOT = py.USEREVENT + 2
 #py.time.set_timer(TANK_SHOOT, 10000)  # Exemple : Lance un projectile toutes les 10 secondes
 
-TANK_SHOOT =0
-
+TANK_SHOOT = 0
 projectil = Projectil(player)
 tank_proj = Tank_project(enemy)
 
@@ -78,14 +76,11 @@ while True:
     for projectile_tank in enemy.group_projectil:
         projectile_tank.throw_projectile()
     
-
     # display all enmies and projectiles groups
     group_enemy.draw(screen)
     player.group_projectil.draw(screen)
     enemy.group_projectil.draw(screen)
-
     
-
     #-------------
     #py.draw.rect(screen, (255,0,0), (10,10,player.current_health_2,25)) # Rectangle de la barre de vie
     #py.draw.rect(screen, (255,255,255), (10,10,player.health_bar_lenght,25),4) # Bordure de la barre de vie
@@ -111,8 +106,6 @@ while True:
     
     #song.play()
             
-        
-            
     # KEYBOARD
     keys_pressed = py.key.get_pressed()
 
@@ -130,7 +123,7 @@ while True:
         player.launch_projectile()
 
     if keys_pressed[py.K_UP]:
-        enemy.throw_projectile()
+        enemy.throw_projectile() # to remove at the end
     
     TANK_SHOOT = random.randint(0,100)
     #event déclenchant la fonction d'Ariel
