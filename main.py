@@ -80,8 +80,8 @@ while True:
     enemy.group_projectil.draw(screen)
 
     #-------------
-    py.draw.rect(screen, (255,0,0), (10,10,player.current_health_2,25)) # Rectangle de la barre de vie
-    py.draw.rect(screen, (255,255,255), (10,10,player.health_bar_lenght,25),4) # Bordure de la barre de vie
+    #py.draw.rect(screen, (255,0,0), (10,10,player.current_health_2,25)) # Rectangle de la barre de vie
+    #py.draw.rect(screen, (255,255,255), (10,10,player.health_bar_lenght,25),4) # Bordure de la barre de vie
     #----------------
 
     for event in py.event.get():
@@ -122,8 +122,7 @@ while True:
     if keys_pressed[py.K_SPACE]:
         player.launch_projectile()
 
-    if keys_pressed[py.K_UP]:
-        enemy.launch_projectile()
+    enemy.launch_projectile()
 
         
     #event déclenchant la fonction d'Ariel
