@@ -60,6 +60,7 @@ group_enemy.add(enemy)
 #py.time.set_timer(TANK_SHOOT, 10000)  # Exemple : Lance un projectile toutes les 10 secondes
 
 TANK_SHOOT =0
+jump = False
 
 projectil = Projectil(player)
 tank_proj = Tank_project(enemy)
@@ -92,11 +93,6 @@ while True:
     enemy.group_projectil.draw(screen)
 
     
-
-    #-------------
-    #py.draw.rect(screen, (255,0,0), (10,10,player.current_health_2,25)) # Rectangle de la barre de vie
-    #py.draw.rect(screen, (255,255,255), (10,10,player.health_bar_length,25),4) # Bordure de la barre de vie
-    #----------------
 
     for event in py.event.get():
         if event.type == py.QUIT:
@@ -134,8 +130,13 @@ while True:
             player.rect.x += 5
     if keys_pressed[py.K_SPACE]:
         player.launch_projectile()
+        
+    if not jump and keys_pressed[py.K_UP]:
+        jump = True
+    if jump:
+        player.jump()
 
-    if keys_pressed[py.K_UP]:
+    if keys_pressed[py.K_a]:
         enemy.throw_projectile()
     
     TANK_SHOOT = random.randint(0,100)
@@ -162,7 +163,6 @@ while True:
         enemy.kill()
         screen.blit(explosion,(enemy.rect.x, enemy.rect.y))
         explosion_sound.play()
-        
         
         
     py.display.update()

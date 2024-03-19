@@ -14,6 +14,8 @@ class Character(py.sprite.Sprite):
         self.rect.x = 100  # Position initiale x
         self.rect.y = 430  # Position initiale y
         self.group_projectil = py.sprite.Group()
+        self.velocity = 5
+        self.jump_sate = False
         
         self.current_health = 1000 # Valeur initial de la barre de vie
         self.maximum_health = 1000 # Valeur maximum de la barre de vie
@@ -34,9 +36,6 @@ class Character(py.sprite.Sprite):
         #if self.current_health >= self.maximum_health:
             #self.current_health = self.maximum_health # Evite que la valeur de labarre de vie dépasse le maximum
     
-    #def update(self):
-        #self.current_health()
-    
     def update_health_bar(self, surface):
         screen_width, screen_height = surface.get_size()
         # Position et dimensions de la barre de vie
@@ -50,7 +49,13 @@ class Character(py.sprite.Sprite):
         py.draw.rect(surface, (255, 255, 255), (self.rect.x, self.rect.y - 20, self.health_bar_length, 10), 2)
         
     #-------------------------------------------------------
-        
+    def jump(self):
+        self.rect.y-=self.velocity*4
+        self.velocity-=1
+        if self.velocity <-5:
+            self.jump_state =False
+            self.velocity = 5
+              
     def launch_projectile(self):
         self.group_projectil.add(Projectil(self))
 
