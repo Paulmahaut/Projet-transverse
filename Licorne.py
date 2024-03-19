@@ -15,8 +15,8 @@ class Character(py.sprite.Sprite):
         self.rect.y = 430  # Position initiale y
         self.group_projectil = py.sprite.Group()
         self.velocity = 5
-        self.jump_sate = False
         
+        self.jump_state = False
         self.current_health = 1000 # Valeur initial de la barre de vie
         self.maximum_health = 1000 # Valeur maximum de la barre de vie
         self.health_bar_length = 200 # Longeur maximal en pixel de la barre de vie
@@ -30,7 +30,7 @@ class Character(py.sprite.Sprite):
         #if self.current_health <= 0:
             #self.current_health =0 # Eviter que la valeur de la barre de vie soit inférieur à 0
     
-    #def get_health(self,amount):
+   #def get_health(self,amount):
         #if self.current_health < self.maximum_health:
             #self.current_health += amount # Augmente la valeur de la barre de vie de X
         #if self.current_health >= self.maximum_health:
@@ -53,9 +53,10 @@ class Character(py.sprite.Sprite):
         self.rect.y-=self.velocity*4
         self.velocity-=1
         if self.velocity <-5:
-            self.jump_state =False
+            self.jump_state = False
             self.velocity = 5
-              
+        return self.jump_state
+                      
     def launch_projectile(self):
         self.group_projectil.add(Projectil(self))
 

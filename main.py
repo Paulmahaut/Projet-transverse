@@ -61,7 +61,6 @@ group_enemy.add(enemy)
 
 TANK_SHOOT =0
 jump = False
-
 projectil = Projectil(player)
 tank_proj = Tank_project(enemy)
 
@@ -134,7 +133,7 @@ while True:
     if not jump and keys_pressed[py.K_UP]:
         jump = True
     if jump:
-        player.jump()
+        jump = player.jump()
 
     if keys_pressed[py.K_a]:
         enemy.throw_projectile()
