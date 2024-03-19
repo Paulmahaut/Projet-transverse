@@ -60,7 +60,6 @@ group_enemy.add(enemy)
 #py.time.set_timer(TANK_SHOOT, 10000)  # Exemple : Lance un projectile toutes les 10 secondes
 
 TANK_SHOOT =0
-jump = False
 projectil = Projectil(player)
 tank_proj = Tank_project(enemy)
 
@@ -130,10 +129,8 @@ while True:
     if keys_pressed[py.K_SPACE]:
         player.launch_projectile()
         
-    if not jump and keys_pressed[py.K_UP]:
-        jump = True
-    if jump:
-        jump = player.jump()
+    if keys_pressed[py.K_UP]:
+        player.jump()
 
     if keys_pressed[py.K_a]:
         enemy.throw_projectile()
