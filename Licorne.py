@@ -50,12 +50,11 @@ class Character(py.sprite.Sprite):
         
     #-------------------------------------------------------
     def jump(self):
-        self.rect.y-=self.velocity*4
+        self.rect.y-=self.velocity
         self.velocity-=1
         if self.velocity <-5:
             self.jump_state = False
             self.velocity = 5
-        return self.jump_state
                       
     def launch_projectile(self):
         self.group_projectil.add(Projectil(self))

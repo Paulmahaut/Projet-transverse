@@ -130,6 +130,8 @@ while True:
         player.launch_projectile()
         
     if keys_pressed[py.K_UP]:
+        player.jump_state = True
+    if player.jump_state :
         player.jump()
 
     if keys_pressed[py.K_a]:

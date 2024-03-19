@@ -49,8 +49,6 @@ class Enemy(py.sprite.Sprite):
         py.draw.rect(surface, (255, 255, 255), (self.rect.x, self.rect.y - 20, self.health_bar_length, 10), 2)
               
         
-        
-        
     def move(self,group_player):
     # collision check
         if not py.sprite.spritecollide(self, group_player,False,  py.sprite.collide_mask):
