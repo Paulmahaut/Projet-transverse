@@ -18,9 +18,10 @@ class Enemy(py.sprite.Sprite):
         self.current_health = 1000 # Valeur initial de la barre de vie
         self.maximum_health = 1000 # Valeur maximum de la barre de vie
         self.health_bar_length = 200 # Longeur maximal en pixel de la barre de vie
-        self.health_ratio = self.maximum_health / self.health_bar_length # Ratio utiliser pour remplir la barre de vie
+        self.health_ratio = self.maximum_health / self.health_bar_length # Ratio utilisé pour remplir la barre de vie
         self.current_health_2 = self.current_health/self.health_ratio
-            #--------------------------------------------
+        
+        #--------------------------------------------
     def get_damage(self,amount):
         if self.current_health > 0:
             self.current_health -= amount # Baisse la valeur de la barre de vie de X 
@@ -45,8 +46,9 @@ class Enemy(py.sprite.Sprite):
         y_position = 10  # 10 pixels de marge du haut
 
         # Dessiner la barre de vie
-        py.draw.rect(surface, (255, 0, 0), (self.rect.x, self.rect.y - 20, self.current_health / self.health_ratio, 10))
-        py.draw.rect(surface, (255, 255, 255), (self.rect.x, self.rect.y - 20, self.health_bar_length, 10), 2)
+        if self.current_health>=0:
+            py.draw.rect(surface, (255, 0, 0), (self.rect.x, self.rect.y - 20, self.current_health / self.health_ratio, 10))
+            py.draw.rect(surface, (255, 255, 255), (self.rect.x, self.rect.y - 20, self.health_bar_length, 10), 2)
               
         
     def move(self,group_player):

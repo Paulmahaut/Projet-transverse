@@ -91,7 +91,6 @@ while True:
     enemy.group_projectil.draw(screen)
 
     
-
     for event in py.event.get():
         if event.type == py.QUIT:
             py.quit()
@@ -128,14 +127,14 @@ while True:
             player.rect.x += 5
     if keys_pressed[py.K_SPACE]:
         player.launch_projectile()
-        
+    # player jump 
     if keys_pressed[py.K_UP]:
         player.jump_state = True
     if player.jump_state :
         player.jump()
 
     if keys_pressed[py.K_a]:
-        enemy.throw_projectile()
+        enemy.throw_projectile() # to remove at the end
     
     TANK_SHOOT = random.randint(0,100)
     #event déclenchant la fonction throw proj
