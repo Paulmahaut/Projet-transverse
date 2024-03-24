@@ -15,18 +15,19 @@ class Enemy(py.sprite.Sprite):
         self.rect.x = 900  # Position initiale x
         self.rect.y = 400  # Position initiale y
         self.group_projectil = py.sprite.Group()
+        self.initial_health = 1000
         self.current_health = 1000 # Valeur initial de la barre de vie
         self.maximum_health = 1000 # Valeur maximum de la barre de vie
         self.health_bar_length = 200 # Longeur maximal en pixel de la barre de vie
         self.health_ratio = self.maximum_health / self.health_bar_length # Ratio utilisé pour remplir la barre de vie
-        self.current_health_2 = self.current_health/self.health_ratio
-        
+    
         #--------------------------------------------
     def get_damage(self,amount):
         if self.current_health > 0:
             self.current_health -= amount # Baisse la valeur de la barre de vie de X 
-        #if self.current_health <= 0:
-            #self.current_health =0 # Eviter que la valeur de la barre de vie soit inférieur à 0
+        elif self.current_health<=0 :
+            self.rect.x = 2000
+            self.current_health= self.initial_health
     
     #def get_health(self,amount):
         #if self.current_health < self.maximum_health:
@@ -58,6 +59,10 @@ class Enemy(py.sprite.Sprite):
 
     def throw_projectile(self):
         self.group_projectil.add(Tank_project(self))
+
+    def blast(self):
+        explosion = py.image.load("explosion.png").convert_alpha()
+        self.image = py.transform.scale(explosion, (150, 150))
 
 
 

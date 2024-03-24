@@ -1,6 +1,6 @@
 #Ici tout ce qui concerne la licorne
 import pygame as py
-
+from var import *
 
 class Character(py.sprite.Sprite):
 
@@ -14,15 +14,15 @@ class Character(py.sprite.Sprite):
         self.rect.x = 100  # Position initiale x
         self.rect.y = 430  # Position initiale y
         self.group_projectil = py.sprite.Group()
+
         self.velocity = 5
-        
+        self.jump_vel = 20
+
         self.jump_state = False
         self.current_health = 1000 # Valeur initial de la barre de vie
         self.maximum_health = 1000 # Valeur maximum de la barre de vie
         self.health_bar_length = 200 # Longeur maximal en pixel de la barre de vie
         self.health_ratio = self.maximum_health / self.health_bar_length # Ratio utiliser pour remplir la barre de vie
-        self.current_health_2 = self.current_health/self.health_ratio
-
     #--------------------------------------------
     def get_damage(self,amount):
         if self.current_health > 0:
@@ -49,12 +49,19 @@ class Character(py.sprite.Sprite):
         py.draw.rect(surface, (255, 255, 255), (self.rect.x, self.rect.y - 20, self.health_bar_length, 10), 2)
         
     #-------------------------------------------------------
+    
+    def move_rigth(self):
+        self.rect.x+=self.velocity
+    
+    def move_left(self):
+        self.rect.x-=self.velocity
+
     def jump(self):
-        self.rect.y-=self.velocity
-        self.velocity-=1
-        if self.velocity <-5:
+        self.rect.y-=self.jump_vel
+        self.jump_vel-=1
+        if self.jump_vel <-20:
             self.jump_state = False
-            self.velocity = 5
+            self.jump_vel = 20
                       
     def launch_projectile(self):
         self.group_projectil.add(Projectil(self))
