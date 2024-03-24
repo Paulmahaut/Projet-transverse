@@ -9,7 +9,7 @@ COLOR={'lightbleu':(240,248,255),
 
 LOOSE = False
 TANK_SHOOT = 0
-
+FPS = 60
 # Window
 WIDTH = 1000
 HEIGHT = 700
