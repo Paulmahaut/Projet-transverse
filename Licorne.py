@@ -74,10 +74,10 @@ class Projectil(py.sprite.Sprite):
 
         self.velocity = 5
         rainbow_image = py.image.load("rainbow.png").convert_alpha()
-        self.image = py.transform.scale(rainbow_image, (20, 20))
+        self.image = py.transform.scale(rainbow_image, (20, 10))
         self.rect = self.image.get_rect()
-        self.rect.x = player.rect.x +20
-        self.rect.y = player.rect.y +20
+        self.rect.x = player.rect.x +32
+        self.rect.y = player.rect.y +32
 
     def move(self):
         self.rect.x+=self.velocity

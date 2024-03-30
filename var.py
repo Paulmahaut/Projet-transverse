@@ -14,8 +14,9 @@ FPS = 60
 WIDTH = 1000
 HEIGHT = 700
 # Scroll
-SCROLL_LIM = 400
+SCROLL_LIM = 500
 screen_scroll = 0
+direction = 0
 
 #coord of background
 bg_x, bg_y=0,0

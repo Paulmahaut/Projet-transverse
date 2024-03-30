@@ -7,8 +7,8 @@ import random
 from var import*
 
 random.seed()
-py.init()
-clock = py.time.Clock()
+py.init()#ok
+clock = py.time.Clock()#ok
 current_time = py.time.get_ticks()
 
 # Window
@@ -23,8 +23,6 @@ py.time.set_timer(screamer, 10000)
 background = py.Surface((WIDTH,HEIGHT))
 background.fill(COLOR["almond"])
 wallpaper = py.image.load("wallpaper.jpg")
-ground = py.image.load("ground2.png")
-ground = py.transform.scale(ground,(WIDTH,HEIGHT))
 wallpaper = py.transform.scale(wallpaper, (WIDTH, HEIGHT))
 
 #background unicorn
@@ -50,7 +48,7 @@ enemy = Enemy(group_player)
 # gather all enemies in one group
 group_enemy = py.sprite.Group()
 group_enemy.add(enemy)
-
+ 
 player_proj = Projectil(player)
 tank_proj = Tank_project(enemy)
 
@@ -60,14 +58,16 @@ tank_proj = Tank_project(enemy)
 # to move the background
 def draw_bg():
     for i in range(5):
-        screen.blit(wallpaper,((i * WIDTH)+screen_scroll, bg_y))
+        screen.blit(wallpaper,((i * WIDTH)+ screen_scroll, bg_y)) # add another bg after the current one
 
-# cjange the de scroll value
-# i changes in fct of the direction
-def scroll(screen_scroll, i):
-    player.rect.x = player.rect.x + (-1)**i * player.velocity
-    screen_scroll = screen_scroll + (-1)**i * player.velocity
-    enemy.rect.x = enemy.rect.x + (-1)**i * player.velocity
+# change the de scroll value
+# direction is 1 if we go to the right and 0  if we go to the left
+def scroll(screen_scroll, direction):
+    player.rect.x = player.rect.x - (-1)**direction * player.velocity
+    enemy.rect.x = enemy.rect.x + (-1)**direction * enemy.velocity
+    tank_proj.rect.x = tank_proj.rect.x + (-1)**direction * tank_proj.velocity
+    screen_scroll = screen_scroll - (-1)**direction * player.velocity
+    enemy.rect.x = enemy.rect.x - (-1)**direction * player.velocity
     return screen_scroll
 
 """ pb when the screen moves : 
@@ -81,7 +81,7 @@ while True:
     #screen.blit(im, (0,0)) #remplacer im par background si problèmes
     draw_bg()
 
-    screen.blit(player.image, player.rect)
+    screen.blit(player.image, player.rect) #display
     player.update_health_bar(screen)
     enemy.update_health_bar(screen)
 
@@ -103,7 +103,7 @@ while True:
     player.group_projectil.draw(screen)
     enemy.group_projectil.draw(screen)
 
-    
+    #ok
     for event in py.event.get():
         if event.type == py.QUIT:
             py.quit()
@@ -135,20 +135,23 @@ while True:
     if keys_pressed[py.K_LEFT] and player.rect.x>0:
         player.move_left()
         if player.rect.x <= SCROLL_LIM :
-            screen_scroll = scroll(screen_scroll,0)
+            direction = 1
+            screen_scroll = scroll(screen_scroll, direction)# move the screen 
 
     if keys_pressed[py.K_RIGHT] and player.rect.x<50000 :
         # collision check 
         if not py.sprite.spritecollide(player,group_enemy, False, py.sprite.collide_mask): 
             player.move_rigth()
             if player.rect.x >= WIDTH - SCROLL_LIM :
-                screen_scroll = scroll(screen_scroll,1)
+                direction = 0
+                screen_scroll = scroll(screen_scroll, direction)# move the screen
 
     if abs(screen_scroll)> WIDTH :
         screen_scroll = 0
 
     if keys_pressed[py.K_SPACE]:
         player.launch_projectile()
+        
     # player jump 
     if keys_pressed[py.K_UP]:
         player.jump_state = True
@@ -158,11 +161,10 @@ while True:
     if keys_pressed[py.K_a]:
         enemy.throw_projectile() # to remove at the end
     
-    TANK_SHOOT = random.randint(0,100)
     #event déclenchant la fonction throw proj
-    if TANK_SHOOT%20 ==0 and enemy.current_health >0:
+    if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < bg_y :
         enemy.throw_projectile()
-        
+
         
     for projectile in enemy.group_projectil:
     # Vérifie si le projectile entre en collision avec la licorne
@@ -177,6 +179,8 @@ while True:
             # Gérer la collision ici (par exemple, infliger des dégâts)
             enemy.get_damage(30) 
             projectile.kill()  # Supprime le projectile après la collision 
+        elif projectile.rect.x > WIDTH:
+            projectile.kill()
             
             # la collision continue qund l'enemi est mort
             #print(py.sprite.collide_rect(projectile, enemy))
@@ -195,8 +199,8 @@ while True:
         # faire une class "game manager"
         
 
-    print("x player",player.rect.x)
-
-    py.display.update()
-    clock.tick(60)
+    print("x player : ",player.rect.x, "screen scroll :", screen_scroll)
+    print("x enemy : ",enemy.rect.x)
+    py.display.update()#ok
+    clock.tick(60)#ok
                                 
