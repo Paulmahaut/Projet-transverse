@@ -58,16 +58,16 @@ tank_proj = Tank_project(enemy)
 # to move the background
 def draw_bg():
     for i in range(5):
-        screen.blit(wallpaper,((i * WIDTH)+ screen_scroll, bg_y)) # add another bg after the current one
+        screen.blit(wallpaper,((i * WIDTH) + screen_scroll, bg_y)) # add another bg after the current one
 
-# change the de scroll value
+# change the de scroll value according to the move of the player
 # direction is 1 if we go to the right and 0  if we go to the left
 def scroll(screen_scroll, direction):
+    # update enemy, player and tank_proj coord according to screen_scroll
     player.rect.x = player.rect.x - (-1)**direction * player.velocity
-    enemy.rect.x = enemy.rect.x + (-1)**direction * enemy.velocity
+    enemy.rect.x = enemy.rect.x - (-1)**direction * player.velocity
     tank_proj.rect.x = tank_proj.rect.x + (-1)**direction * tank_proj.velocity
     screen_scroll = screen_scroll - (-1)**direction * player.velocity
-    enemy.rect.x = enemy.rect.x - (-1)**direction * player.velocity
     return screen_scroll
 
 """ pb when the screen moves : 
@@ -76,6 +76,7 @@ def scroll(screen_scroll, direction):
 """
 
 while True:
+    print("x player : ",player.rect.x, "- screen scroll :", screen_scroll)
 
     # DISPLAY
     #screen.blit(im, (0,0)) #remplacer im par background si problèmes
@@ -132,9 +133,9 @@ while True:
         #player.rect.y -= 5
     #if keys_pressed[py.K_DOWN] and player.rect.y< 920 :
         #player.rect.y += 5
-    if keys_pressed[py.K_LEFT] and player.rect.x>0:
+    if keys_pressed[py.K_LEFT] and player.rect.x >10:
         player.move_left()
-        if player.rect.x <= SCROLL_LIM :
+        if player.rect.x <= x_init and screen_scroll<0:
             direction = 1
             screen_scroll = scroll(screen_scroll, direction)# move the screen 
 
@@ -162,7 +163,7 @@ while True:
         enemy.throw_projectile() # to remove at the end
     
     #event déclenchant la fonction throw proj
-    if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < bg_y :
+    if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and player.current_health >0:
         enemy.throw_projectile()
 
         
@@ -199,8 +200,7 @@ while True:
         # faire une class "game manager"
         
 
-    print("x player : ",player.rect.x, "screen scroll :", screen_scroll)
-    print("x enemy : ",enemy.rect.x)
-    py.display.update()#ok
-    clock.tick(60)#ok
+
+    py.display.update()
+    clock.tick(60)
                                 

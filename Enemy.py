@@ -75,7 +75,7 @@ class Tank_project(py.sprite.Sprite): #projectiles du Tank
         self.angle = 0
         self.force = 0
         
-        self.velocity = 4
+        self.velocity = 17
         tank_project_image= py.image.load("Tank_proje.png")
         self.image = py.transform.scale(tank_project_image, (10, 10))
         self.rect = self.image.get_rect()
