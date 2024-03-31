@@ -20,7 +20,7 @@ image_display_start = None
 special_image = py.transform.scale(test, (300, 300))
 
 # sound
-song = py.mixer.Sound("tqt.mp3")
+
 explosion_sound = py.mixer.Sound("Explosion sound.mp3")
 #Chan1=py.mixer.Channel(0)
 #Chan2=py.mixer.Channel(1)

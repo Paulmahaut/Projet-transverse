@@ -19,6 +19,7 @@ class Game :
         self.screen = py.display.set_mode((WIDTH,HEIGHT))
         py.display.set_caption('Game')
 
+        # Images
         wallpaper = py.image.load("wallpaper.jpg")
         menu = py.image.load("Backgroundunicorn.png")
         button = py.image.load("bouton-start.png")
@@ -26,12 +27,14 @@ class Game :
         
         self.wallpaper = py.transform.scale(wallpaper, (WIDTH, HEIGHT))
         self.menu = py.transform.scale(menu, (WIDTH, HEIGHT))
-        self.gameover = py.transform.scale(gameover, (WIDTH, HEIGHT))
+        self.gameover = py.transform.scale(gameover, (400, 200))
         self.button = py.transform.scale(button, (170, 110))
         self.button_rect = self.button.get_rect()
         self.button_rect.x = 400
         self.button_rect.y = 300
-        self.screen_scroll = 0
+
+        # Sound
+        #self.song = py.mixer.Sound("tqt.mp3")
 
         # instance of Character and Enemy
         self.group_player = py.sprite.Group()
@@ -40,6 +43,8 @@ class Game :
         self.group_enemy = py.sprite.Group()
 
         self.game_is_running = False
+        self.screen_scroll = 0
+        self.current_level = 0
     
     # check if a sprite collide with a group of sprite
     def check_collision(self, sprite, group): 
@@ -80,7 +85,7 @@ class Game :
                         self.start()
             # ------------------------------------------------------------------------
             if self.game_is_running :
-                self.play()
+                self.play_game()
             else : 
                 self.screen.blit(self.menu, (bg_x,bg_y))
                 self.screen.blit(self.button,(self.button_rect.x, self.button_rect.y))
@@ -101,23 +106,34 @@ class Game :
             py.display.update()
             self.clock.tick(FPS)
 
-    
+   
     def start(self):
         self.game_is_running = True
         self.spawn_enemy()
 
+    # rest all values
     def end(self):
+        #self.screen.blit(self.gameover, (320,100))
         self.group_enemy = py.sprite.Group()
-        self.player.current_health = self.player.maximum_health
-        #self.screen.blit(self.gameover, (bg_x,bg_y))
+        #self.clock.tick(0.9)
         self.game_is_running = False
-    
+        self.player.current_health = self.player.maximum_health
+        self.player.rect.x = x_init
+        self.player.rect.y = y_init
+        self.player.score = 0
+        
+
     def level(self):
         text_font = py.font.SysFont("Arial", 30)
         score = text_font.render(str(self.player.score), True, COLOR['white'])
         self.screen.blit(score,(10, 10))
 
-    def play(self):
+        if self.player.score>6000:
+            pass #creer des dico d'ennemy, de vitesse et de dégats lié et changer en fct du score
+
+
+
+    def play_game(self):
         # DISPLAY
         self.draw_bg()
         self.screen.blit(self.player.image, self.player.rect) #display
@@ -136,11 +152,10 @@ class Game :
             for projectile_tank in enemy.group_projectil:
                 projectile_tank.move()
                 
-
         for projectile_player in self.player.group_projectil:
             projectile_player.move()
 
-        # display all enmies and projectiles groups
+        # display all enmies and player's projectils
         self.group_enemy.draw(self.screen)
         self.player.group_projectil.draw(self.screen)
         """
@@ -154,7 +169,7 @@ class Game :
             else:
                 image_display_start = None  # Réinitialiser pour le prochain affichage
         """
-        # song.play()        
+        # self.song.play()        
             
         # KEYBOARD      
         keys_pressed = py.key.get_pressed()      
