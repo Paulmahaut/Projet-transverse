@@ -4,11 +4,12 @@ from var import *
 
 class Character(py.sprite.Sprite):
 
-    def __init__(self):
+    def __init__(self, game):
         super(Character, self).__init__()  # Initialise la classe parente Sprite
-        # Charger l'image originale
+        self.game = game
+        # Load the image
         original_image = py.image.load("playerlicorne.png").convert_alpha()
-        # Redimensionner l'image à 80x80 pixels
+        # Resize at 80x80 pixels
         self.image = py.transform.scale(original_image, (90, 90))
         self.rect = self.image.get_rect()
         self.rect.x = x_init  # Position initiale x
@@ -45,16 +46,20 @@ class Character(py.sprite.Sprite):
         y_position = 10  # 10 pixels de marge du haut
 
         # Dessiner la barre de vie
-        py.draw.rect(surface, (255, 0, 0), (self.rect.x, self.rect.y - 20, self.current_health / self.health_ratio, 10))
+        py.draw.rect(surface, change_color(self.current_health), (self.rect.x, self.rect.y - 20, self.current_health / self.health_ratio, 10))
         py.draw.rect(surface, (255, 255, 255), (self.rect.x, self.rect.y - 20, self.health_bar_length, 10), 2)
         
     #-------------------------------------------------------
     
     def move_rigth(self):
-        self.rect.x+=self.velocity
+        #self.rect.x+=self.velocity
+        if not self.game.check_collision(self, self.game.group_enemy):
+            self.rect.x+=self.velocity
+        
     
     def move_left(self):
         self.rect.x-=self.velocity
+        
 
     def jump(self):
         self.rect.y-=self.jump_vel
@@ -63,7 +68,8 @@ class Character(py.sprite.Sprite):
             self.jump_state = False
             self.jump_vel = 20
                       
-    def launch_projectile(self):
+    def launch_projectil(self):
+        # create a projectil and add it to group_projectil
         self.group_projectil.add(Projectil(self))
 
 
@@ -71,7 +77,7 @@ class Projectil(py.sprite.Sprite):
 
     def __init__(self, player):
         super(Projectil, self).__init__() 
-
+        self.player = player
         self.velocity = 20
         rainbow_image = py.image.load("rainbow.png").convert_alpha()
         self.image = py.transform.scale(rainbow_image, (20, 10))
@@ -81,3 +87,9 @@ class Projectil(py.sprite.Sprite):
 
     def move(self):
         self.rect.x+= self.velocity
+        for enemy in self.player.game.check_collision(self, self.player.game.group_enemy) :
+            enemy.get_damage(30)
+            self.kill() # kill the projectil when it collide with the enemy
+
+        if self.rect.x > WIDTH :
+            self.kill() # kill the projectil when it'sout of the window (to avoid killing the commin enemies)
