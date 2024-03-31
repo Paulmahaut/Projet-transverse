@@ -16,11 +16,21 @@ class Game :
         #current_time = py.time.get_ticks()
 
         # Window
-        wallpaper = py.image.load("wallpaper.jpg")
-        #wallpaper=py.image.load("Backgroundunicorn.png")
         self.screen = py.display.set_mode((WIDTH,HEIGHT))
         py.display.set_caption('Game')
+
+        wallpaper = py.image.load("wallpaper.jpg")
+        menu = py.image.load("Backgroundunicorn.png")
+        button = py.image.load("bouton-start.png")
+        gameover = py.image.load("gameover.png")
+        
         self.wallpaper = py.transform.scale(wallpaper, (WIDTH, HEIGHT))
+        self.menu = py.transform.scale(menu, (WIDTH, HEIGHT))
+        self.gameover = py.transform.scale(gameover, (WIDTH, HEIGHT))
+        self.button = py.transform.scale(button, (170, 110))
+        self.button_rect = self.button.get_rect()
+        self.button_rect.x = 400
+        self.button_rect.y = 300
         self.screen_scroll = 0
 
         # instance of Character and Enemy
@@ -28,15 +38,8 @@ class Game :
         self.player = Character(self)
         self.group_player.add(self.player) # add player to a goup to compare it with group_enemy
         self.group_enemy = py.sprite.Group()
-        self.spawn_enemy()
-        
-        """
-        # state on the game : start and level
-        self.gameStateManager = GameStateManager('start')
-        self.start = Start(self.screen, self.gameStateManager)
-        self.menu = Menu(self.screen, self.gameStateManager)
-        self.states = {'start': self.start, 'menu':self.menu}
-        """
+
+        self.game_is_running = False
     
     # check if a sprite collide with a group of sprite
     def check_collision(self, sprite, group): 
@@ -70,21 +73,49 @@ class Game :
                 if event.type == py.QUIT:
                     py.quit()
                     exit()
-            """
+
+                if event.type == py.MOUSEBUTTONDOWN :
+                    if self.button_rect.collidepoint(event.pos):
+                        # launch the game
+                        self.start()
             # ------------------------------------------------------------------------
-            if event.type == py.KEYDOWN:
+            if self.game_is_running :
+                self.play()
+            else : 
+                self.screen.blit(self.menu, (bg_x,bg_y))
+                self.screen.blit(self.button,(self.button_rect.x, self.button_rect.y))
+                                               
+            
+            """if event.type == py.KEYDOWN:
                 # set the state at start at the begining
                 self.gameStateManager.set_state()
-            
+            """
+        
+            """
             # launch the function run of level or start accroding to currentState
             self.states[self.gameStateManager.get_state()].run()
             if self.gameStateManager.get_state()== 'menu' :
-            """
-            self.play()
-            #print(self.gameStateManager.get_state())
+                self.play()
+            #print(self.gameStateManager.get_state())"""
             
             py.display.update()
             self.clock.tick(FPS)
+
+    
+    def start(self):
+        self.game_is_running = True
+        self.spawn_enemy()
+
+    def end(self):
+        self.group_enemy = py.sprite.Group()
+        self.player.current_health = self.player.maximum_health
+        #self.screen.blit(self.gameover, (bg_x,bg_y))
+        self.game_is_running = False
+    
+    def level(self):
+        text_font = py.font.SysFont("Arial", 30)
+        score = text_font.render(str(self.player.score), True, COLOR['white'])
+        self.screen.blit(score,(10, 10))
 
     def play(self):
         # DISPLAY
@@ -93,20 +124,24 @@ class Game :
 
         self.player.update_health_bar(self.screen)
         self.player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
+        self.level()
+        if self.player.current_health <=0 :
+            self.end()
 
         # Move projectils and enemies that are in groups
         for enemy in self.group_enemy:
             enemy.move()
             enemy.update_health_bar(self.screen)
+            enemy.group_projectil.draw(self.screen)
             for projectile_tank in enemy.group_projectil:
                 projectile_tank.move()
+                
 
         for projectile_player in self.player.group_projectil:
             projectile_player.move()
 
         # display all enmies and projectiles groups
         self.group_enemy.draw(self.screen)
-        enemy.group_projectil.draw(self.screen)
         self.player.group_projectil.draw(self.screen)
         """
         # à modifeier avec LOOSE
@@ -148,40 +183,9 @@ class Game :
             self.player.jump_state = True
         if self.player.jump_state :
             self.player.jump()
+        
+        for enemy in self.group_enemy :
+            # launch enemy's projectils randomly
+            if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
+                enemy.throw_projectile()
 
-        # launch enemy's projectils randomly
-        if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
-            enemy.throw_projectile()
-"""
-
-class Start:
-    def __init__(self, display, gameStateManager):
-        self.display = display
-        self.gameStateManager = gameStateManager
-    def run(self):
-        keys = py.key.get_pressed()
-        self.display.fill(COLOR['green'])
-        if keys[py.K_s]:
-            self.gameStateManager.set_state('menu')
-
-class Menu():
-    def __init__(self, display, gameStateManager):
-        self.display = display
-        self.gameStateManager = gameStateManager
-    def run(self):
-        self.display.fill(COLOR['orange'])
-        keys= py.key.get_pressed()
-        if keys[py.K_a]:
-            self.gameStateManager.set_state('start')
-
-
-class GameStateManager():
-    def __init__(self, currentState):
-        self.currentState = currentState
-    def get_state(self):
-        return self.currentState
-    def set_state(self, state):
-        self.currentState = state
-                                    
-  
-""" 

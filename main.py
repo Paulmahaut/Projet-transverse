@@ -1,5 +1,5 @@
 """
-Add the purpose, date and names
+Add a description, date and names
 """
 from Game import *
 
@@ -7,17 +7,18 @@ if __name__ == '__main__':
     game = Game()
     game.run()
 
+
 """
 # à modifier
 screamer=py.USEREVENT+1
 py.time.set_timer(screamer, 10000)
-
 
 # SCREAMER
 test=py.image.load("screamer.jpg")
 #explosion = py.transform.scale(explosion, (200, 200))
 image_display_start = None
 special_image = py.transform.scale(test, (300, 300))
+
 # sound
 song = py.mixer.Sound("tqt.mp3")
 explosion_sound = py.mixer.Sound("Explosion sound.mp3")

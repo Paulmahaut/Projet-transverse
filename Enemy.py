@@ -28,7 +28,7 @@ class Enemy(py.sprite.Sprite):
     def get_damage(self,amount):
         if self.current_health > 0:
             self.current_health -= amount # Baisse la valeur de la barre de vie de X 
-            print(self.rect.x)
+            self.game.player.score +=30
         elif self.current_health<=0:
             self.replace()
 
