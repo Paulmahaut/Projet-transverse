@@ -36,7 +36,8 @@ class Game :
         self.button_rect.y = 300
 
         # Sound
-        #self.song = py.mixer.Sound("tqt.mp3")
+        self.song = py.mixer.Sound("tqt.mp3")
+        self.explosion_sound = py.mixer.Sound("Explosion sound.mp3")
 
         # instance of Character and Enemy
         self.group_player = py.sprite.Group()
@@ -186,7 +187,7 @@ class Game :
             else:
                 image_display_start = None  # Réinitialiser pour le prochain affichage
         """
-        # self.song.play()        
+        self.song.play()        
             
         # KEYBOARD      
         keys_pressed = py.key.get_pressed()      

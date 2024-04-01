@@ -22,8 +22,8 @@ special_image = py.transform.scale(test, (300, 300))
 
 # sound
 
-explosion_sound = py.mixer.Sound("Explosion sound.mp3")
-#Chan1=py.mixer.Channel(0)
+
+#Chan1=py.mixer.Channel(0)     
 #Chan2=py.mixer.Channel(1)
 """
 

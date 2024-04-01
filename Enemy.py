@@ -35,8 +35,12 @@ class Enemy(py.sprite.Sprite):
         elif self.current_health<=0:
             self.replace()
 
+    def blast(self):
+        self.game.screen.blit(self.explose,(self.rect.x, self.rect.y))
+        self.game.explosion_sound.play() # ne se déclanche pas
+
     def replace(self):
-        #self.blast()
+        self.blast()
         self.rect.x = 1000 + random.randint(0,500) # moved as a new enemy
         self.current_health = self.initial_health
     
@@ -65,9 +69,6 @@ class Enemy(py.sprite.Sprite):
 
     def throw_projectile(self):
         self.group_projectil.add(Tank_project(self))      
-
-    def blast(self):
-        self.game.screen.blit(self.explose,(self.rect.x, self.rect.y))
 
 class Tank_project(py.sprite.Sprite): #projectiles du Tank 
 
