@@ -7,9 +7,9 @@ if __name__ == '__main__':
     game = Game()
     game.run()
 
-
+   
 """
-# à modifier
+# à modifier         
 screamer=py.USEREVENT+1
 py.time.set_timer(screamer, 10000)
 

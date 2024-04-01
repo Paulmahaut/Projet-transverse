@@ -10,13 +10,14 @@ class Enemy(py.sprite.Sprite):
         super(Enemy, self).__init__()  # Initialise la classe parente Sprite
 
         self.game = game
-        tank_image = py.image.load("tank.png").convert_alpha()
+        tank_image = py.image.load(ENEMY[self.game.current_level]).convert_alpha()
         self.image = py.transform.scale(tank_image, (150, 150))
         self.rect = self.image.get_rect()
 
-        self.rect.x = 1000 + random.randint(0,400)  # Position initiale x
+        self.rect.x = 1000 + random.randint(0,700)  # Position initiale x
         self.rect.y = 400  # Position initiale y
         self.velocity = 1
+        self.attack = 10
         self.initial_health = 1000
         self.current_health = 1000 # Valeur initial de la barre de vie
         self.maximum_health = 1000 # Valeur maximum de la barre de vie
@@ -78,7 +79,7 @@ class Enemy(py.sprite.Sprite):
         self.group_projectil.add(Tank_project(self))
 
     def blast(self):
-        explosion = py.image.load("explosion.png").convert_alpha()
+        explosion = py.image.load("images/explosion.png").convert_alpha()
         self.image = py.transform.scale(explosion, (150, 150))
 
 
@@ -92,7 +93,7 @@ class Tank_project(py.sprite.Sprite): #projectiles du Tank
         self.force = 0
         
         self.velocity = 17
-        tank_project_image= py.image.load("Tank_proje.png")
+        tank_project_image= py.image.load(ENEMY_PROJ[self.enemy.game.current_level])
         self.image = py.transform.scale(tank_project_image, (10, 10))
         self.rect = self.image.get_rect()
         self.rect.x = enemy.rect.x
@@ -106,7 +107,7 @@ class Tank_project(py.sprite.Sprite): #projectiles du Tank
         
         # if collision or not on screen the projectil is removed
         for player in self.enemy.game.check_collision(self, self.enemy.game.group_player) :
-            player.get_damage(30)
+            player.get_damage(self.enemy.attack)
             self.kill()
 
         if self.rect.x > WIDTH :

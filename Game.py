@@ -20,10 +20,11 @@ class Game :
         py.display.set_caption('Game')
 
         # Images
-        wallpaper = py.image.load("wallpaper.jpg")
-        menu = py.image.load("Backgroundunicorn.png")
-        button = py.image.load("bouton-start.png")
-        gameover = py.image.load("gameover.png")
+        self.current_level = 0
+        wallpaper = py.image.load(WALLPAPER[self.current_level])
+        menu = py.image.load("images/Backgroundunicorn.png")
+        button = py.image.load("images/bouton-start.png")
+        gameover = py.image.load("images/gameover.png")
         
         self.wallpaper = py.transform.scale(wallpaper, (WIDTH, HEIGHT))
         self.menu = py.transform.scale(menu, (WIDTH, HEIGHT))
@@ -44,7 +45,7 @@ class Game :
 
         self.game_is_running = False
         self.screen_scroll = 0
-        self.current_level = 0
+        self.direction = 0
     
     # check if a sprite collide with a group of sprite
     def check_collision(self, sprite, group): 
@@ -61,15 +62,15 @@ class Game :
             self.screen.blit(self.wallpaper,((i * WIDTH) + self.screen_scroll, bg_y)) 
     
     # move elements of the game according to the direction and the scroll
-    def scroll(self, direction):
+    def scroll(self):
         # update enemy, screen_scroll and player coord according to player's velocity
-        self.player.rect.x = self.player.rect.x - (-1)**direction * self.player.velocity
+        self.player.rect.x = self.player.rect.x - (-1)**self.direction * self.player.velocity
         for enemy in self.group_enemy :
-            enemy.rect.x = enemy.rect.x - (-1)**direction * self.player.velocity
+            enemy.rect.x = enemy.rect.x - (-1)**self.direction * self.player.velocity
             for tank_proj in enemy.group_projectil :
                 # update eney's projectil coord according to the direction of the scroll
-                tank_proj.rect.x = tank_proj.rect.x - (-1)**direction * tank_proj.velocity
-        self.screen_scroll = self.screen_scroll - (-1)**direction * self.player.velocity
+                tank_proj.rect.x = tank_proj.rect.x - (-1)**self.direction * tank_proj.velocity
+        self.screen_scroll = self.screen_scroll - (-1)**self.direction * self.player.velocity
 
     def run(self):
         # Main loop of the game
@@ -81,14 +82,12 @@ class Game :
 
                 if event.type == py.MOUSEBUTTONDOWN :
                     if self.button_rect.collidepoint(event.pos):
-                        # launch the game
-                        self.start()
-            # ------------------------------------------------------------------------
+                        self.start() # launch the game
+
             if self.game_is_running :
                 self.play_game()
             else : 
-                self.screen.blit(self.menu, (bg_x,bg_y))
-                self.screen.blit(self.button,(self.button_rect.x, self.button_rect.y))
+                self.start_menu()
                                                
             
             """if event.type == py.KEYDOWN:
@@ -106,7 +105,10 @@ class Game :
             py.display.update()
             self.clock.tick(FPS)
 
-   
+    def start_menu(self):
+        self.screen.blit(self.menu, (bg_x,bg_y))
+        self.screen.blit(self.button,(self.button_rect.x, self.button_rect.y))
+
     def start(self):
         self.game_is_running = True
         self.spawn_enemy()
@@ -124,14 +126,24 @@ class Game :
         
 
     def level(self):
-        text_font = py.font.SysFont("Arial", 30)
-        score = text_font.render(str(self.player.score), True, COLOR['white'])
-        self.screen.blit(score,(10, 10))
-
-        if self.player.score>6000:
-            pass #creer des dico d'ennemy, de vitesse et de dégats lié et changer en fct du score
-
-
+        # display score
+        text_font = py.font.SysFont("Arial", 20)
+        self.screen.blit(text_font.render('Score ', True, COLOR['black']),(10, 10))
+        score = text_font.render(str(self.player.score), True, COLOR['black'])
+        self.screen.blit(score,(60, 10))
+       
+        if self.player.score>= 1000 and self.current_level == 0:
+            self.current_level +=1
+            # change the background
+            self.wallpaper = py.transform.scale(py.image.load(WALLPAPER[self.current_level]), (WIDTH, HEIGHT))
+            # change enemy and its settings
+            self.group_enemy = py.sprite.Group()      
+            self.spawn_enemy()
+            for enemy in self.group_enemy :
+                enemy.velocity += 1
+                enemy.attack += 10
+            #creer des dico d'ennemy, de vitesse et de dégats lié et changer en fct du score
+            # niveau final ?
 
     def play_game(self):
         # DISPLAY
@@ -176,15 +188,15 @@ class Game :
         if keys_pressed[py.K_LEFT] and self.player.rect.x >10:
             self.player.move_left()
             if self.player.rect.x <= x_init and self.screen_scroll<0:
-                direction = 1
-                self.scroll(direction)# move the screen 
+                self.direction = 1
+                self.scroll()# move the screen 
 
         if keys_pressed[py.K_RIGHT] and self.player.rect.x<50000 :
             # collision check 
             self.player.move_rigth()
             if self.player.rect.x >= WIDTH - SCROLL_LIM :
-                direction = 0
-                self.scroll(direction)# move the screen
+                self.direction = 0
+                self.scroll()# move the screen
 
         if abs(self.screen_scroll) > WIDTH : 
             self.screen_scroll = 0 # reset screen_scroll if it's biggier than the width of the screen

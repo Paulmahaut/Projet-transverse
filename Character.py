@@ -8,7 +8,7 @@ class Character(py.sprite.Sprite):
         super(Character, self).__init__()  # Initialise la classe parente Sprite
         self.game = game
         # Load the image
-        original_image = py.image.load("playerlicorne.png").convert_alpha()
+        original_image = py.image.load("images/playerlicorne.png").convert_alpha()
         # Resize at 80x80 pixels
         self.image = py.transform.scale(original_image, (90, 90))
         self.rect = self.image.get_rect()
@@ -17,6 +17,7 @@ class Character(py.sprite.Sprite):
         self.group_projectil = py.sprite.Group()
 
         self.velocity = 5
+        self.attack = 10
         self.jump_vel = 20
         self.jump_state = False
         self.current_health = 1000 # Valeur initial de la barre de vie
@@ -78,7 +79,7 @@ class Projectil(py.sprite.Sprite):
         super(Projectil, self).__init__() 
         self.player = player
         self.velocity = 20
-        rainbow_image = py.image.load("rainbow.png").convert_alpha()
+        rainbow_image = py.image.load("images/rainbow.png").convert_alpha()
         self.image = py.transform.scale(rainbow_image, (20, 10))
         self.rect = self.image.get_rect()
         self.rect.x = player.rect.x +32
@@ -87,7 +88,7 @@ class Projectil(py.sprite.Sprite):
     def move(self):
         self.rect.x+= self.velocity
         for enemy in self.player.game.check_collision(self, self.player.game.group_enemy) :
-            enemy.get_damage(30)
+            enemy.get_damage(self.player.attack)
             self.kill() # kill the projectil when it collide with the enemy
 
         if self.rect.x > WIDTH :
