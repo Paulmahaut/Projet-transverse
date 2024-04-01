@@ -15,6 +15,7 @@ py.time.set_timer(screamer, 10000)
 
 # SCREAMER
 test=py.image.load("screamer.jpg")
+# EXPLOSION
 #explosion = py.transform.scale(explosion, (200, 200))
 image_display_start = None
 special_image = py.transform.scale(test, (300, 300))

@@ -13,6 +13,8 @@ class Enemy(py.sprite.Sprite):
         tank_image = py.image.load(ENEMY[self.game.current_level]).convert_alpha()
         self.image = py.transform.scale(tank_image, (150, 150))
         self.rect = self.image.get_rect()
+        explosion = py.image.load("images/explosion.png").convert_alpha()
+        self.explose = py.transform.scale(explosion, (150, 150))
 
         self.rect.x = 1000 + random.randint(0,700)  # Position initiale x
         self.rect.y = 400  # Position initiale y
@@ -34,19 +36,9 @@ class Enemy(py.sprite.Sprite):
             self.replace()
 
     def replace(self):
+        #self.blast()
         self.rect.x = 1000 + random.randint(0,500) # moved as a new enemy
         self.current_health = self.initial_health
-
-
-    
-    #def get_health(self,amount):
-        #if self.current_health < self.maximum_health:
-            #self.current_health += amount # Augmente la valeur de la barre de vie de X
-        #if self.current_health >= self.maximum_health:
-            #self.current_health = self.maximum_health # Evite que la valeur de labarre de vie dépasse le maximum
-    
-    #def update(self):
-        #self.current_health()
     
     def update_health_bar(self, surface):
         screen_width, screen_height = surface.get_size()
@@ -64,10 +56,6 @@ class Enemy(py.sprite.Sprite):
         
     def move(self):
     # collision check
-        """
-        if not py.sprite.spritecollide(self, group_player,False,  py.sprite.collide_mask):
-            self.rect.x-= self.velocity
-    """
         if not self.game.check_collision(self, self.game.group_player):
             self.rect.x-= self.velocity
         else :
@@ -76,13 +64,10 @@ class Enemy(py.sprite.Sprite):
             self.replace() # if the enemy step out of the screen we replace it 
 
     def throw_projectile(self):
-        self.group_projectil.add(Tank_project(self))
+        self.group_projectil.add(Tank_project(self))      
 
     def blast(self):
-        explosion = py.image.load("images/explosion.png").convert_alpha()
-        self.image = py.transform.scale(explosion, (150, 150))
-
-
+        self.game.screen.blit(self.explose,(self.rect.x, self.rect.y))
 
 class Tank_project(py.sprite.Sprite): #projectiles du Tank 
 

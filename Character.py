@@ -29,15 +29,7 @@ class Character(py.sprite.Sprite):
     def get_damage(self,amount):
         if self.current_health > 0:
             self.current_health -= amount # Baisse la valeur de la barre de vie de X 
-        #if self.current_health <= 0:
-            #self.current_health =0 # Eviter que la valeur de la barre de vie soit inférieur à 0
-    
-   #def get_health(self,amount):
-        #if self.current_health < self.maximum_health:
-            #self.current_health += amount # Augmente la valeur de la barre de vie de X
-        #if self.current_health >= self.maximum_health:
-            #self.current_health = self.maximum_health # Evite que la valeur de labarre de vie dépasse le maximum
-    
+
     def update_health_bar(self, surface):
         screen_width, screen_height = surface.get_size()
         # Position et dimensions de la barre de vie

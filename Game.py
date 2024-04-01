@@ -22,6 +22,7 @@ class Game :
         # Images
         self.current_level = 0
         wallpaper = py.image.load(WALLPAPER[self.current_level])
+        print(WALLPAPER[self.current_level], self.current_level)
         menu = py.image.load("images/Backgroundunicorn.png")
         button = py.image.load("images/bouton-start.png")
         gameover = py.image.load("images/gameover.png")
@@ -113,12 +114,16 @@ class Game :
         self.game_is_running = True
         self.spawn_enemy()
 
-    # rest all values
+    # rest all settings
     def end(self):
         #self.screen.blit(self.gameover, (320,100))
-        self.group_enemy = py.sprite.Group()
         #self.clock.tick(0.9)
-        self.game_is_running = False
+        self.group_enemy = py.sprite.Group()
+        self.game_is_running = False 
+        self.current_level = 0
+        # reset the first wallpaper
+        self.wallpaper = py.transform.scale(py.image.load(WALLPAPER[self.current_level]), (WIDTH, HEIGHT))
+        # rest player values
         self.player.current_health = self.player.maximum_health
         self.player.rect.x = x_init
         self.player.rect.y = y_init
