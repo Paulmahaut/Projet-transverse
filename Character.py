@@ -45,12 +45,12 @@ class Character(py.sprite.Sprite):
     #-------------------------------------------------------
     
     def move_rigth(self):
-        #self.rect.x+=self.velocity
         if not self.game.check_collision(self, self.game.group_enemy):
             self.rect.x+=self.velocity
         
     def move_left(self):
-        self.rect.x-=self.velocity
+        if not self.game.check_collision(self, self.game.group_enemy):
+            self.rect.x-=self.velocity
         
 
     def jump(self):
