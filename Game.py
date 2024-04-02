@@ -6,7 +6,7 @@ from math import *
 from var import *
 from Enemy import *
 from Character import *
-
+from Mushspawn import *
 
 class Game :
     def __init__(self):
@@ -44,6 +44,7 @@ class Game :
         self.player = Character(self)
         self.group_player.add(self.player) # add player to a goup to compare it with group_enemy
         self.group_enemy = py.sprite.Group()
+        self.mushspawn = Mushspawn()
 
         self.game_is_running = False
         self.screen_scroll = 0
@@ -155,7 +156,7 @@ class Game :
         # DISPLAY
         self.draw_bg()
         self.screen.blit(self.player.image, self.player.rect) #display
-
+        self.screen.blit(self.mushspawn) #display
         self.player.update_health_bar(self.screen)
         self.player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
         self.level()
@@ -222,3 +223,4 @@ class Game :
             if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
                 enemy.throw_projectile()
 
+                
