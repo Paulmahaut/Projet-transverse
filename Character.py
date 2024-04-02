@@ -8,9 +8,9 @@ class Character(py.sprite.Sprite):
         super(Character, self).__init__()  # Initialise la classe parente Sprite
         self.game = game
         # Load the image
-        original_image = py.image.load(PLAYER[self.game.direction]).convert_alpha()
+        self.original_image = py.image.load(PLAYER[0]).convert_alpha()
         # Resize at 80x80 pixels
-        self.image = py.transform.scale(original_image, (90, 90))
+        self.image = py.transform.scale(self.original_image, (90, 90))
         self.rect = self.image.get_rect()
         self.rect.x = x_init  # Position initiale x
         self.rect.y = y_init  # Position initiale y
