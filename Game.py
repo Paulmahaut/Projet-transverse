@@ -23,10 +23,10 @@ class Game :
         self.game_is_running = False
         self.screen_scroll = 0
         self.direction = 0
+        self.flip = False
 
         # Images
         wallpaper = py.image.load(WALLPAPER[self.current_level])
-        print(WALLPAPER[self.current_level], self.current_level)
         menu = py.image.load("images/Backgroundunicorn.png")
         button = py.image.load("images/bouton-start.png")
         gameover = py.image.load("images/gameover.png")
@@ -81,7 +81,7 @@ class Game :
                 if event.type == py.QUIT:
                     py.quit()
                     exit()
-
+                # check if the mouse click on the "start button"
                 if event.type == py.MOUSEBUTTONDOWN :
                     if self.button_rect.collidepoint(event.pos):
                         self.start() # launch the game
@@ -195,7 +195,6 @@ class Game :
         keys_pressed = py.key.get_pressed()      
         if keys_pressed[py.K_LEFT] and self.player.rect.x >10:
             self.player.move_left()
-            #self.player.image = py.transform.flip(self.player.original_image,  (90, 90), True)
             if self.player.rect.x <= x_init and self.screen_scroll<0:
                 self.direction = 1
                 self.scroll()# move the screen 
@@ -203,7 +202,6 @@ class Game :
         if keys_pressed[py.K_RIGHT] and self.player.rect.x<50000 :
             # collision check 
             self.player.move_rigth()
-            #self.player.image = py.transform.flip(self.player.original_image,  (90, 90), True)
             if self.player.rect.x >= WIDTH - SCROLL_LIM :
                 self.direction = 0
                 self.scroll()# move the screen
