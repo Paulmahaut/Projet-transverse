@@ -64,6 +64,7 @@ class Game :
             # add successively a background after another one
             self.screen.blit(self.wallpaper,((i * WIDTH) + self.screen_scroll, bg_y)) 
     
+    
     # move elements of the game according to the direction and the scroll
     def scroll(self):
         # update enemy, screen_scroll and player coord according to player's velocity
@@ -156,7 +157,7 @@ class Game :
         # DISPLAY
         self.draw_bg()
         self.screen.blit(self.player.image, self.player.rect) #display
-        self.screen.blit(self.mushspawn) #display
+        self.screen.blit(self.mushspawn.image, self.mushspawn.rect) #display
         self.player.update_health_bar(self.screen)
         self.player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
         self.level()
