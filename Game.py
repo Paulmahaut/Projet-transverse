@@ -58,6 +58,8 @@ class Game :
     def spawn_enemy(self):
         self.group_enemy.add(Enemy(self))
     
+    def draw_mushroom(self):
+        self.screen.blit(self.mushspawn.image, self.mushspawn.rect)
     # display background
     def draw_bg(self):
         for i in range(5):
@@ -152,12 +154,13 @@ class Game :
                 enemy.attack += 10
             #creer des dico d'ennemy, de vitesse et de dégats lié et changer en fct du score
             # niveau final ?
-
-    def play_game(self):
-        # DISPLAY
-        self.draw_bg()
-        self.screen.blit(self.player.image, self.player.rect) #display
-        self.screen.blit(self.mushspawn.image, self.mushspawn.rect) #display
+def play_game(self):
+    # DISPLAY
+    self.draw_bg()
+    self.screen.blit(self.player.image, self.player.rect) # Afficher le joueur
+    
+    # Afficher les champignons
+    self.mushspawn.mushroom_group.draw(self.screen)
         self.player.update_health_bar(self.screen)
         self.player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
         self.level()
@@ -224,4 +227,5 @@ class Game :
             if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
                 enemy.throw_projectile()
 
-                
+        if random.randint(0,40)%20 == 0 : 
+            self.mushspawn.drop_mushroom()
