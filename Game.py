@@ -18,11 +18,15 @@ class Game :
         # Window
         self.screen = py.display.set_mode((WIDTH,HEIGHT))
         py.display.set_caption('Game')
+        
+        self.current_level = 0
+        self.game_is_running = False
+        self.screen_scroll = 0
+        self.direction = 0
+        self.flip = False
 
         # Images
-        self.current_level = 0
         wallpaper = py.image.load(WALLPAPER[self.current_level])
-        print(WALLPAPER[self.current_level], self.current_level)
         menu = py.image.load("images/Backgroundunicorn.png")
         button = py.image.load("images/bouton-start.png")
         gameover = py.image.load("images/gameover.png")
@@ -36,8 +40,8 @@ class Game :
         self.button_rect.y = 300
 
         # Sound
-        self.song = py.mixer.Sound("tqt.mp3")
-        self.explosion_sound = py.mixer.Sound("Explosion sound.mp3")
+        self.song = py.mixer.Sound("sound/tqt.mp3")
+        self.explosion_sound = py.mixer.Sound("sound/explosion_sound.mp3")
 
         # instance of Character and Enemy
         self.group_player = py.sprite.Group()
@@ -82,7 +86,7 @@ class Game :
                 if event.type == py.QUIT:
                     py.quit()
                     exit()
-
+                # check if the mouse click on the "start button"
                 if event.type == py.MOUSEBUTTONDOWN :
                     if self.button_rect.collidepoint(event.pos):
                         self.start() # launch the game
@@ -153,6 +157,8 @@ class Game :
             # niveau final ?
 
     def play_game(self):
+
+        print(self.direction)
         # DISPLAY
         self.draw_bg()
         self.screen.blit(self.player.image, self.player.rect) #display

@@ -26,7 +26,8 @@ ENEMY_PROJ = {0: "images/tank_proj0.png",
               1: "images/tank_proj1.png"
               }
 
-PLAYER = {}
+PLAYER = {0 : "images/licorne_right.png", 
+          1:"images/licorne_left.png" }
 PLAYER_PROJ = {}
 
 LOOSE = False
