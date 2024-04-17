@@ -45,6 +45,7 @@ class Game :
         self.group_player.add(self.player) # add player to a goup to compare it with group_enemy
         self.group_enemy = py.sprite.Group()
         self.mushspawn = Mushspawn()
+        self.Groupe_Mush = py.sprite.Group()
 
         self.game_is_running = False
         self.screen_scroll = 0
@@ -57,6 +58,9 @@ class Game :
     # create enemy
     def spawn_enemy(self):
         self.group_enemy.add(Enemy(self))
+    
+    def spawn_Mush(self):
+        self.Groupe_Mush.add(Mushspawn())
     
     # display background
     def draw_bg(self):
@@ -116,6 +120,7 @@ class Game :
     def start(self):
         self.game_is_running = True
         self.spawn_enemy()
+        self.spawn_Mush()
 
     # rest all settings
     def end(self):
@@ -178,6 +183,20 @@ class Game :
         # display all enmies and player's projectils
         self.group_enemy.draw(self.screen)
         self.player.group_projectil.draw(self.screen)
+        
+    ###########################################################################
+            # Move projectils and enemies that are in groups
+        for Mushspawn in self.Groupe_Mush:
+            #Mushspawn.move()
+            Mushspawn.Groupe_Mush.draw(self.screen)
+            for Mush_project in enemy.group_projectil:
+                Mush_project.move()
+
+        # display all enmies and player's projectils
+        self.Groupe_Mush.draw(self.screen)
+        
+    ###########################################################################    
+        
         """
         # à modifeier avec LOOSE
             elif event.type==screamer:
@@ -223,5 +242,11 @@ class Game :
             # launch enemy's projectils randomly
             if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
                 enemy.throw_projectile()
+                
+        for Mushspawn in self.Groupe_Mush:
+            # launch enemy's projectils randomly
+            if random.randint(0,40)%20 == 0 :
+                Mushspawn.throw_projectile()
+
 
                 
