@@ -189,7 +189,7 @@ class Game :
         for Mushspawn in self.Groupe_Mush:
             #Mushspawn.move()
             Mushspawn.Groupe_Mush.draw(self.screen)
-            for Mush_project in enemy.group_projectil:
+            for Mush_project in Mushspawn.Groupe_Mush:
                 Mush_project.move()
 
         # display all enmies and player's projectils
@@ -244,8 +244,8 @@ class Game :
                 enemy.throw_projectile()
                 
         for Mushspawn in self.Groupe_Mush:
-            # launch enemy's projectils randomly
-            if random.randint(0,40)%20 == 0 :
+            # launch Mushroom randomly
+            if random.randint(0,197)%99 == 0 : #taux de spawn choisi à l'arrache
                 Mushspawn.throw_projectile()
 
 

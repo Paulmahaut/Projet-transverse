@@ -1,5 +1,7 @@
 import pygame as py
 import random
+from var import*
+import math
 
 class Mushspawn(py.sprite.Sprite):
     def __init__(self):  
@@ -12,7 +14,7 @@ class Mushspawn(py.sprite.Sprite):
         self.rect.x = 200  # Position initiale y
         self.Groupe_Mush = py.sprite.Group() 
         
-    def throw_projectile(self):
+    def throw_projectile(self): 
         self.Groupe_Mush.add(Mush_project(self)) 
     
     
@@ -25,7 +27,7 @@ class Mush_project(py.sprite.Sprite): #projectiles du lakitu
         self.angle = 0
         self.force = 0
         
-        self.velocity = 17
+        self.velocity = 5
         Mush_project_image= py.image.load("images/Mushroom.png")
         self.image = py.transform.scale(Mush_project_image, (50, 50))
         self.rect = self.image.get_rect()
@@ -36,5 +38,7 @@ class Mush_project(py.sprite.Sprite): #projectiles du lakitu
         #self.angle = random.uniform(0, 90)  
         #self.force = random.uniform(10, 50)
         
-        self.rect.x-=self.velocity
+        self.rect.y+=self.velocity
+        if self.rect.x > WIDTH :
+            self.kill()       
         
