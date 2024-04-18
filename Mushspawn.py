@@ -13,17 +13,25 @@ class Mushspawn(py.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 200  # Position initiale x
         self.Groupe_Mush = py.sprite.Group() 
-        self.velocity = 25
+        self.velocity = 50
+        self.count=0
         
     def throw_projectile(self): 
         self.Groupe_Mush.add(Mush_project(self)) 
     
     def move(self):
-       if self.rect.x < WIDTH:
-                self.rect.x+= self.velocity
+       if self.rect.x < 0:
+           self.count=0
+           print("Compteur=0")
+       if self.rect.x > WIDTH:
+           self.count=1
+           print("Compteur=1")
+       if self.count==0: 
+            self.rect.x+= self.velocity
+            print("J'avance")
        else:
-            if self.rect.x > WIDTH:
-                self.rect.x +- self.velocity
+            self.rect.x -= self.velocity
+            print("Je recule")
 
 
 

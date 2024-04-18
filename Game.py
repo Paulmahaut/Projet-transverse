@@ -208,7 +208,7 @@ class Game :
             else:
                 image_display_start = None  # Réinitialiser pour le prochain affichage
         """
-        self.song.play()        
+        #self.song.play()        POUR REMETTRE LA MUSIQUE C EST ICI
             
         # KEYBOARD      
         keys_pressed = py.key.get_pressed()      
@@ -246,7 +246,8 @@ class Game :
         for Mushspawn in self.Groupe_Mush:
             # launch Mushroom randomly
             if random.randint(0,197)%99 == 0 : #taux de spawn choisi à l'arrache
+               
+                Mushspawn.move()
                 Mushspawn.throw_projectile()
-
 
                 
