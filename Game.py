@@ -162,7 +162,7 @@ class Game :
         # DISPLAY
         self.draw_bg()
         self.screen.blit(self.player.image, self.player.rect) #display
-        self.screen.blit(self.mushspawn.image, self.mushspawn.rect) #display
+        #self.screen.blit(self.mushspawn.image, self.mushspawn.rect) #display
         self.player.update_health_bar(self.screen)
         self.player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
         self.level()
@@ -188,7 +188,7 @@ class Game :
             # Move projectils and enemies that are in groups
         for Mushspawn in self.Groupe_Mush:
             #Mushspawn.move()
-            Mushspawn.Groupe_Mush.draw(self.screen)
+            #Mushspawn.Groupe_Mush.draw(self.screen)
             for Mush_project in Mushspawn.Groupe_Mush:
                 Mush_project.move()
 
