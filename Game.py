@@ -184,18 +184,7 @@ class Game :
         self.group_enemy.draw(self.screen)
         self.player.group_projectil.draw(self.screen)
         
-    ###########################################################################
-            # Move projectils and enemies that are in groups
-        for Mushspawn in self.Groupe_Mush:
-            #Mushspawn.move()
-            Mushspawn.Groupe_Mush.draw(self.screen)
-            for Mush_project in Mushspawn.Groupe_Mush:
-                Mush_project.move()
 
-        # display all enmies and player's projectils
-        self.Groupe_Mush.draw(self.screen)
-        
-    ###########################################################################    
         
         """
         # à modifeier avec LOOSE
@@ -242,11 +231,19 @@ class Game :
             # launch enemy's projectils randomly
             if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
                 enemy.throw_projectile()
-                
+    ###########################################################################              
         for Mushspawn in self.Groupe_Mush:
             # launch Mushroom randomly
             if random.randint(0,197)%99 == 0 : #taux de spawn choisi à l'arrache
                 Mushspawn.throw_projectile()
+                Mushspawn.move()
+            #Mushspawn.move()
+          #  Mushspawn.Groupe_Mush.draw(self.screen)
+            for Mush_project in Mushspawn.Groupe_Mush:
+                Mush_project.move()
 
-
+        
+        self.Groupe_Mush.draw(self.screen)
+        
+    ###########################################################################    
                 
