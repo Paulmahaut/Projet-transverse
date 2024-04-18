@@ -11,14 +11,22 @@ class Mushspawn(py.sprite.Sprite):
         # Resize at 80x80 pixels
         self.image = py.transform.scale(original_image, (90, 90))
         self.rect = self.image.get_rect()
-        self.rect.x = 200  # Position initiale y
+        self.rect.x = 200  # Position initiale x
         self.Groupe_Mush = py.sprite.Group() 
+        self.velocity = 25
         
     def throw_projectile(self): 
         self.Groupe_Mush.add(Mush_project(self)) 
     
-    
-    
+    def move(self):
+       if self.rect.x < WIDTH:
+                self.rect.x+= self.velocity
+       else:
+            if self.rect.x > WIDTH:
+                self.rect.x +- self.velocity
+
+
+
     
 class Mush_project(py.sprite.Sprite): #projectiles du lakitu
     def __init__(self, Mushspawn):
