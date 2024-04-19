@@ -188,7 +188,7 @@ class Game :
             # Move projectils and enemies that are in groups
         for Mushspawn in self.Groupe_Mush:
             #Mushspawn.move()
-            #Mushspawn.Groupe_Mush.draw(self.screen)
+            Mushspawn.Groupe_Mush.draw(self.screen)
             for Mush_project in Mushspawn.Groupe_Mush:
                 Mush_project.move()
 
