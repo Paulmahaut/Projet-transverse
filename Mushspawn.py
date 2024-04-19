@@ -58,3 +58,6 @@ class Mush_project(py.sprite.Sprite): #projectiles du lakitu
         if self.rect.x > WIDTH :
             self.kill()       
         
+    #def effect(self):
+        for player in self.game.check_collision(self,self.game.group_player):#à corriger
+            print("Touché!")
