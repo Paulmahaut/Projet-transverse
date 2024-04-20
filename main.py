@@ -8,10 +8,10 @@ if __name__ == '__main__':
     game.run()
 
    
-"""
+""" 
 # à modifier         
 screamer=py.USEREVENT+1
-py.time.set_timer(screamer, 10000)
+py.time.set_timer(screamer, 1000 0)
 
 # SCREAMER
 test=py.image.load("screamer.jpg")

@@ -40,8 +40,8 @@ class Game :
         # Instance for the platforms
         # Create a group to hold the platforms
         self.group_platforms = py.sprite.Group()
-        platform1 = Platform(100, 500, 200, 200)
-        platform2 = Platform(300, 400, 200, 200)
+        platform1 = Platform(100, 100, 200, 50)
+        platform2 = Platform(600, 100, 200, 50)
         self.group_platforms.add(platform1, platform2)
 
         # Sound
@@ -57,6 +57,7 @@ class Game :
         self.game_is_running = False
         self.screen_scroll = 0
         self.direction = 0
+        self.space_pressed_last_frame = True
     
     # check if a sprite collide with a group of sprite
     def check_collision(self, sprite, group): 
@@ -65,7 +66,7 @@ class Game :
     # create enemy
     def spawn_enemy(self):
         self.group_enemy.add(Enemy(self))
-    
+
     # display background
     def draw_bg(self):
         for i in range(5):
@@ -212,7 +213,7 @@ class Game :
                 self.scroll()  # Move the screen 
 
         if keys_pressed[py.K_RIGHT] and self.player.rect.x < 50000:
-            self.player.move_right()
+            self.player.move_rigth()
             if self.player.rect.x >= WIDTH - SCROLL_LIM:
                 self.direction = 0
                 self.scroll()  # Move the screen
@@ -221,11 +222,12 @@ class Game :
             self.screen_scroll = 0  # Reset screen_scroll if it's bigger than the width of the screen
 
         # Launch player projectile if space bar pressed
-        if keys_pressed[py.K_SPACE] and not self.space_pressed_last_frame:
+        #if keys_pressed[py.K_SPACE] and not self.space_pressed_last_frame:
+        if keys_pressed[py.K_SPACE]:    
             self.player.can_shoot = True
             self.player.launch_projectile()
         # Store the state of the space bar for the next frame
-        self.space_pressed_last_frame = keys_pressed[py.K_SPACE]
+        #self.space_pressed_last_frame = keys_pressed[py.K_SPACE]
             
         # Player jumps if key up is pressed 
         if keys_pressed[py.K_UP]:

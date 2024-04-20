@@ -71,9 +71,10 @@ class Character(py.sprite.Sprite):
     def launch_projectile(self):
         # Create a projectile and add it to group_projectile
         keys_pressed = py.key.get_pressed()
-        if keys_pressed[py.K_SPACE] and not self.space_pressed_last_frame:
-            self.group_projectile.add(Projectil(self))
-        self.space_pressed_last_frame = keys_pressed[py.K_SPACE]  # Update space_pressed_last_frame
+        #if keys_pressed[py.K_SPACE] and not self.space_pressed_last_frame:
+        if keys_pressed[py.K_SPACE]:
+            self.group_projectil.add(Projectil(self))
+        #self.space_pressed_last_frame = keys_pressed[py.K_SPACE]  # Update space_pressed_last_frame
 
 class Projectil(py.sprite.Sprite):
 
