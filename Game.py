@@ -6,7 +6,9 @@ from math import *
 from var import *
 from Enemy import *
 from Character import *
-from Mushspawn import *
+from Platform import *
+
+
 
 class Game :
     def __init__(self):
@@ -35,6 +37,13 @@ class Game :
         self.button_rect.x = 400
         self.button_rect.y = 300
 
+        # Instance for the platforms
+        # Create a group to hold the platforms
+        self.group_platforms = py.sprite.Group()
+        platform1 = Platform(100, 500, 200, 200)
+        platform2 = Platform(300, 400, 200, 200)
+        self.group_platforms.add(platform1, platform2)
+
         # Sound
         self.song = py.mixer.Sound("tqt.mp3")
         self.explosion_sound = py.mixer.Sound("Explosion sound.mp3")
@@ -44,8 +53,6 @@ class Game :
         self.player = Character(self)
         self.group_player.add(self.player) # add player to a goup to compare it with group_enemy
         self.group_enemy = py.sprite.Group()
-        self.mushspawn = Mushspawn()
-        self.Groupe_Mush = py.sprite.Group()
 
         self.game_is_running = False
         self.screen_scroll = 0
@@ -59,15 +66,11 @@ class Game :
     def spawn_enemy(self):
         self.group_enemy.add(Enemy(self))
     
-    def spawn_Mush(self):
-        self.Groupe_Mush.add(Mushspawn())
-    
     # display background
     def draw_bg(self):
         for i in range(5):
             # add successively a background after another one
             self.screen.blit(self.wallpaper,((i * WIDTH) + self.screen_scroll, bg_y)) 
-    
     
     # move elements of the game according to the direction and the scroll
     def scroll(self):
@@ -88,14 +91,18 @@ class Game :
                     py.quit()
                     exit()
 
-                if event.type == py.MOUSEBUTTONDOWN :
+                if not self.game_is_running and event.type == py.MOUSEBUTTONDOWN:
                     if self.button_rect.collidepoint(event.pos):
-                        self.start() # launch the game
+                        self.start()  # Start the game if the start button is clicked
 
-            if self.game_is_running :
+            if self.game_is_running:
                 self.play_game()
-            else : 
+            else:
                 self.start_menu()
+
+            py.display.update()
+            self.clock.tick(FPS)
+
                                                
             
             """if event.type == py.KEYDOWN:
@@ -120,7 +127,6 @@ class Game :
     def start(self):
         self.game_is_running = True
         self.spawn_enemy()
-        self.spawn_Mush()
 
     # rest all settings
     def end(self):
@@ -161,93 +167,73 @@ class Game :
     def play_game(self):
         # DISPLAY
         self.draw_bg()
-        self.screen.blit(self.player.image, self.player.rect) #display
-        #self.screen.blit(self.mushspawn.image, self.mushspawn.rect) #display
+        self.screen.blit(self.player.image, self.player.rect)  # Display player
+        
+        # Draw the platforms
+        self.group_platforms.draw(self.screen)
+        
+        # Update player health bar
         self.player.update_health_bar(self.screen)
-        self.player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
-        self.level()
-        if self.player.current_health <=0 :
+        self.player.update()  # Update player each frame
+        
+        # Check for game over condition
+        if self.player.current_health <= 0:
             self.end()
 
-        # Move projectils and enemies that are in groups
+        # Check for collisions between player and platforms
+        if py.sprite.spritecollide(self.player, self.group_platforms, False):
+            # Player is on a platform, handle jumping or other interactions
+            self.player.jump_state = False  # Reset jump state when on a platform
+
+        # Move projectiles and enemies that are in groups
         for enemy in self.group_enemy:
             enemy.move()
             enemy.update_health_bar(self.screen)
             enemy.group_projectil.draw(self.screen)
             for projectile_tank in enemy.group_projectil:
                 projectile_tank.move()
-                
+
         for projectile_player in self.player.group_projectil:
             projectile_player.move()
 
-        # display all enmies and player's projectils
+        # Display all enemies and player's projectiles
         self.group_enemy.draw(self.screen)
         self.player.group_projectil.draw(self.screen)
-        
-    ###########################################################################
-            # Move projectils and enemies that are in groups
-        for Mushspawn in self.Groupe_Mush:
-            #Mushspawn.move()
-            Mushspawn.Groupe_Mush.draw(self.screen)
-            for Mush_project in Mushspawn.Groupe_Mush:
-                Mush_project.move()
 
-        # display all enmies and player's projectils
-        self.Groupe_Mush.draw(self.screen)
-        
-    ###########################################################################    
-        
-        """
-        # à modifeier avec LOOSE
-            elif event.type==screamer:
-            # Marquer le début de l'affichage de l'image
-            image_display_start = current_time
-        if image_display_start:
-            if current_time - image_display_start <= 1000:  # 100 ms = 1/10 de seconde
-                game.screen.blit(special_image, (900, 900))  
-            else:
-                image_display_start = None  # Réinitialiser pour le prochain affichage
-        """
-        #self.song.play()        POUR REMETTRE LA MUSIQUE C EST ICI
-            
+        # Play background music
+        self.song.play()
+
         # KEYBOARD      
         keys_pressed = py.key.get_pressed()      
-        if keys_pressed[py.K_LEFT] and self.player.rect.x >10:
+        if keys_pressed[py.K_LEFT] and self.player.rect.x > 10:
             self.player.move_left()
-            if self.player.rect.x <= x_init and self.screen_scroll<0:
+            if self.player.rect.x <= x_init and self.screen_scroll < 0:
                 self.direction = 1
-                self.scroll()# move the screen 
+                self.scroll()  # Move the screen 
 
-        if keys_pressed[py.K_RIGHT] and self.player.rect.x<50000 :
-            # collision check 
-            self.player.move_rigth()
-            if self.player.rect.x >= WIDTH - SCROLL_LIM :
+        if keys_pressed[py.K_RIGHT] and self.player.rect.x < 50000:
+            self.player.move_right()
+            if self.player.rect.x >= WIDTH - SCROLL_LIM:
                 self.direction = 0
-                self.scroll()# move the screen
+                self.scroll()  # Move the screen
 
-        if abs(self.screen_scroll) > WIDTH : 
-            self.screen_scroll = 0 # reset screen_scroll if it's biggier than the width of the screen
+        if abs(self.screen_scroll) > WIDTH: 
+            self.screen_scroll = 0  # Reset screen_scroll if it's bigger than the width of the screen
 
-        # launch player projectil if key space pressed
-        if keys_pressed[py.K_SPACE]:
-            self.player.launch_projectil()
+        # Launch player projectile if space bar pressed
+        if keys_pressed[py.K_SPACE] and not self.space_pressed_last_frame:
+            self.player.can_shoot = True
+            self.player.launch_projectile()
+        # Store the state of the space bar for the next frame
+        self.space_pressed_last_frame = keys_pressed[py.K_SPACE]
             
-        # player jumps if key up is pressed 
+        # Player jumps if key up is pressed 
         if keys_pressed[py.K_UP]:
             self.player.jump_state = True
-        if self.player.jump_state :
+        if self.player.jump_state:
             self.player.jump()
         
-        for enemy in self.group_enemy :
-            # launch enemy's projectils randomly
-            if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
+        # Launch enemy's projectiles randomly
+        for enemy in self.group_enemy:
+            if random.randint(0, 40) % 20 == 0 and enemy.current_health > 0 and enemy.rect.x < WIDTH and self.player.current_health > 0:
                 enemy.throw_projectile()
-                
-        for Mushspawn in self.Groupe_Mush:
-            # launch Mushroom randomly
-            if random.randint(0,197)%99 == 0 : #taux de spawn choisi à l'arrache
-               
-                Mushspawn.move()
-                Mushspawn.throw_projectile()
-
-                

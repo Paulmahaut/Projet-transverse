@@ -59,11 +59,21 @@ class Character(py.sprite.Sprite):
         if self.jump_vel <-20:
             self.jump_state = False
             self.jump_vel = 20
+        # Check for collisions with platforms
+        collisions = py.sprite.spritecollide(self, self.game.group_platforms, False)
+        for platform in collisions:
+            # Adjust player's position to be just above the platform
+            self.rect.bottom = platform.rect.top
+            # Reset jump state and velocity
+            self.jump_state = False
+            self.jump_vel = 20
                       
-    def launch_projectil(self):
-        # create a projectil and add it to group_projectil
-        self.group_projectil.add(Projectil(self))
-
+    def launch_projectile(self):
+        # Create a projectile and add it to group_projectile
+        keys_pressed = py.key.get_pressed()
+        if keys_pressed[py.K_SPACE] and not self.space_pressed_last_frame:
+            self.group_projectile.add(Projectil(self))
+        self.space_pressed_last_frame = keys_pressed[py.K_SPACE]  # Update space_pressed_last_frame
 
 class Projectil(py.sprite.Sprite):
 
@@ -84,4 +94,4 @@ class Projectil(py.sprite.Sprite):
             self.kill() # kill the projectil when it collide with the enemy
 
         if self.rect.x > WIDTH :
-            self.kill() # kill the projectil when it'sout of the window (to avoid killing the commin enemies)
+            self.kill() # kill the projectil when it's out of the window (to avoid killing the commin enemies)
