@@ -7,6 +7,7 @@ from var import *
 from Enemy import *
 from Character import *
 from Mushspawn import *
+from Platform import *
 
 class Game :
     def __init__(self):
@@ -47,6 +48,12 @@ class Game :
         self.mushspawn = Mushspawn()
         self.Groupe_Mush = py.sprite.Group()
 
+	    # Instance for the platforms
+        # Create a group to hold the platforms
+        self.group_platforms = py.sprite.Group()
+        platform1 = Platform(100, 200, 200, 100)
+        platform2 = Platform(600, 200, 200, 100)
+        self.group_platforms.add(platform1, platform2)
         self.game_is_running = False
         self.screen_scroll = 0
         self.direction = 0
@@ -162,9 +169,12 @@ class Game :
         # DISPLAY
         self.draw_bg()
         self.screen.blit(self.player.image, self.player.rect) #display
+
+
         #self.screen.blit(self.mushspawn.image, self.mushspawn.rect) #display
         self.player.update_health_bar(self.screen)
         self.player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
+        
         self.level()
         if self.player.current_health <=0 :
             self.end()
@@ -196,7 +206,15 @@ class Game :
         self.Groupe_Mush.draw(self.screen)
         
     ###########################################################################    
-        
+    
+     # Draw the platforms
+        self.group_platforms.draw(self.screen)
+        print("coord : ",self.player.rect.x)
+        # Check for collisions between player and platforms
+        if py.sprite.spritecollide(self.player, self.group_platforms, False) and self.player.rect.x < 150:
+            # Player is on a platform, handle jumping or other interactions
+            self.player.rect.x = 260+30   # Reset jump state when on a platform
+
         """
         # à modifeier avec LOOSE
             elif event.type==screamer:
