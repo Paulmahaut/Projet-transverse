@@ -48,8 +48,8 @@ class Mush_project(py.sprite.Sprite): #projectiles du lakitu
         self.image = py.transform.scale(Mush_project_image, (50, 50))
         self.rect = self.image.get_rect()
         self.rect.x = Mushspawn.rect.x 
-        self.rect.y = Mushspawn.rect.y + 60    
-       
+        self.rect.y = Mushspawn.rect.y + 60  
+    
     def move(self): #lancer les projectiles avec un angle variable choisit aleatoirement
         #self.angle = random.uniform(0, 90)  
         #self.force = random.uniform(10, 50)

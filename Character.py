@@ -64,6 +64,12 @@ class Character(py.sprite.Sprite):
         # create a projectil and add it to group_projectil
         self.group_projectil.add(Projectil(self))
 
+    def change_color(self, color):
+        """ Change la couleur du joueur en multipliant les couleurs RGB de l'image originale par la couleur donnée. """
+        colored_image = self.original_image.copy()  # Créez une copie pour ne pas modifier l'image originale
+        colored_image.fill(color, special_flags=py.BLEND_RGB_MULT)  # Appliquez la nouvelle couleur
+        self.image = py.transform.scale(colored_image, (90, 90))  # Remettre à l'échelle si nécessaire
+
 
 class Projectil(py.sprite.Sprite):
 
