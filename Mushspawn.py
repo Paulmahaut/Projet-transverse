@@ -4,7 +4,8 @@ from var import*
 import math
 
 class Mushspawn(py.sprite.Sprite):
-    def __init__(self):  
+    def __init__(self,game):  
+        self.game=game
         super(Mushspawn, self).__init__()  # Initialise la classe parente Sprite       
         # Load the image
         original_image = py.image.load("NSMBULakitu.webp").convert_alpha()
@@ -42,7 +43,6 @@ class Mush_project(py.sprite.Sprite): #projectiles du lakitu
         self.Mushspawn = Mushspawn
         self.angle = 0
         self.force = 0
-        
         self.velocity = 5
         Mush_project_image= py.image.load("images/Mushroom.png")
         self.image = py.transform.scale(Mush_project_image, (50, 50))
@@ -56,5 +56,11 @@ class Mush_project(py.sprite.Sprite): #projectiles du lakitu
         
         self.rect.y+=self.velocity
         if self.rect.x > WIDTH :
-            self.kill()       
-        
+            self.kill() 
+            
+        for player in self.Mushspawn.game.check_collision(self, self.Mushspawn.game.group_player) : 
+            print("Collision avec le joueur")
+    '''''    
+    def check_collision(self, sprite, group): 
+        return py.sprite.spritecollide(sprite, group, False, py.sprite.collide_mask)# False to not kill the sprite
+    '''
