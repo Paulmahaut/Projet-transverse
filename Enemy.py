@@ -37,7 +37,7 @@ class Enemy(py.sprite.Sprite):
 
     def blast(self):
         self.game.screen.blit(self.explose,(self.rect.x, self.rect.y))
-        self.game.explosion_sound.play() # ne se déclanche pas
+        #self.game.explosion_sound.play() # ne se déclanche pas
 
     def replace(self):
         self.blast()

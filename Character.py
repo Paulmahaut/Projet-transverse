@@ -18,13 +18,16 @@ class Character(py.sprite.Sprite):
 
         self.velocity = 5
         self.attack = 10
-        self.jump_vel = 20
+        self.jump_vel = 22
         self.jump_state = False
         self.current_health = 1000 # Valeur initial de la barre de vie
         self.maximum_health = 1000 # Valeur maximum de la barre de vie
         self.health_bar_length = 200 # Longeur maximal en pixel de la barre de vie
         self.health_ratio = self.maximum_health / self.health_bar_length # Ratio utiliser pour remplir la barre de vie
         self.score = 0
+
+        self.gravity = 0.5
+        self.max_fall_speed = 10
     #--------------------------------------------
     def get_damage(self,amount):
         if self.current_health > 0:
@@ -51,14 +54,14 @@ class Character(py.sprite.Sprite):
     def move_left(self):
         if not self.game.check_collision(self, self.game.group_enemy):
             self.rect.x-=self.velocity
-        
 
-    def jump(self):
+    
+    def jump(self):        
         self.rect.y-=self.jump_vel
         self.jump_vel-=1
-        if self.jump_vel <-20:
+        if self.jump_vel <-22:
             self.jump_state = False
-            self.jump_vel = 20
+            self.jump_vel = 22
                       
     def launch_projectil(self):
         # create a projectil and add it to group_projectil

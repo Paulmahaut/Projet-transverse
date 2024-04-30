@@ -50,9 +50,10 @@ class Game :
 
 	    # Instance for the platforms
         # Create a group to hold the platforms
+        self.platform_coord_y = 280
         self.group_platforms = py.sprite.Group()
-        platform1 = Platform(100, 200, 200, 100)
-        platform2 = Platform(600, 200, 200, 100)
+        platform1 = Platform(100, self.platform_coord_y, 200, 100)
+        platform2 = Platform(600, self.platform_coord_y, 200, 100)
         self.group_platforms.add(platform1, platform2)
         self.game_is_running = False
         self.screen_scroll = 0
@@ -207,14 +208,24 @@ class Game :
         
     ###########################################################################    
     
-     # Draw the platforms
+        # draw the platforms
         self.group_platforms.draw(self.screen)
-        print("coord : ",self.player.rect.x)
-        # Check for collisions between player and platforms
-        if py.sprite.spritecollide(self.player, self.group_platforms, False) and self.player.rect.x < 150:
-            # Player is on a platform, handle jumping or other interactions
-            self.player.rect.x = 260+30   # Reset jump state when on a platform
+    
 
+        for platform in self.group_platforms:
+            if self.check_collision(self.player, self.group_platforms):
+                # is the player higher than the platform ?
+                if self.player.rect.y > platform.rect.bottom -10:
+                # position at the top of the platform
+                    self.player.rect.y = platform.rect.bottom -10
+                    #self.player.jump_vel = 22
+                # is the player still on the platform
+                elif self.player.rect.y <= self.platform_coord_y:
+                    self.player.jump_vel = 0
+
+        """conflit entre les conditions : si le pero est sur la platefrom il ne peut pas sauter
+        pq la position du joueur est ramenée à celle de la plateform
+        -->mettre cette partie dans jump !"""
         """
         # à modifeier avec LOOSE
             elif event.type==screamer:
