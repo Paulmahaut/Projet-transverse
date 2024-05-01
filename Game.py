@@ -44,7 +44,7 @@ class Game :
         self.player = Character(self)
         self.group_player.add(self.player) # add player to a goup to compare it with group_enemy
         self.group_enemy = py.sprite.Group()
-        self.mushspawn = Mushspawn()
+        self.mushspawn = Mushspawn(self)
         self.Groupe_Mush = py.sprite.Group()
 
         self.game_is_running = False
@@ -60,7 +60,7 @@ class Game :
         self.group_enemy.add(Enemy(self))
     
     def spawn_Mush(self):
-        self.Groupe_Mush.add(Mushspawn())
+        self.Groupe_Mush.add(Mushspawn(self))
     
     # display background
     def draw_bg(self):
@@ -191,7 +191,9 @@ class Game :
             Mushspawn.Groupe_Mush.draw(self.screen)
             for Mush_project in Mushspawn.Groupe_Mush:
                 Mush_project.move()
-
+    #    if check_collision(self.player, Mushspawn.Groupe_Mush):
+    #            self.player.change_color((255, 0, 0))  # Change the player color to red, for example
+    #            print("AAAAAAAAAA")
         # display all enmies and player's projectils
         self.Groupe_Mush.draw(self.screen)
         
