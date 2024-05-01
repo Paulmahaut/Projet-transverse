@@ -35,6 +35,7 @@ FPS = 60
 WIDTH = 1000
 HEIGHT = 700
 SCROLL_LIM = 500
+GRAVITY = 1
 
 #coord of background
 bg_x, bg_y=0,0

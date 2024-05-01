@@ -15,19 +15,19 @@ class Character(py.sprite.Sprite):
         self.rect.x = x_init  # Position initiale x
         self.rect.y = y_init  # Position initiale y
         self.group_projectil = py.sprite.Group()
+        self.flip = False
 
         self.velocity = 5
         self.attack = 10
         self.jump_vel = 22
         self.jump_state = False
+
+        # Health and score
         self.current_health = 1000 # Valeur initial de la barre de vie
         self.maximum_health = 1000 # Valeur maximum de la barre de vie
         self.health_bar_length = 200 # Longeur maximal en pixel de la barre de vie
         self.health_ratio = self.maximum_health / self.health_bar_length # Ratio utiliser pour remplir la barre de vie
         self.score = 0
-
-        self.gravity = 0.5
-        self.max_fall_speed = 10
     #--------------------------------------------
     def get_damage(self,amount):
         if self.current_health > 0:
@@ -45,28 +45,71 @@ class Character(py.sprite.Sprite):
         py.draw.rect(surface, change_color(self.current_health), (self.rect.x, self.rect.y - 20, self.current_health / self.health_ratio, 10))
         py.draw.rect(surface, (255, 255, 255), (self.rect.x, self.rect.y - 20, self.health_bar_length, 10), 2)
         
-    #-------------------------------------------------------
-    
-    def move_rigth(self):
-        if not self.game.check_collision(self, self.game.group_enemy):
-            self.rect.x+=self.velocity
-        
-    def move_left(self):
-        if not self.game.check_collision(self, self.game.group_enemy):
-            self.rect.x-=self.velocity
+    #-------------------------------------------------------         
 
-    
+    def jump(self):
+        self.rect.y-=self.jump_vel
+        self.jump_vel-=1
+        if self.jump_vel <-20:
+            self.jump_state = False
+            self.jump_vel = 20
+            
+    def move(self):
+        #dx = 0
+        #dy = 0
+
+        keys_pressed = py.key.get_pressed()
+
+        # move to the left
+        if keys_pressed[py.K_LEFT] and self.rect.x >10:
+            # collision check with enemy
+            if not self.game.check_collision(self, self.game.group_enemy):
+               #dx = -self.velocity
+               self.rect.x -=self.velocity
+               self.flip = True # to flip the image
+            if self.rect.x <= x_init and self.game.screen_scroll<0:
+                self.game.direction = 1
+                self.game.scroll()# move the screen 
+
+        # move to the right
+        if keys_pressed[py.K_RIGHT] and self.rect.x<50000 :
+            # collision check with enemy
+            if not self.game.check_collision(self, self.game.group_enemy):
+               #dx = self.velocity
+               self.rect.x +=self.velocity
+               self.flip = False
+            if self.rect.x >= WIDTH - SCROLL_LIM :
+                self.game.direction = 0
+                self.game.scroll()# move the screen
+
+        # player jumps if key up is pressed    
+        if keys_pressed[py.K_UP]:
+            self.jump_state = True
+        if self.jump_state :
+            self.jump()
+        
+        # reset screen_scroll if it's biggier than the width of the screen
+        if abs(self.game.screen_scroll) > WIDTH : 
+            self.game.screen_scroll = 0 
+  
+        for platform in self.game.group_platforms:
+            # check collision between player and platform
+             if self.game.check_collision(self, self.game.group_platforms):
+                # is the player higher than the platform 
+                if self.rect.y < platform.rect.top  and self.jump_vel <0: 
+                    # position at on the platform
+                    self.jump_vel = 0
+                
     def jump(self):        
         self.rect.y-=self.jump_vel
         self.jump_vel-=1
         if self.jump_vel <-22:
             self.jump_state = False
             self.jump_vel = 22
-                      
+
     def launch_projectil(self):
         # create a projectil and add it to group_projectil
         self.group_projectil.add(Projectil(self))
-
 
 class Projectil(py.sprite.Sprite):
 

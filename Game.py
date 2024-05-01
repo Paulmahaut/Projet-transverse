@@ -50,7 +50,7 @@ class Game :
 
 	    # Instance for the platforms
         # Create a group to hold the platforms
-        self.platform_coord_y = 280
+        self.platform_coord_y = 285
         self.group_platforms = py.sprite.Group()
         platform1 = Platform(100, self.platform_coord_y, 200, 100)
         platform2 = Platform(600, self.platform_coord_y, 200, 100)
@@ -169,7 +169,7 @@ class Game :
     def play_game(self):
         # DISPLAY
         self.draw_bg()
-        self.screen.blit(self.player.image, self.player.rect) #display
+        self.screen.blit(py.transform.flip(self.player.image, self.player.flip, False), self.player.rect) #display
 
 
         #self.screen.blit(self.mushspawn.image, self.mushspawn.rect) #display
@@ -210,18 +210,7 @@ class Game :
     
         # draw the platforms
         self.group_platforms.draw(self.screen)
-    
-
-        for platform in self.group_platforms:
-            if self.check_collision(self.player, self.group_platforms):
-                # is the player higher than the platform ?
-                if self.player.rect.y > platform.rect.bottom -10:
-                # position at the top of the platform
-                    self.player.rect.y = platform.rect.bottom -10
-                    #self.player.jump_vel = 22
-                # is the player still on the platform
-                elif self.player.rect.y <= self.platform_coord_y:
-                    self.player.jump_vel = 0
+            
 
         """conflit entre les conditions : si le pero est sur la platefrom il ne peut pas sauter
         pq la position du joueur est ramenée à celle de la plateform
@@ -239,34 +228,16 @@ class Game :
         """
         #self.song.play()        POUR REMETTRE LA MUSIQUE C EST ICI
             
-        # KEYBOARD      
-        keys_pressed = py.key.get_pressed()      
-        if keys_pressed[py.K_LEFT] and self.player.rect.x >10:
-            self.player.move_left()
-            if self.player.rect.x <= x_init and self.screen_scroll<0:
-                self.direction = 1
-                self.scroll()# move the screen 
+        # if a key is pressed the playe move
+        keys_pressed = py.key.get_pressed()
+        if keys_pressed:
+            self.player.move()
 
-        if keys_pressed[py.K_RIGHT] and self.player.rect.x<50000 :
-            # collision check 
-            self.player.move_rigth()
-            if self.player.rect.x >= WIDTH - SCROLL_LIM :
-                self.direction = 0
-                self.scroll()# move the screen
-
-        if abs(self.screen_scroll) > WIDTH : 
-            self.screen_scroll = 0 # reset screen_scroll if it's biggier than the width of the screen
 
         # launch player projectil if key space pressed
         if keys_pressed[py.K_SPACE]:
             self.player.launch_projectil()
-            
-        # player jumps if key up is pressed 
-        if keys_pressed[py.K_UP]:
-            self.player.jump_state = True
-        if self.player.jump_state :
-            self.player.jump()
-        
+
         for enemy in self.group_enemy :
             # launch enemy's projectils randomly
             if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
