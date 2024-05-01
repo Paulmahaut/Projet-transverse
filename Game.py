@@ -191,9 +191,9 @@ class Game :
             Mushspawn.Groupe_Mush.draw(self.screen)
             for Mush_project in Mushspawn.Groupe_Mush:
                 Mush_project.move()
-            if check_collision(self.player, Mushspawn.Groupe_Mush):
-                self.player.change_color((255, 0, 0))  # Change the player color to red, for example
-                print("AAAAAAAAAA")
+    #    if check_collision(self.player, Mushspawn.Groupe_Mush):
+    #            self.player.change_color((255, 0, 0))  # Change the player color to red, for example
+    #            print("AAAAAAAAAA")
         # display all enmies and player's projectils
         self.Groupe_Mush.draw(self.screen)
         

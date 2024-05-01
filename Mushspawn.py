@@ -60,6 +60,9 @@ class Mush_project(py.sprite.Sprite): #projectiles du lakitu
             
         for player in self.Mushspawn.game.check_collision(self, self.Mushspawn.game.group_player) : 
             print("Collision avec le joueur")
+            Mush_project.kill(self)
+            player.get_damage(-50)
+            
     '''''    
     def check_collision(self, sprite, group): 
         return py.sprite.spritecollide(sprite, group, False, py.sprite.collide_mask)# False to not kill the sprite
