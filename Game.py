@@ -6,7 +6,8 @@ from math import *
 from var import *
 from Enemy import *
 from Character import *
-from Mushspawn import *
+from trajectory import *
+
 
 class Game :
     def __init__(self):
@@ -18,9 +19,13 @@ class Game :
         # Window
         self.screen = py.display.set_mode((WIDTH,HEIGHT))
         py.display.set_caption('Game')
+        
+        self.current_level = 0
+        self.game_is_running = False
+        self.screen_scroll = 0
+        self.direction = 0
 
         # Images
-        self.current_level = 0
         wallpaper = py.image.load(WALLPAPER[self.current_level])
         print(WALLPAPER[self.current_level], self.current_level)
         menu = py.image.load("images/Backgroundunicorn.png")
@@ -36,20 +41,14 @@ class Game :
         self.button_rect.y = 300
 
         # Sound
-        self.song = py.mixer.Sound("tqt.mp3")
-        self.explosion_sound = py.mixer.Sound("Explosion sound.mp3")
+        self.song = py.mixer.Sound("sound/tqt.mp3")
+        self.explosion_sound = py.mixer.Sound("sound/explosion_sound.mp3")
 
         # instance of Character and Enemy
         self.group_player = py.sprite.Group()
         self.player = Character(self)
         self.group_player.add(self.player) # add player to a goup to compare it with group_enemy
         self.group_enemy = py.sprite.Group()
-        self.mushspawn = Mushspawn()
-        self.Groupe_Mush = py.sprite.Group()
-
-        self.game_is_running = False
-        self.screen_scroll = 0
-        self.direction = 0
     
     # check if a sprite collide with a group of sprite
     def check_collision(self, sprite, group): 
@@ -59,15 +58,11 @@ class Game :
     def spawn_enemy(self):
         self.group_enemy.add(Enemy(self))
     
-    def spawn_Mush(self):
-        self.Groupe_Mush.add(Mushspawn())
-    
     # display background
     def draw_bg(self):
         for i in range(5):
             # add successively a background after another one
             self.screen.blit(self.wallpaper,((i * WIDTH) + self.screen_scroll, bg_y)) 
-    
     
     # move elements of the game according to the direction and the scroll
     def scroll(self):
@@ -91,27 +86,47 @@ class Game :
                 if event.type == py.MOUSEBUTTONDOWN :
                     if self.button_rect.collidepoint(event.pos):
                         self.start() # launch the game
+            if event.type == py.MOUSEBUTTONDOWN:
+            clicked = True
 
-            if self.game_is_running :
-                self.play_game()
-            else : 
-                self.start_menu()
-                                               
+            if event.type == py.MOUSEBUTTONUP:
+                clicked = False
+
+                pos = event.pos
+                theta = getangle(pos, origin)
+                if -90 < theta <= 0:
+                    projectile = projectile(proj, theta)
+                    projectile_group.add(projectile)
+                    currentp = projectile
+
+            if event.type == py.MOUSEMOTION:
+                if clicked:
+                    pos = event.pos
+                    theta = getangle(pos, origin)
+                    if -90 < theta <= 0:
+                        end = posoncircumeference(theta, origin)
+                        arct = toradian(theta)            
+
+                if self.game_is_running :
+                    self.play_game()
+                else : 
+                    self.start_menu()
+                                                
+                
+                """if event.type == py.KEYDOWN:
+                    # set the state at start at the begining
+                    self.gameStateManager.set_state()
+                """
             
-            """if event.type == py.KEYDOWN:
-                # set the state at start at the begining
-                self.gameStateManager.set_state()
-            """
-        
-            """
-            # launch the function run of level or start accroding to currentState
-            self.states[self.gameStateManager.get_state()].run()
-            if self.gameStateManager.get_state()== 'menu' :
-                self.play()
-            #print(self.gameStateManager.get_state())"""
-            
-            py.display.update()
-            self.clock.tick(FPS)
+                """
+                # launch the function run of level or start accroding to currentState
+                self.states[self.gameStateManager.get_state()].run()
+                if self.gameStateManager.get_state()== 'menu' :
+                    self.play()
+                #print(self.gameStateManager.get_state())"""
+                
+                py.display.update()
+                self.clock.tick(FPS)
 
     def start_menu(self):
         self.screen.blit(self.menu, (bg_x,bg_y))
@@ -120,7 +135,6 @@ class Game :
     def start(self):
         self.game_is_running = True
         self.spawn_enemy()
-        self.spawn_Mush()
 
     # rest all settings
     def end(self):
@@ -159,10 +173,12 @@ class Game :
             # niveau final ?
 
     def play_game(self):
+
+        print(self.direction)
         # DISPLAY
         self.draw_bg()
         self.screen.blit(self.player.image, self.player.rect) #display
-        #self.screen.blit(self.mushspawn.image, self.mushspawn.rect) #display
+
         self.player.update_health_bar(self.screen)
         self.player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
         self.level()
@@ -183,20 +199,6 @@ class Game :
         # display all enmies and player's projectils
         self.group_enemy.draw(self.screen)
         self.player.group_projectil.draw(self.screen)
-        
-    ###########################################################################
-            # Move projectils and enemies that are in groups
-        for Mushspawn in self.Groupe_Mush:
-            #Mushspawn.move()
-            Mushspawn.Groupe_Mush.draw(self.screen)
-            for Mush_project in Mushspawn.Groupe_Mush:
-                Mush_project.move()
-
-        # display all enmies and player's projectils
-        self.Groupe_Mush.draw(self.screen)
-        
-    ###########################################################################    
-        
         """
         # à modifeier avec LOOSE
             elif event.type==screamer:
@@ -208,7 +210,7 @@ class Game :
             else:
                 image_display_start = None  # Réinitialiser pour le prochain affichage
         """
-        #self.song.play()        POUR REMETTRE LA MUSIQUE C EST ICI
+        self.song.play()        
             
         # KEYBOARD      
         keys_pressed = py.key.get_pressed()      
@@ -242,12 +244,4 @@ class Game :
             # launch enemy's projectils randomly
             if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
                 enemy.throw_projectile()
-                
-        for Mushspawn in self.Groupe_Mush:
-            # launch Mushroom randomly
-            if random.randint(0,197)%99 == 0 : #taux de spawn choisi à l'arrache
-               
-                Mushspawn.move()
-                Mushspawn.throw_projectile()
 
-                
