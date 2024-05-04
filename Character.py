@@ -16,12 +16,14 @@ class Character(py.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x_init  # Position initiale x
         self.rect.y = y_init  # Position initiale y
+
         self.group_projectil = py.sprite.Group()
 
         self.velocity = 5
         self.attack = 10
         self.jump_vel = 20
         self.jump_state = False
+        
         self.current_health = 1000 # Valeur initial de la barre de vie
         self.maximum_health = 1000 # Valeur maximum de la barre de vie
         self.health_bar_length = 200 # Longeur maximal en pixel de la barre de vie
@@ -64,10 +66,9 @@ class Character(py.sprite.Sprite):
                       
     def launch_projectil(self):
         # create a projectil and add it to group_projectil
-        self.group_projectil.add(Projectil(self))
+        self.group_projectil.add(Projectil(self, ))
     
-g = 9.8
-proj = 50
+
 
 class Projectil(py.sprite.Sprite):
 
@@ -78,16 +79,24 @@ class Projectil(py.sprite.Sprite):
         self.velocity = 20
         rainbow_image = py.image.load("images/rainbow.png").convert_alpha()
         self.image = py.transform.scale(rainbow_image, (20, 10))
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect()                                      
         self.rect.x = player.rect.x +32
         self.rect.y = player.rect.y +32
-        self.x, self.y = origin
+        self.origin = (self.rect.x, self.rect.y)
         self.theta = toradian(abs(theta))
         self.ch = 0
         self.dx = 2
+        self.teta = -30
         self.f = self.trajectory()
         self.range = self.x + abs(self.range())
         self.path = []
+
+    def launch_projectil_traj(self):
+        
+        if -90 < self.player.theta <= 0:
+        #projectile = self.Projectil(proj, theta)
+        #self.player.projectile_group.add(projectile)
+            self.player.launch_projectil()            
 
     def move(self):
         self.rect.x+= self.velocity
@@ -119,21 +128,18 @@ class Projectil(py.sprite.Sprite):
         if self.rect.x >= self.range:
             self.dx = 0
         self.rect.x += self.dx
-        self.ch = self.positionprojectile(self.rect.x - proj.rect[0])
+        self.ch = self.positionprojectile(self.origin[0] - self.proj.rect[0])
 
-        self.path.append((self.rect.x, self.rect.y-abs(self.ch)))
+        self.path.append((self.origin[0], self.origin[1]-abs(self.ch)))
         self.path = self.path[-50:]
 
-projectile_group = py.sprite.Group()
-
-clicked = False
+    
 
 
 
-theta = -30
-end = posoncircumeference(theta, origin)
-arct = toradian(theta)
-arcrect = py.rect(origin[0]-30, origin[1]-30, 60, 60)
+
+
+
 
 
 

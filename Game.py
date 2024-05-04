@@ -49,6 +49,14 @@ class Game :
         self.player = Character(self)
         self.group_player.add(self.player) # add player to a goup to compare it with group_enemy
         self.group_enemy = py.sprite.Group()
+
+        # trajectory
+        self.clicked = False
+        self.currentp = None
+        self.pos = None
+        self.end = posoncircumeference(self.theta, self.player.origin)
+        self.arct = toradian(self.theta)
+        self.arcrect = py.Rect(self.player.origin[0]-30, self.player.origin[1]-30, 60, 60)
     
     # check if a sprite collide with a group of sprite
     def check_collision(self, sprite, group): 
@@ -85,27 +93,7 @@ class Game :
 
                 if event.type == py.MOUSEBUTTONDOWN :
                     if self.button_rect.collidepoint(event.pos):
-                        self.start() # launch the game
-            if event.type == py.MOUSEBUTTONDOWN:
-            clicked = True
-
-            if event.type == py.MOUSEBUTTONUP:
-                clicked = False
-
-                pos = event.pos
-                theta = getangle(pos, origin)
-                if -90 < theta <= 0:
-                    projectile = projectile(proj, theta)
-                    projectile_group.add(projectile)
-                    currentp = projectile
-
-            if event.type == py.MOUSEMOTION:
-                if clicked:
-                    pos = event.pos
-                    theta = getangle(pos, origin)
-                    if -90 < theta <= 0:
-                        end = posoncircumeference(theta, origin)
-                        arct = toradian(theta)            
+                        self.start() # launch the game   
 
                 if self.game_is_running :
                     self.play_game()
@@ -212,7 +200,7 @@ class Game :
         """
         self.song.play()        
             
-        # KEYBOARD      
+        # KEYBOARD  
         keys_pressed = py.key.get_pressed()      
         if keys_pressed[py.K_LEFT] and self.player.rect.x >10:
             self.player.move_left()
@@ -233,7 +221,29 @@ class Game :
         # launch player projectil if key space pressed
         if keys_pressed[py.K_SPACE]:
             self.player.launch_projectil()
-            
+        
+        # Projectil traj
+        for event in py.event.get():
+            if event.type == py.MOUSEBUTTONDOWN:
+                clicked = True
+                    
+                if event.type == py.MOUSEBUTTONUP:
+                    clicked = False
+
+                    self.pos = event.pos # take the mouse position (x,y)
+                    if -90 < self.player.theta <= 0:
+                        self.player.launch_projectil()
+                        #projectile = self.Projectil(proj, theta)
+                        #self.player.projectile_group.add(projectile)
+
+            if event.type == py.MOUSEMOTION:
+                if clicked:
+                    self.pos = event.pos # take the mouse position (x,y)
+                    self.theta = getangle(self.pos, self.player.origin)
+                    if -90 < self.player.theta <= 0:
+                        self.end = posoncircumeference(self.player.theta, self.player.origin)
+                        self.arct = toradian(self.player.theta) 
+                
         # player jumps if key up is pressed 
         if keys_pressed[py.K_UP]:
             self.player.jump_state = True

@@ -39,6 +39,9 @@ SCROLL_LIM = 500
 #coord of background
 bg_x, bg_y=0,0
 #initial coord of player
-x_init, y_init = 100,430
+x_init, y_init = 100,430            
+# trajector var
+g = 9.8
+proj = 50
 
 cloud="images/cloud.png"
