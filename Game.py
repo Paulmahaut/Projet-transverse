@@ -28,7 +28,6 @@ class Game :
 
         # Images
         wallpaper = py.image.load(WALLPAPER[self.current_level])
-        print(WALLPAPER[self.current_level], self.current_level)
         menu = py.image.load("images/Backgroundunicorn.png")
         button = py.image.load("images/bouton-start.png")
         gameover = py.image.load("images/gameover.png")
@@ -98,7 +97,7 @@ class Game :
                         self.start() # launch the game   
 
                 if self.game_is_running :
-                    self.play_game()
+                    self.play_game(event)
                 else : 
                     self.start_menu()
                                                 
@@ -162,7 +161,7 @@ class Game :
             #creer des dico d'ennemy, de vitesse et de dégats lié et changer en fct du score
             # niveau final ?
 
-    def play_game(self):
+    def play_game(self, event):
 
         print(self.direction)
         # DISPLAY
@@ -200,7 +199,7 @@ class Game :
             else:
                 image_display_start = None  # Réinitialiser pour le prochain affichage
         """
-        self.song.play()        
+        #self.song.play()        
             
         # KEYBOARD  
         keys_pressed = py.key.get_pressed()      
@@ -221,33 +220,34 @@ class Game :
             self.screen_scroll = 0 # reset screen_scroll if it's biggier than the width of the screen
 
         # launch player projectil if key space pressed
-        if keys_pressed[py.K_SPACE]:
-            self.player.launch_projectil()
+        #if keys_pressed[py.K_SPACE]:
+            #self.player.launch_projectil()
         
         # Projectil traj
-        for event in py.event.get():
-            if event.type == py.MOUSEBUTTONDOWN:
-                self.clicked = True
-                    
-                if event.type == py.MOUSEBUTTONUP:
-                    self.clicked = False
-
-                    self.pos = event.pos # take the mouse position (x,y)
-                    if -90 < self.player.theta <= 0:
-                        self.player.launch_projectil()
-                        self.end = posoncircumeference(self.theta, self.player.origin)
-                        self.arcrect = py.Rect(self.player.origin[0]-30, self.player.origin[1]-30, 60, 60)
-                        #projectile = self.Projectil(proj, theta)
-                        #self.player.projectile_group.add(projectile)
-
-            if event.type == py.MOUSEMOTION:
-                if self.clicked:
-                    self.pos = event.pos # take the mouse position (x,y)
-                    self.theta = getangle(self.pos, self.player.origin)
-                    if -90 < self.player.theta <= 0:
-                        self.end = posoncircumeference(self.player.theta, self.player.origin)
-                        self.arct = toradian(self.player.theta) 
+        #for event in py.event.get():
+        if event.type == py.MOUSEBUTTONDOWN:
+            self.clicked = True
                 
+            if event.type == py.MOUSEBUTTONUP:
+                self.clicked = False
+
+                self.pos = event.pos # take the mouse position (x,y)
+                if -90 < self.player.theta <= 0:
+                    self.player.launch_projectil()
+                    self.end = posoncircumeference(self.theta, self.player.origin)
+                    self.arcrect = py.Rect(self.player.origin[0]-30, self.player.origin[1]-30, 60, 60)
+                    #projectile = self.Projectil(proj, theta)
+                    #self.player.projectile_group.add(projectile)
+
+        if event.type == py.MOUSEMOTION:
+            if self.clicked:
+                self.pos = event.pos # take the mouse position (x,y)
+                for projectil in self.player.group_projectil():
+                    self.theta = getangle(self.pos, projectil.origin)
+                    if -90 < self.player.theta <= 0:
+                        self.end = posoncircumeference(self.player.theta, projectil.origin)
+                        self.arct = toradian(self.player.theta) 
+            
         # player jumps if key up is pressed 
         if keys_pressed[py.K_UP]:
             self.player.jump_state = True
