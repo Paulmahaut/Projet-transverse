@@ -24,6 +24,7 @@ class Game :
         self.game_is_running = False
         self.screen_scroll = 0
         self.direction = 0
+        self.clicked = False
 
         # Images
         wallpaper = py.image.load(WALLPAPER[self.current_level])
@@ -54,10 +55,11 @@ class Game :
         self.clicked = False
         self.currentp = None
         self.pos = None
-        self.end = posoncircumeference(self.theta, self.player.origin)
+        self.theta = -30
+        self.end = 0
         self.arct = toradian(self.theta)
-        self.arcrect = py.Rect(self.player.origin[0]-30, self.player.origin[1]-30, 60, 60)
-    
+        self.arcrect = 0
+
     # check if a sprite collide with a group of sprite
     def check_collision(self, sprite, group): 
         return py.sprite.spritecollide(sprite, group, False, py.sprite.collide_mask)# False to not kill the sprite
@@ -225,19 +227,21 @@ class Game :
         # Projectil traj
         for event in py.event.get():
             if event.type == py.MOUSEBUTTONDOWN:
-                clicked = True
+                self.clicked = True
                     
                 if event.type == py.MOUSEBUTTONUP:
-                    clicked = False
+                    self.clicked = False
 
                     self.pos = event.pos # take the mouse position (x,y)
                     if -90 < self.player.theta <= 0:
                         self.player.launch_projectil()
+                        self.end = posoncircumeference(self.theta, self.player.origin)
+                        self.arcrect = py.Rect(self.player.origin[0]-30, self.player.origin[1]-30, 60, 60)
                         #projectile = self.Projectil(proj, theta)
                         #self.player.projectile_group.add(projectile)
 
             if event.type == py.MOUSEMOTION:
-                if clicked:
+                if self.clicked:
                     self.pos = event.pos # take the mouse position (x,y)
                     self.theta = getangle(self.pos, self.player.origin)
                     if -90 < self.player.theta <= 0:

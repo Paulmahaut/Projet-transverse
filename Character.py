@@ -86,7 +86,6 @@ class Projectil(py.sprite.Sprite):
         self.theta = toradian(abs(theta))
         self.ch = 0
         self.dx = 2
-        self.teta = -30
         self.f = self.trajectory()
         self.range = self.x + abs(self.range())
         self.path = []
