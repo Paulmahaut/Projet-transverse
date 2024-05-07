@@ -55,9 +55,13 @@ class Game :
         self.currentp = None
         self.pos = None
         self.theta = -30
-        self.end = 0
-        self.arct = toradian(self.theta)
-        self.arcrect = 0
+        self.origin = (self.player.rect.x+46, self.player.rect.y+5) # at the top of the licorne
+        
+        self.arct = to_radian(self.theta)       
+        self.end = pos_on_circumeference( self.theta,  self.origin)
+        self.arcrect = py.Rect(self.origin[0]-30, self.origin[1]-30, 60, 60)
+
+        self.font = py.font.SysFont('verdana', 12)
 
     # check if a sprite collide with a group of sprite
     def check_collision(self, sprite, group): 
@@ -96,10 +100,10 @@ class Game :
                     if self.button_rect.collidepoint(event.pos):
                         self.start() # launch the game   
 
-                if self.game_is_running :
-                    self.play_game(event)
-                else : 
-                    self.start_menu()
+            if self.game_is_running :
+                self.play_game(event)
+            else : 
+                self.start_menu()
                                                 
                 
                 """if event.type == py.KEYDOWN:
@@ -113,9 +117,8 @@ class Game :
                 if self.gameStateManager.get_state()== 'menu' :
                     self.play()
                 #print(self.gameStateManager.get_state())"""
-                
-                py.display.update()
-                self.clock.tick(FPS)
+            py.display.update()
+            self.clock.tick(FPS)
 
     def start_menu(self):
         self.screen.blit(self.menu, (bg_x,bg_y))
@@ -123,10 +126,10 @@ class Game :
 
     def start(self):
         self.game_is_running = True
-        self.spawn_enemy()
+        #self.spawn_enemy()
 
     # rest all settings
-    def end(self):
+    def end_game(self):
         #self.screen.blit(self.gameover, (320,100))
         #self.clock.tick(0.9)
         self.group_enemy = py.sprite.Group()
@@ -163,7 +166,6 @@ class Game :
 
     def play_game(self, event):
 
-        print(self.direction)
         # DISPLAY
         self.draw_bg()
         self.screen.blit(self.player.image, self.player.rect) #display
@@ -172,7 +174,7 @@ class Game :
         self.player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
         self.level()
         if self.player.current_health <=0 :
-            self.end()
+            self.end_game()
 
         # Move projectils and enemies that are in groups
         for enemy in self.group_enemy:
@@ -181,13 +183,16 @@ class Game :
             enemy.group_projectil.draw(self.screen)
             for projectile_tank in enemy.group_projectil:
                 projectile_tank.move()
-                
-        for projectile_player in self.player.group_projectil:
-            projectile_player.move()
+
+
+        #----ancien projectil----------------------------------        
+        #for projectile_player in self.player.group_projectil:
+            #projectile_player.move()
+            #print(projectile_player)
 
         # display all enmies and player's projectils
         self.group_enemy.draw(self.screen)
-        self.player.group_projectil.draw(self.screen)
+        #self.player.group_projectil.draw(self.screen)
         """
         # à modifeier avec LOOSE
             elif event.type==screamer:
@@ -202,6 +207,8 @@ class Game :
         #self.song.play()        
             
         # KEYBOARD  
+
+        # move to the left
         keys_pressed = py.key.get_pressed()      
         if keys_pressed[py.K_LEFT] and self.player.rect.x >10:
             self.player.move_left()
@@ -209,15 +216,17 @@ class Game :
                 self.direction = 1
                 self.scroll()# move the screen 
 
+        # move to the right
         if keys_pressed[py.K_RIGHT] and self.player.rect.x<50000 :
             # collision check 
             self.player.move_rigth()
             if self.player.rect.x >= WIDTH - SCROLL_LIM :
                 self.direction = 0
                 self.scroll()# move the screen
-
+        
+        # reset screen_scroll if it's biggier than the screen width  
         if abs(self.screen_scroll) > WIDTH : 
-            self.screen_scroll = 0 # reset screen_scroll if it's biggier than the width of the screen
+            self.screen_scroll = 0 
 
         # launch player projectil if key space pressed
         #if keys_pressed[py.K_SPACE]:
@@ -226,27 +235,65 @@ class Game :
         # Projectil traj
         #for event in py.event.get():
         if event.type == py.MOUSEBUTTONDOWN:
-            self.clicked = True
-                
-            if event.type == py.MOUSEBUTTONUP:
+            print(self.pos, self.end)
+            if not self.clicked :
+                self.clicked = True
+                print("cliked down")
+        if event.type == py.MOUSEBUTTONUP:
+            if self.clicked :
                 self.clicked = False
-
+                print("cliked then up")
                 self.pos = event.pos # take the mouse position (x,y)
-                if -90 < self.player.theta <= 0:
-                    self.player.launch_projectil()
-                    self.end = posoncircumeference(self.theta, self.player.origin)
-                    self.arcrect = py.Rect(self.player.origin[0]-30, self.player.origin[1]-30, 60, 60)
+                if -90 < self.theta <= 0:
+                    self.player.launch_projectil(self.theta, self.origin)
+                    self.end = pos_on_circumeference(self.theta, self.origin)
+                    self.arcrect = py.Rect(self.origin[0]-30, self.origin[1]-30, 60, 60)
                     #projectile = self.Projectil(proj, theta)
                     #self.player.projectile_group.add(projectile)
 
+
         if event.type == py.MOUSEMOTION:
             if self.clicked:
+                print("the mouse move")
                 self.pos = event.pos # take the mouse position (x,y)
-                for projectil in self.player.group_projectil():
-                    self.theta = getangle(self.pos, projectil.origin)
-                    if -90 < self.player.theta <= 0:
-                        self.end = posoncircumeference(self.player.theta, projectil.origin)
-                        self.arct = toradian(self.player.theta) 
+                self.theta = get_angle(self.pos, self.origin)
+                if -90 < self.theta <= 0:
+                    self.end = pos_on_circumeference(self.theta, self.origin)
+                    self.arct = to_radian(self.theta)
+    
+        py.draw.line(self.screen, COLOR['red'], self.origin, (self.origin[0] + WIDTH-200, self.origin[1]), 2)
+        py.draw.line(self.screen, COLOR['yellow'], self.origin, (self.origin[0], self.origin[1] - 250), 2)
+        py.draw.line(self.screen, COLOR['black'], self.origin, self.end, 2)
+        py.draw.circle(self.screen, COLOR['yellow'], self.origin, 3)
+        py.draw.arc(self.screen, COLOR['orange'], self.arcrect, 0, -(self.arct), 2)
+
+        self.player.group_projectil.update()
+        # update origin
+        self.origin = (self.player.rect.x+46, self.player.rect.y+5)
+        # update the end of the guideline
+        self.end = pos_on_circumeference(self.theta, self.origin)
+
+        # Info *******************************************************************
+        title = self.font.render("Projectile Motion", True, COLOR['white'])
+        fpstext = self.font.render(f"FPS : {int(self.clock.get_fps())}", True, COLOR['white'])
+        thetatext = self.font.render(f"Angle : {int(abs(self.theta))}", True, COLOR['white'])
+        degreetext = self.font.render(f"{int(abs(self.theta))}°", True, COLOR['white'])
+        self.screen.blit(title, (80, 30))
+        self.screen.blit(fpstext, (20, 400))
+        self.screen.blit(thetatext, (20, 420))
+        self.screen.blit(degreetext, (self.origin[0]+38, self.origin[1]-20))
+
+        if self.currentp:
+            veltext = self.font.render(f"Velocity : {self.currentp.u}m/s", True, COLOR['white'])
+            timetext = self.font.render(f"Time : {self.currentp.timeOfFlight()}s", True, COLOR['white'])
+            rangetext = self.font.render(f"Range : {self.currentp.getRange()}m", True, COLOR['white'])
+            heighttext = self.font.render(f"Max Height : {self.currentp.getMaxHeight()}m", True, COLOR['white'])
+            self.screen.blit(veltext, (WIDTH-150, 400))
+            self.screen.blit(timetext, (WIDTH-150, 420))
+            self.screen.blit(rangetext, (WIDTH-150, 440))
+            self.screen.blit(heighttext, (WIDTH-150, 460))
+
+        py.draw.rect(self.screen, (0,0,0), (0, 0, WIDTH, HEIGHT), 5)
             
         # player jumps if key up is pressed 
         if keys_pressed[py.K_UP]:

@@ -4,7 +4,11 @@ COLOR={'green':(159,226,191),
        "yellow":(255,233,122), 
        "orange": (244,164,96), 
        "red":(222,49,99),
-       "black":(0,0,0)}
+       "black":(0,0,0),
+       "white":(255,255,255)}
+
+color_name = [*COLOR.keys()]
+length_dico = 5
 
 WALLPAPER = {0 :'images/wallpaper1.jpg',
             1 :'images/wallpaper2.jpg'}
@@ -42,6 +46,6 @@ bg_x, bg_y=0,0
 x_init, y_init = 100,430            
 # trajector var
 g = 9.8
-proj = 50
+proj = 100
 
 cloud="images/cloud.png"

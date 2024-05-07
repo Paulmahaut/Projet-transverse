@@ -3,6 +3,7 @@ import pygame as py
 from var import *
 import math
 from trajectory import *
+import random
 
 class Character(py.sprite.Sprite):
 
@@ -64,26 +65,25 @@ class Character(py.sprite.Sprite):
             self.jump_state = False
             self.jump_vel = 20
                       
-    def launch_projectil(self):
+    def launch_projectil(self, theta, origin_proj):
         # create a projectil and add it to group_projectil
-        self.group_projectil.add(Projectil(self, ))
+        self.group_projectil.add(Projectil(self, proj, theta, origin_proj))
     
 
 
 class Projectil(py.sprite.Sprite):
 
-    def __init__(self, player,proj, theta):
+    def __init__(self, player, proj, theta, origin_proj):
         super(Projectil, self).__init__() 
         self.player = player
         self.proj = proj
         self.velocity = 20
-        rainbow_image = py.image.load("images/rainbow.png").convert_alpha()
-        self.image = py.transform.scale(rainbow_image, (20, 10))
-        self.rect = self.image.get_rect()                                      
-        self.rect.x = player.rect.x +32
-        self.rect.y = player.rect.y +32
-        self.origin = (self.rect.x, self.rect.y)
-        self.theta = toradian(abs(theta))
+
+        # coord proj 
+        self.origin_proj = origin_proj 
+        self.x, self.y = self.origin_proj
+
+        self.theta = to_radian(abs(theta))
         self.ch = 0
         self.dx = 2
         self.f = self.trajectory()
@@ -97,40 +97,48 @@ class Projectil(py.sprite.Sprite):
         #self.player.projectile_group.add(projectile)
             self.player.launch_projectil()            
 
+    """ Ancienne fct to move projectil
     def move(self):
-        self.rect.x+= self.velocity
-        for enemy in self.proj.game.check_collision(self, self.proj.game.group_enemy) :
-            enemy.get_damage(self.proj.attack)
+        self.x+= self.velocity
+        for enemy in self.player.game.check_collision(self, self.player.game.group_enemy) :
+            enemy.get_damage(self.player.attack)
             self.kill() # kill the projectil when it collide with the enemy
 
-        if self.rect.x > WIDTH :
+        if self.x > WIDTH :
             self.kill() # kill the projectil when it'sout of the window (to avoid killing the commin enemies)
+    """
 
-    def timeofflight(self):
+    def time_offlight(self):
         return round ((2*self.proj*math.sin(self.theta))/g, 2)
     
     def range(self):
         range1 = ((self.proj**2)*2*math.sin(self.theta)*math.cos(self.theta))/g
         return round(range1,2)
     
-    def maxheight(self):
-        h = ((self.pproj ** 2) * (math.sin(self.theta)) ** 2) / (2 * g)
+    def max_height(self):
+        h = ((self.proj ** 2) * (math.sin(self.theta)) ** 2) / (2 * g)
         return round(h, 2)
     
     def trajectory(self):
         return round(g /  (2 * (self.proj ** 2) * (math.cos(self.theta) ** 2)), 4)
     
-    def positionprojectile(self, x):
+    def position_projectile(self, x):
         return x * math.tan(self.theta) - self.f * x ** 2
     
     def update(self):
-        if self.rect.x >= self.range:
+        if self.x >= self.range:
             self.dx = 0
-        self.rect.x += self.dx
-        self.ch = self.positionprojectile(self.origin[0] - self.proj.rect[0])
+        self.x += self.dx
+        self.ch = self.position_projectile(self.x - self.origin_proj[0])
 
-        self.path.append((self.origin[0], self.origin[1]-abs(self.ch)))
+        self.path.append((self.x, self.y-abs(self.ch)))
         self.path = self.path[-50:]
+
+        c = random.randint(0,length_dico-2)
+        py.draw.circle(self.player.game.screen, COLOR[color_name[c]], self.path[-1], 5)
+        py.draw.circle(self.player.game.screen, COLOR[color_name[c]], self.path[-1], 5, 1)
+        for pos in self.path[:-1:5]:
+            py.draw.circle(self.player.game.screen, COLOR['white'], pos, 1)
 
     
 
