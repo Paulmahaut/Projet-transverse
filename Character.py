@@ -17,11 +17,12 @@ class Character(py.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x_init  # Position initiale x
         self.rect.y = y_init  # Position initiale y
+        self.flip = False
 
         self.group_projectil = py.sprite.Group()
 
         self.velocity = 5
-        self.attack = 10
+        self.attack = 100
         self.jump_vel = 20
         self.jump_state = False
         
@@ -52,10 +53,12 @@ class Character(py.sprite.Sprite):
     def move_rigth(self):
         if not self.game.check_collision(self, self.game.group_enemy):
             self.rect.x+=self.velocity
+            self.flip = False # to flip the image
         
     def move_left(self):
         if not self.game.check_collision(self, self.game.group_enemy):
             self.rect.x-=self.velocity
+            self.flip = True # to flip the image
         
 
     def jump(self):
@@ -69,7 +72,9 @@ class Character(py.sprite.Sprite):
         # create a projectil and add it to group_projectil
         self.group_projectil.add(Projectil(self, proj, theta, origin_proj))
     
-
+    def super_attack(self):
+        pass
+        
 
 class Projectil(py.sprite.Sprite):
 
@@ -79,17 +84,23 @@ class Projectil(py.sprite.Sprite):
         self.proj = proj
         self.velocity = 20
 
-        # coord proj 
+        # coord projectil
         self.origin_proj = origin_proj 
         self.x, self.y = self.origin_proj
+
+        # image projectil
+        rainbow_image = py.image.load("images/rainbow.png").convert_alpha()
+        self.image = py.transform.scale(rainbow_image, (20, 10))
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = self.origin_proj
 
         self.theta = to_radian(abs(theta))
         self.ch = 0
         self.dx = 4
-        self.dy = 0.5
+        self.dy = 0
 
         self.f = self.trajectory()
-        self.range = self.x + abs(self.range())
+        self.range = self.rect.x + abs(self.range())
         self.path = []          
 
     """ Ancienne fct to move projectil
@@ -122,35 +133,26 @@ class Projectil(py.sprite.Sprite):
             self.dx = 0
         self.x += self.dx
         self.ch = self.position_projectile(self.x - self.origin_proj[0])
-
-        print( "coord :",self.y, self.origin_proj[1])
-
-        if self.y < self.origin_proj[1]:
-            self.dy += 0.5  # Ajout de la gravité à la vitesse verticale
-            self.y -= self.dy
-        else:
-            self.dy = 0  # Si le projectile est au-dessus de sa position initiale en y, arrêtez la descente verticale
-
         self.path.append((self.x, self.y- abs(self.ch)))
         self.path = self.path[-50:]
         
-        c = random.randint(0,length_dico-2)
-        py.draw.circle(self.player.game.screen, COLOR[color_name[c]], self.path[-1], 5)
-        py.draw.circle(self.player.game.screen, COLOR[color_name[c]], self.path[-1], 5, 1)
+        # displlay projectil
+        self.player.game.screen.blit(self.image, self.path[-1])
         for pos in self.path[:-1:5]:
-            #print(pos)
             py.draw.circle(self.player.game.screen, COLOR['white'], pos, 1)
-        
-        """
-        for enemy in self.player.game.group_enemy:
-            if py.sprite.collide_rect(self, enemy) or self.y <= y_init + 100:
-                enemy.get_damage(self.player.attack)
-                self.kill() # kill the projectil when it collide with the enemy
 
-                if self.x > WIDTH :
-                    self.kill() # kill the projectil when it'sout of the window (to avoid killing the commin enemies)
-        """
-    
+        # update rect coord to compare sprites 
+        self.rect.x, self.rect.y = self.x, self.y- abs(self.ch)
+
+        # delete the projectil if it's out of the window or near to the groud
+        if self.rect.x > WIDTH or self.rect.x >= self.range:
+                self.kill()
+
+        # kill the projectil when it collides with the enemy
+        for enemy in self.player.game.check_collision(self, self.player.game.group_enemy) :
+            enemy.get_damage(self.player.attack)
+            self.kill() 
+
 
 
 

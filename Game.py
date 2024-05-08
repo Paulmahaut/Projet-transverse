@@ -75,12 +75,15 @@ class Game :
     
     # move elements of the game according to the direction and the scroll
     def scroll(self):
-        # update enemy, screen_scroll and player coord according to player's velocity
+        # update elements coord according to player's velocity
         self.player.rect.x = self.player.rect.x - (-1)**self.direction * self.player.velocity
+        # player projectil
+        for projectil in self.player.group_projectil:
+            projectil.rect.x = projectil.rect.x - (-1)**self.direction * self.player.velocity
         for enemy in self.group_enemy :
             enemy.rect.x = enemy.rect.x - (-1)**self.direction * self.player.velocity
+            #enemy projectil
             for tank_proj in enemy.group_projectil :
-                # update eney's projectil coord according to the direction of the scroll
                 tank_proj.rect.x = tank_proj.rect.x - (-1)**self.direction * tank_proj.velocity
         self.screen_scroll = self.screen_scroll - (-1)**self.direction * self.player.velocity
 
@@ -93,7 +96,7 @@ class Game :
                     exit()
 
                 if event.type == py.KEYDOWN:
-                    if event.key == py.K_SPACE :
+                    if event.key == py.K_RSHIFT:
                         self.start() # launch the game
     
             if self.game_is_running :
@@ -113,7 +116,7 @@ class Game :
 
     def start(self):
         self.game_is_running = True
-        #self.spawn_enemy()
+        self.spawn_enemy()
 
     # rest all settings
     def end_game(self):
@@ -155,7 +158,8 @@ class Game :
 
         # DISPLAY
         self.draw_bg()
-        self.screen.blit(self.player.image, self.player.rect) #display
+        # display player
+        self.screen.blit(py.transform.flip(self.player.image, self.player.flip, False), self.player.rect)
 
         self.player.update_health_bar(self.screen)
         self.player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
@@ -187,18 +191,19 @@ class Game :
         """
         #self.song.play()        
             
-        # KEYBOARD  
+        # list of keys
+        keys_pressed = py.key.get_pressed()
 
         # move to the left
         keys_pressed = py.key.get_pressed()      
-        if keys_pressed[py.K_LEFT] and self.player.rect.x >10:
+        if keys_pressed[py.K_q] and self.player.rect.x >10:
             self.player.move_left()
             if self.player.rect.x <= x_init and self.screen_scroll<0:
                 self.direction = 1
                 self.scroll()# move the screen 
 
         # move to the right
-        if keys_pressed[py.K_RIGHT] and self.player.rect.x<50000 :
+        if keys_pressed[py.K_d] and self.player.rect.x<50000 :
             # collision check 
             self.player.move_rigth()
             if self.player.rect.x >= WIDTH - SCROLL_LIM :
@@ -209,11 +214,12 @@ class Game :
         if abs(self.screen_scroll) > WIDTH : 
             self.screen_scroll = 0 
         
-        # Projectil traj
+        # Projectil
         if event.type == py.MOUSEBUTTONDOWN:
             if not self.clicked :
                 self.clicked = True
                 self.arcrect = py.Rect(self.origin[0]-30, self.origin[1]-30, 60, 60)
+        
         if event.type == py.MOUSEBUTTONUP:
             if self.clicked :
                 self.clicked = False
@@ -229,17 +235,18 @@ class Game :
                 if -90 < self.theta <= 0:
                     self.end = pos_on_circumeference(self.theta, self.origin)
                     self.arct = to_radian(self.theta)
-    
-                    py.draw.line(self.screen, COLOR['white'], self.origin, (self.origin[0] + 200, self.origin[1]), 2)
-                    py.draw.line(self.screen, COLOR['white'], self.origin, (self.origin[0], self.origin[1] - 200), 2)
+
+                    # display axis to shoot
+                    py.draw.aaline(self.screen, COLOR['white'], self.origin, (self.origin[0] + 200, self.origin[1]), 2)
+                    py.draw.aaline(self.screen, COLOR['white'], self.origin, (self.origin[0], self.origin[1] - 200), 2)
                     py.draw.line(self.screen, COLOR['white'], self.origin, self.end, 2)
                     py.draw.circle(self.screen, COLOR['yellow'], self.origin, 3)
                     py.draw.arc(self.screen, COLOR['orange'], self.arcrect, 0, -(self.arct), 2)
 
         self.player.group_projectil.update()
         # update origin
-        self.origin = (self.player.rect.x+46, self.player.rect.y+5)
-        # update the end of the guideline
+        self.origin = (self.player.rect.x+ 46, self.player.rect.y+100)
+        # update the end of the guideline to shoot
         self.end = pos_on_circumeference(self.theta, self.origin)
 
         # Info *******************************************************************
@@ -250,20 +257,25 @@ class Game :
         self.screen.blit(title, (20, 40))
         self.screen.blit(fpstext, (20, 60))
         self.screen.blit(thetatext, (20, 80))
-        #self.screen.blit(degreetext, (self.origin[0]+38, self.origin[1]-20))
 
+        # border of the screen
         py.draw.rect(self.screen, COLOR["white"], (0, 0, WIDTH, HEIGHT), 5)
-            
-        # player jumps if key up is pressed 
-        if keys_pressed[py.K_UP]:
+
+        # player jumps if key space is pressed 
+        if keys_pressed[py.K_SPACE]:
             self.player.jump_state = True
         if self.player.jump_state :
             self.player.jump()
+
+        # special power
+        if keys_pressed[py.K_s]:
+            self.player.super_attack()
+        
         
         for enemy in self.group_enemy :
             # launch enemy's projectils randomly
             if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
                 enemy.throw_projectile()
         
-        self.can_shoot = True
+
 

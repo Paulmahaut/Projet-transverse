@@ -37,7 +37,7 @@ class Enemy(py.sprite.Sprite):
 
     def blast(self):
         self.game.screen.blit(self.explose,(self.rect.x, self.rect.y))
-        self.game.explosion_sound.play() # ne se déclanche pas
+        #self.game.explosion_sound.play() # ne se déclanche pas
 
     def replace(self):
         self.blast()
@@ -64,6 +64,7 @@ class Enemy(py.sprite.Sprite):
             self.rect.x-= self.velocity
         else :
             self.game.player.get_damage(10)
+    
         if self.rect.x <-300:
             self.replace() # if the enemy step out of the screen we replace it 
 
