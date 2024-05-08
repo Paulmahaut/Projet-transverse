@@ -98,25 +98,14 @@ class Game :
 
                 if event.type == py.MOUSEBUTTONDOWN :
                     if self.button_rect.collidepoint(event.pos):
-                        self.start() # launch the game   
-
+                        self.start() # launch the game
+                           
             if self.game_is_running :
+                py.event.clear
                 self.play_game(event)
             else : 
                 self.start_menu()
-                                                
-                
-                """if event.type == py.KEYDOWN:
-                    # set the state at start at the begining
-                    self.gameStateManager.set_state()
-                """
-            
-                """
-                # launch the function run of level or start accroding to currentState
-                self.states[self.gameStateManager.get_state()].run()
-                if self.gameStateManager.get_state()== 'menu' :
-                    self.play()
-                #print(self.gameStateManager.get_state())"""
+
             py.display.update()
             self.clock.tick(FPS)
 
@@ -126,7 +115,7 @@ class Game :
 
     def start(self):
         self.game_is_running = True
-        #self.spawn_enemy()
+        self.spawn_enemy()
 
     # rest all settings
     def end_game(self):
@@ -161,7 +150,7 @@ class Game :
             for enemy in self.group_enemy :
                 enemy.velocity += 1
                 enemy.attack += 10
-            #creer des dico d'ennemy, de vitesse et de dégats lié et changer en fct du score
+            #creer des dico d'ennemy, de vitesse et de dégats liés et changer en fct du score
             # niveau final ?
 
     def play_game(self, event):
@@ -183,12 +172,6 @@ class Game :
             enemy.group_projectil.draw(self.screen)
             for projectile_tank in enemy.group_projectil:
                 projectile_tank.move()
-
-
-        #----ancien projectil----------------------------------        
-        #for projectile_player in self.player.group_projectil:
-            #projectile_player.move()
-            #print(projectile_player)
 
         # display all enmies and player's projectils
         self.group_enemy.draw(self.screen)
@@ -227,45 +210,34 @@ class Game :
         # reset screen_scroll if it's biggier than the screen width  
         if abs(self.screen_scroll) > WIDTH : 
             self.screen_scroll = 0 
-
-        # launch player projectil if key space pressed
-        #if keys_pressed[py.K_SPACE]:
-            #self.player.launch_projectil()
         
         # Projectil traj
-        #for event in py.event.get():
         if event.type == py.MOUSEBUTTONDOWN:
             print(self.pos, self.end)
             if not self.clicked :
                 self.clicked = True
-                print("cliked down")
         if event.type == py.MOUSEBUTTONUP:
             if self.clicked :
                 self.clicked = False
-                print("cliked then up")
                 self.pos = event.pos # take the mouse position (x,y)
                 if -90 < self.theta <= 0:
                     self.player.launch_projectil(self.theta, self.origin)
                     self.end = pos_on_circumeference(self.theta, self.origin)
                     self.arcrect = py.Rect(self.origin[0]-30, self.origin[1]-30, 60, 60)
-                    #projectile = self.Projectil(proj, theta)
-                    #self.player.projectile_group.add(projectile)
-
 
         if event.type == py.MOUSEMOTION:
             if self.clicked:
-                print("the mouse move")
                 self.pos = event.pos # take the mouse position (x,y)
                 self.theta = get_angle(self.pos, self.origin)
                 if -90 < self.theta <= 0:
                     self.end = pos_on_circumeference(self.theta, self.origin)
                     self.arct = to_radian(self.theta)
     
-        py.draw.line(self.screen, COLOR['red'], self.origin, (self.origin[0] + WIDTH-200, self.origin[1]), 2)
-        py.draw.line(self.screen, COLOR['yellow'], self.origin, (self.origin[0], self.origin[1] - 250), 2)
-        py.draw.line(self.screen, COLOR['black'], self.origin, self.end, 2)
-        py.draw.circle(self.screen, COLOR['yellow'], self.origin, 3)
-        py.draw.arc(self.screen, COLOR['orange'], self.arcrect, 0, -(self.arct), 2)
+                py.draw.line(self.screen, COLOR['red'], self.origin, (self.origin[0] + WIDTH-200, self.origin[1]), 2)
+                py.draw.line(self.screen, COLOR['yellow'], self.origin, (self.origin[0], self.origin[1] - 250), 2)
+                py.draw.line(self.screen, COLOR['black'], self.origin, self.end, 2)
+                py.draw.circle(self.screen, COLOR['yellow'], self.origin, 3)
+                py.draw.arc(self.screen, COLOR['orange'], self.arcrect, 0, -(self.arct), 2)
 
         self.player.group_projectil.update()
         # update origin
@@ -283,16 +255,6 @@ class Game :
         self.screen.blit(thetatext, (20, 420))
         self.screen.blit(degreetext, (self.origin[0]+38, self.origin[1]-20))
 
-        if self.currentp:
-            veltext = self.font.render(f"Velocity : {self.currentp.u}m/s", True, COLOR['white'])
-            timetext = self.font.render(f"Time : {self.currentp.timeOfFlight()}s", True, COLOR['white'])
-            rangetext = self.font.render(f"Range : {self.currentp.getRange()}m", True, COLOR['white'])
-            heighttext = self.font.render(f"Max Height : {self.currentp.getMaxHeight()}m", True, COLOR['white'])
-            self.screen.blit(veltext, (WIDTH-150, 400))
-            self.screen.blit(timetext, (WIDTH-150, 420))
-            self.screen.blit(rangetext, (WIDTH-150, 440))
-            self.screen.blit(heighttext, (WIDTH-150, 460))
-
         py.draw.rect(self.screen, (0,0,0), (0, 0, WIDTH, HEIGHT), 5)
             
         # player jumps if key up is pressed 
@@ -305,4 +267,6 @@ class Game :
             # launch enemy's projectils randomly
             if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
                 enemy.throw_projectile()
+        
+        self.can_shoot = True
 

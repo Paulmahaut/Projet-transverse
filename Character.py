@@ -107,9 +107,6 @@ class Projectil(py.sprite.Sprite):
         if self.x > WIDTH :
             self.kill() # kill the projectil when it'sout of the window (to avoid killing the commin enemies)
     """
-
-    def time_offlight(self):
-        return round ((2*self.proj*math.sin(self.theta))/g, 2)
     
     def range(self):
         range1 = ((self.proj**2)*2*math.sin(self.theta)*math.cos(self.theta))/g
@@ -129,6 +126,7 @@ class Projectil(py.sprite.Sprite):
         if self.x >= self.range:
             self.dx = 0
         self.x += self.dx
+        print("y",self.y)
         self.ch = self.position_projectile(self.x - self.origin_proj[0])
 
         self.path.append((self.x, self.y-abs(self.ch)))
@@ -139,7 +137,15 @@ class Projectil(py.sprite.Sprite):
         py.draw.circle(self.player.game.screen, COLOR[color_name[c]], self.path[-1], 5, 1)
         for pos in self.path[:-1:5]:
             py.draw.circle(self.player.game.screen, COLOR['white'], pos, 1)
+        """
+        for enemy in self.player.game.group_enemy:
+            if py.sprite.collide_rect(self, enemy):
+                enemy.get_damage(self.player.attack)
+                self.kill() # kill the projectil when it collide with the enemy
 
+                if self.x > WIDTH :
+                    self.kill() # kill the projectil when it'sout of the window (to avoid killing the commin enemies)
+        """
     
 
 
