@@ -22,7 +22,7 @@ class Character(py.sprite.Sprite):
         self.group_projectil = py.sprite.Group()
 
         self.velocity = 5
-        self.attack = 100
+        self.attack = 150
         self.jump_vel = 20
         self.jump_state = False
         
@@ -70,7 +70,7 @@ class Character(py.sprite.Sprite):
                       
     def launch_projectil(self, theta, origin_proj):
         # create a projectil and add it to group_projectil
-        self.group_projectil.add(Projectil(self, proj, theta, origin_proj))
+        self.group_projectil.add(Projectil(self, v_init, theta, origin_proj))
     
     def super_attack(self):
         pass
@@ -78,14 +78,14 @@ class Character(py.sprite.Sprite):
 
 class Projectil(py.sprite.Sprite):
 
-    def __init__(self, player, proj, theta, origin_proj):
+    def __init__(self, player, v_init, theta, origin_proj):
         super(Projectil, self).__init__() 
         self.player = player
-        self.proj = proj
+        self.v_init= v_init
         self.velocity = 20
 
         # coord projectil
-        self.origin_proj = origin_proj 
+        self.origin_proj=origin_proj
         self.x, self.y = self.origin_proj
 
         # image projectil
@@ -98,9 +98,10 @@ class Projectil(py.sprite.Sprite):
         self.ch = 0
         self.dx = 4
         self.dy = 0
+        self.below = 1
 
-        self.f = self.trajectory()
-        self.range = self.rect.x + abs(self.range())
+        self.f = self.slope_trajectory()
+        self.max_range = self.rect.x + abs(self.max_range())
         self.path = []          
 
     """ Ancienne fct to move projectil
@@ -114,44 +115,49 @@ class Projectil(py.sprite.Sprite):
             self.kill() # kill the projectil when it'sout of the window (to avoid killing the commin enemies)
     """
     
-    def range(self):
-        range1 = ((self.proj**2)*2*math.sin(self.theta)*math.cos(self.theta))/g
+    def max_range(self):
+        range1 = (((self.v_init**2)*2*math.sin(self.theta)*math.cos(self.theta))/g )
         return round(range1,2)
     
     def max_height(self):
-        h = ((self.proj ** 2) * (math.sin(self.theta)) ** 2) / (2 * g)
+        h = ((self.v_init** 2) * (math.sin(self.theta)) ** 2) / (2 * g)
         return round(h, 2)
     
-    def trajectory(self):
-        return round(g /  (2 * (self.proj ** 2) * (math.cos(self.theta) ** 2)), 4)
+    def slope_trajectory(self):
+        # slope of the trajectory equation
+        return round((g /  (2 * (self.v_init** 2) * (math.cos(self.theta) ** 2))), 4)
     
     def position_projectile(self, x):
-        return x * math.tan(self.theta) - self.f * x ** 2
+        # trajectory equation
+        return x * math.tan(self.theta) - self.f * x ** 2 
 
     def update(self):
-        if self.x >= self.range:
-            self.dx = 0
+        if self.x >= self.max_range:
+            self.below = -1
         self.x += self.dx
         self.ch = self.position_projectile(self.x - self.origin_proj[0])
-        self.path.append((self.x, self.y- abs(self.ch)))
+
+        self.path.append((self.x, self.y- self.below * abs(self.ch)))
         self.path = self.path[-50:]
-        
+
         # displlay projectil
         self.player.game.screen.blit(self.image, self.path[-1])
         for pos in self.path[:-1:5]:
             py.draw.circle(self.player.game.screen, COLOR['white'], pos, 1)
 
         # update rect coord to compare sprites 
-        self.rect.x, self.rect.y = self.x, self.y- abs(self.ch)
-
-        # delete the projectil if it's out of the window or near to the groud
-        if self.rect.x > WIDTH or self.rect.x >= self.range:
-                self.kill()
+        self.rect.x, self.rect.y = self.x, self.y- self.below * abs(self.ch)
 
         # kill the projectil when it collides with the enemy
         for enemy in self.player.game.check_collision(self, self.player.game.group_enemy) :
             enemy.get_damage(self.player.attack)
             self.kill() 
+
+        # delete the projectil if it's out of the window or near to the groud
+        if self.rect.x > WIDTH or  self.rect.y >= y_init + 100 :
+                self.kill()
+
+
 
 
 

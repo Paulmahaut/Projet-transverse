@@ -24,16 +24,21 @@ class Game :
         self.game_is_running = False
         self.screen_scroll = 0
         self.direction = 0
-        self.clicked = False
 
         # Images
         wallpaper = py.image.load(WALLPAPER[self.current_level])
         menu = py.image.load("images/Backgroundunicorn.png")
         gameover = py.image.load("images/gameover.png")
-        
         self.wallpaper = py.transform.scale(wallpaper, (WIDTH, HEIGHT))
         self.menu = py.transform.scale(menu, (WIDTH, HEIGHT))
         self.gameover = py.transform.scale(gameover, (400, 200))
+
+        # layout
+        self.font = py.font.SysFont('verdana', 12)
+        self.surface = py.Surface((WIDTH,HEIGHT), py.SRCALPHA)
+        self.font_start_title = py.font.SysFont('verdana', 23, bold = True)
+        self.font_start = py.font.SysFont('verdana', 19)
+        self.font_start2 = py.font.SysFont('verdana', 19, True)
 
         # Sound
         self.song = py.mixer.Sound("sound/tqt.mp3")
@@ -56,8 +61,6 @@ class Game :
         self.end = pos_on_circumeference( self.theta,  self.origin)
         self.arcrect = py.Rect(self.origin[0]-30, self.origin[1]-30, 60, 60)
 
-        self.font = py.font.SysFont('verdana', 12)
-        self.font_start = py.font.SysFont('verdana', 23, bold = True)
 
     # check if a sprite collide with a group of sprite
     def check_collision(self, sprite, group): 
@@ -110,9 +113,27 @@ class Game :
 
     def start_menu(self):
         self.screen.blit(self.menu, (bg_x,bg_y))
-        start_msg = self.font_start.render("Press the space key to start", True, COLOR['black'])
-        self.screen.blit(start_msg, (360, 240))
-        
+        self.screen.blit(self.surface, (0,0))
+        py.draw.rect(self.surface, COLOR["blue_transparent"] , [150,100, 700,400], 0, 10)
+        start_title = self.font_start_title.render("Welcome in a new adventure !", True, COLOR['blue'])
+        self.screen.blit(start_title, (300, 150))
+
+        info = ["Things to know before playing: ",
+                "  - Key Q to move left", 
+                "  - Key D to move right", 
+                "  - Key space to jump",
+                "  - use the touch pad to shoot"]
+        y = 200
+        for line in info:
+            start_msg = self.font_start.render(line, True, COLOR['dark_blue'])
+            self.screen.blit(start_msg, (340, y))
+            y+=30
+       
+        msg = self.font_start2.render("You can press the right shift key to start ", True,  COLOR['blue'])
+        self.screen.blit(msg, (280, y+30))
+        key = py.image.load("images/shift.png")
+        key = py.transform.scale(key, (70, 70))
+        self.screen.blit(key, (470, y+60))
 
     def start(self):
         self.game_is_running = True
@@ -177,7 +198,6 @@ class Game :
 
         # display all enmies and player's projectils
         self.group_enemy.draw(self.screen)
-        #self.player.group_projectil.draw(self.screen)
         """
         # à modifeier avec LOOSE
             elif event.type==screamer:
@@ -245,7 +265,7 @@ class Game :
 
         self.player.group_projectil.update()
         # update origin
-        self.origin = (self.player.rect.x+ 46, self.player.rect.y+100)
+        self.origin = (self.player.rect.x+ 46, self.player.rect.y+20)
         # update the end of the guideline to shoot
         self.end = pos_on_circumeference(self.theta, self.origin)
 
@@ -270,7 +290,6 @@ class Game :
         # special power
         if keys_pressed[py.K_s]:
             self.player.super_attack()
-        
         
         for enemy in self.group_enemy :
             # launch enemy's projectils randomly

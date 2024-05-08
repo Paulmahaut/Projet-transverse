@@ -5,7 +5,10 @@ COLOR={'green':(159,226,191),
        "orange": (244,164,96), 
        "red":(222,49,99),
        "black":(0,0,0),
-       "white":(255,255,255)}
+       "white":(255,255,255),
+       "blue_transparent":(204,239,255,180),
+       "blue":(0,108,108),
+       "dark_blue":(37,60,60)}
 
 color_name = [*COLOR.keys()]
 length_dico = 5
@@ -46,6 +49,6 @@ bg_x, bg_y=0,0
 x_init, y_init = 100,430            
 # trajector var
 g = 11  
-proj = 100
+v_init = 80
 
 cloud="images/cloud.png"
