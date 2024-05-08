@@ -29,16 +29,11 @@ class Game :
         # Images
         wallpaper = py.image.load(WALLPAPER[self.current_level])
         menu = py.image.load("images/Backgroundunicorn.png")
-        button = py.image.load("images/bouton-start.png")
         gameover = py.image.load("images/gameover.png")
         
         self.wallpaper = py.transform.scale(wallpaper, (WIDTH, HEIGHT))
         self.menu = py.transform.scale(menu, (WIDTH, HEIGHT))
         self.gameover = py.transform.scale(gameover, (400, 200))
-        self.button = py.transform.scale(button, (170, 110))
-        self.button_rect = self.button.get_rect()
-        self.button_rect.x = 400
-        self.button_rect.y = 300
 
         # Sound
         self.song = py.mixer.Sound("sound/tqt.mp3")
@@ -62,6 +57,7 @@ class Game :
         self.arcrect = py.Rect(self.origin[0]-30, self.origin[1]-30, 60, 60)
 
         self.font = py.font.SysFont('verdana', 12)
+        self.font_start = py.font.SysFont('verdana', 23, bold = True)
 
     # check if a sprite collide with a group of sprite
     def check_collision(self, sprite, group): 
@@ -96,10 +92,10 @@ class Game :
                     py.quit()
                     exit()
 
-                if event.type == py.MOUSEBUTTONDOWN :
-                    if self.button_rect.collidepoint(event.pos):
+                if event.type == py.KEYDOWN:
+                    if event.key == py.K_SPACE :
                         self.start() # launch the game
-                           
+    
             if self.game_is_running :
                 py.event.clear
                 self.play_game(event)
@@ -111,11 +107,13 @@ class Game :
 
     def start_menu(self):
         self.screen.blit(self.menu, (bg_x,bg_y))
-        self.screen.blit(self.button,(self.button_rect.x, self.button_rect.y))
+        start_msg = self.font_start.render("Press the space key to start", True, COLOR['black'])
+        self.screen.blit(start_msg, (360, 240))
+        
 
     def start(self):
         self.game_is_running = True
-        self.spawn_enemy()
+        #self.spawn_enemy()
 
     # rest all settings
     def end_game(self):
@@ -133,7 +131,7 @@ class Game :
         self.player.score = 0
         
 
-    def level(self):
+    def level(self): # faire une class
         # display score
         text_font = py.font.SysFont("Arial", 20)
         self.screen.blit(text_font.render('Score ', True, COLOR['black']),(10, 10))
@@ -213,9 +211,9 @@ class Game :
         
         # Projectil traj
         if event.type == py.MOUSEBUTTONDOWN:
-            print(self.pos, self.end)
             if not self.clicked :
                 self.clicked = True
+                self.arcrect = py.Rect(self.origin[0]-30, self.origin[1]-30, 60, 60)
         if event.type == py.MOUSEBUTTONUP:
             if self.clicked :
                 self.clicked = False
@@ -223,7 +221,6 @@ class Game :
                 if -90 < self.theta <= 0:
                     self.player.launch_projectil(self.theta, self.origin)
                     self.end = pos_on_circumeference(self.theta, self.origin)
-                    self.arcrect = py.Rect(self.origin[0]-30, self.origin[1]-30, 60, 60)
 
         if event.type == py.MOUSEMOTION:
             if self.clicked:
@@ -233,11 +230,11 @@ class Game :
                     self.end = pos_on_circumeference(self.theta, self.origin)
                     self.arct = to_radian(self.theta)
     
-                py.draw.line(self.screen, COLOR['red'], self.origin, (self.origin[0] + WIDTH-200, self.origin[1]), 2)
-                py.draw.line(self.screen, COLOR['yellow'], self.origin, (self.origin[0], self.origin[1] - 250), 2)
-                py.draw.line(self.screen, COLOR['black'], self.origin, self.end, 2)
-                py.draw.circle(self.screen, COLOR['yellow'], self.origin, 3)
-                py.draw.arc(self.screen, COLOR['orange'], self.arcrect, 0, -(self.arct), 2)
+                    py.draw.line(self.screen, COLOR['white'], self.origin, (self.origin[0] + 200, self.origin[1]), 2)
+                    py.draw.line(self.screen, COLOR['white'], self.origin, (self.origin[0], self.origin[1] - 200), 2)
+                    py.draw.line(self.screen, COLOR['white'], self.origin, self.end, 2)
+                    py.draw.circle(self.screen, COLOR['yellow'], self.origin, 3)
+                    py.draw.arc(self.screen, COLOR['orange'], self.arcrect, 0, -(self.arct), 2)
 
         self.player.group_projectil.update()
         # update origin
@@ -246,16 +243,16 @@ class Game :
         self.end = pos_on_circumeference(self.theta, self.origin)
 
         # Info *******************************************************************
-        title = self.font.render("Projectile Motion", True, COLOR['white'])
+        title = self.font.render("Info", True, COLOR['white'])
         fpstext = self.font.render(f"FPS : {int(self.clock.get_fps())}", True, COLOR['white'])
         thetatext = self.font.render(f"Angle : {int(abs(self.theta))}", True, COLOR['white'])
         degreetext = self.font.render(f"{int(abs(self.theta))}°", True, COLOR['white'])
-        self.screen.blit(title, (80, 30))
-        self.screen.blit(fpstext, (20, 400))
-        self.screen.blit(thetatext, (20, 420))
-        self.screen.blit(degreetext, (self.origin[0]+38, self.origin[1]-20))
+        self.screen.blit(title, (20, 40))
+        self.screen.blit(fpstext, (20, 60))
+        self.screen.blit(thetatext, (20, 80))
+        #self.screen.blit(degreetext, (self.origin[0]+38, self.origin[1]-20))
 
-        py.draw.rect(self.screen, (0,0,0), (0, 0, WIDTH, HEIGHT), 5)
+        py.draw.rect(self.screen, COLOR["white"], (0, 0, WIDTH, HEIGHT), 5)
             
         # player jumps if key up is pressed 
         if keys_pressed[py.K_UP]:

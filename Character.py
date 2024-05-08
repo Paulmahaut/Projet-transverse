@@ -85,17 +85,12 @@ class Projectil(py.sprite.Sprite):
 
         self.theta = to_radian(abs(theta))
         self.ch = 0
-        self.dx = 2
+        self.dx = 4
+        self.dy = 0.5
+
         self.f = self.trajectory()
         self.range = self.x + abs(self.range())
-        self.path = []
-
-    def launch_projectil_traj(self):
-        
-        if -90 < self.player.theta <= 0:
-        #projectile = self.Projectil(proj, theta)
-        #self.player.projectile_group.add(projectile)
-            self.player.launch_projectil()            
+        self.path = []          
 
     """ Ancienne fct to move projectil
     def move(self):
@@ -121,25 +116,34 @@ class Projectil(py.sprite.Sprite):
     
     def position_projectile(self, x):
         return x * math.tan(self.theta) - self.f * x ** 2
-    
+
     def update(self):
         if self.x >= self.range:
             self.dx = 0
         self.x += self.dx
-        print("y",self.y)
         self.ch = self.position_projectile(self.x - self.origin_proj[0])
 
-        self.path.append((self.x, self.y-abs(self.ch)))
-        self.path = self.path[-50:]
+        print( "coord :",self.y, self.origin_proj[1])
 
+        if self.y < self.origin_proj[1]:
+            self.dy += 0.5  # Ajout de la gravité à la vitesse verticale
+            self.y -= self.dy
+        else:
+            self.dy = 0  # Si le projectile est au-dessus de sa position initiale en y, arrêtez la descente verticale
+
+        self.path.append((self.x, self.y- abs(self.ch)))
+        self.path = self.path[-50:]
+        
         c = random.randint(0,length_dico-2)
         py.draw.circle(self.player.game.screen, COLOR[color_name[c]], self.path[-1], 5)
         py.draw.circle(self.player.game.screen, COLOR[color_name[c]], self.path[-1], 5, 1)
         for pos in self.path[:-1:5]:
+            #print(pos)
             py.draw.circle(self.player.game.screen, COLOR['white'], pos, 1)
+        
         """
         for enemy in self.player.game.group_enemy:
-            if py.sprite.collide_rect(self, enemy):
+            if py.sprite.collide_rect(self, enemy) or self.y <= y_init + 100:
                 enemy.get_damage(self.player.attack)
                 self.kill() # kill the projectil when it collide with the enemy
 

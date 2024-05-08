@@ -45,7 +45,7 @@ bg_x, bg_y=0,0
 #initial coord of player
 x_init, y_init = 100,430            
 # trajector var
-g = 9.8
+g = 11  
 proj = 100
 
 cloud="images/cloud.png"
