@@ -37,13 +37,6 @@ class Character(py.sprite.Sprite):
             self.current_health -= amount # Baisse la valeur de la barre de vie de X 
 
     def update_health_bar(self, surface):
-        screen_width, screen_height = surface.get_size()
-        # Position et dimensions de la barre de vie
-        bar_width = self.health_bar_length
-        bar_height = 10  # Hauteur de la barre de vie
-        x_position = screen_width - bar_width - 10  # 10 pixels de marge du bord droit
-        y_position = 10  # 10 pixels de marge du haut
-
         # Dessiner la barre de vie
         py.draw.rect(surface, change_color(self.current_health), (self.rect.x, self.rect.y - 20, self.current_health / self.health_ratio, 10))
         py.draw.rect(surface, (255, 255, 255), (self.rect.x, self.rect.y - 20, self.health_bar_length, 10), 2)
@@ -98,23 +91,12 @@ class Projectil(py.sprite.Sprite):
         self.ch = 0
         self.dx = 4
         self.dy = 0
-        self.below = 1
+        self.sign = 1
 
         self.f = self.slope_trajectory()
         self.max_range = self.rect.x + abs(self.max_range())
         self.path = []          
 
-    """ Ancienne fct to move projectil
-    def move(self):
-        self.x+= self.velocity
-        for enemy in self.player.game.check_collision(self, self.player.game.group_enemy) :
-            enemy.get_damage(self.player.attack)
-            self.kill() # kill the projectil when it collide with the enemy
-
-        if self.x > WIDTH :
-            self.kill() # kill the projectil when it'sout of the window (to avoid killing the commin enemies)
-    """
-    
     def max_range(self):
         range1 = (((self.v_init**2)*2*math.sin(self.theta)*math.cos(self.theta))/g )
         return round(range1,2)
@@ -132,12 +114,12 @@ class Projectil(py.sprite.Sprite):
         return x * math.tan(self.theta) - self.f * x ** 2 
 
     def update(self):
-        if self.x >= self.max_range:
-            self.below = -1
+        if self.x >= self.max_range :
+            self.sign = -1
         self.x += self.dx
         self.ch = self.position_projectile(self.x - self.origin_proj[0])
 
-        self.path.append((self.x, self.y- self.below * abs(self.ch)))
+        self.path.append((self.x, self.y- self.sign * abs(self.ch)))
         self.path = self.path[-50:]
 
         # displlay projectil
@@ -146,7 +128,7 @@ class Projectil(py.sprite.Sprite):
             py.draw.circle(self.player.game.screen, COLOR['white'], pos, 1)
 
         # update rect coord to compare sprites 
-        self.rect.x, self.rect.y = self.x, self.y- self.below * abs(self.ch)
+        self.rect.x, self.rect.y = self.x, self.y- self.sign * abs(self.ch)
 
         # kill the projectil when it collides with the enemy
         for enemy in self.player.game.check_collision(self, self.player.game.group_enemy) :
@@ -154,7 +136,7 @@ class Projectil(py.sprite.Sprite):
             self.kill() 
 
         # delete the projectil if it's out of the window or near to the groud
-        if self.rect.x > WIDTH or  self.rect.y >= y_init + 100 :
+        if self.rect.x > WIDTH or self.rect.y >= y_init +100:
                 self.kill()
 
 
