@@ -137,12 +137,13 @@ class Game :
 
     def start(self):
         self.game_is_running = True
-        #self.spawn_enemy()
+        self.spawn_enemy()
 
     # rest all settings
     def end_game(self):
         #self.screen.blit(self.gameover, (320,100))
-        #self.clock.tick(0.9)
+        for projectil in self.player.group_projectil:
+            projectil.kill()
         self.group_enemy = py.sprite.Group()
         self.game_is_running = False 
         self.current_level = 0
@@ -216,14 +217,14 @@ class Game :
 
         # move to the left
         keys_pressed = py.key.get_pressed()      
-        if keys_pressed[py.K_q] and self.player.rect.x >10:
+        if (keys_pressed[py.K_q] or keys_pressed[py.K_LEFT]) and self.player.rect.x >10:
             self.player.move_left()
             if self.player.rect.x <= x_init and self.screen_scroll<0:
                 self.direction = 1
                 self.scroll()# move the screen 
 
         # move to the right
-        if keys_pressed[py.K_d] and self.player.rect.x<50000 :
+        if (keys_pressed[py.K_d] or keys_pressed[py.K_RIGHT]) and self.player.rect.x<50000 :
             # collision check 
             self.player.move_rigth()
             if self.player.rect.x >= WIDTH - SCROLL_LIM :
@@ -246,11 +247,11 @@ class Game :
                 self.pos = event.pos # take the mouse position (x,y)
                 # to shoot rihgt
                 if -90 < self.theta <= 0 and not self.player.flip:
-                    self.player.launch_projectil(self.theta, self.origin)
+                    self.player.launch_projectil(self.theta, self.origin, self.player.sign)
                     self.end = pos_on_circumeference(self.theta, self.origin,self.player.sign)
                 # to shoot left
                 elif 0 < self.theta < 90 and self.player.flip: 
-                    self.player.launch_projectil(self.theta, self.origin)
+                    self.player.launch_projectil(self.theta, self.origin, self.player.sign)
                     self.end = pos_on_circumeference(self.theta, self.origin, self.player.sign)
 
 
@@ -281,7 +282,7 @@ class Game :
                     py.draw.aaline(self.screen, COLOR['white'], self.origin, (self.origin[0], self.origin[1] - 200), 2)
                     py.draw.line(self.screen, COLOR['white'], self.end, self.origin, 2)
                     py.draw.circle(self.screen, COLOR['yellow'], self.origin, 3)
-                    py.draw.arc(self.screen, COLOR['orange'], self.arcrect, pi,(self.arct) , 2)
+                    py.draw.arc(self.screen, COLOR['orange'], self.arcrect, -(pi + (self.arct)), -pi, 2)
 
 
         self.player.group_projectil.update()
@@ -307,7 +308,7 @@ class Game :
         py.draw.rect(self.screen, COLOR["white"], (0, 0, WIDTH, HEIGHT), 5)
 
         # player jumps if key space is pressed 
-        if keys_pressed[py.K_SPACE]:
+        if keys_pressed[py.K_SPACE]or keys_pressed[py.K_z] or keys_pressed[py.K_UP]:
             self.player.jump_state = True
         if self.player.jump_state :
             self.player.jump()

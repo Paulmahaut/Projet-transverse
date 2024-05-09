@@ -71,17 +71,16 @@ class Character(py.sprite.Sprite):
             self.jump_state = False
             self.jump_vel = 20
                       
-    def launch_projectil(self, theta, origin_proj):
+    def launch_projectil(self, theta, origin_proj, sign):
         # create a projectil and add it to group_projectil
-        self.group_projectil.add(Projectil(self, v_init, theta, origin_proj))
+        self.group_projectil.add(Projectil(self, v_init, theta, origin_proj, sign))
     
     def super_attack(self):
         pass
-        
 
 class Projectil(py.sprite.Sprite):
 
-    def __init__(self, player, v_init, theta, origin_proj):
+    def __init__(self, player, v_init, theta, origin_proj, sign):
         super(Projectil, self).__init__() 
         self.player = player
         self.v_init= v_init
@@ -89,25 +88,27 @@ class Projectil(py.sprite.Sprite):
 
         # coord projectil
         self.origin_proj=origin_proj
-        self.x, self.y = self.origin_proj
+        self.x, self.y = self.origin_proj[0], self.origin_proj[1]+90
 
         # image projectil
         rainbow_image = py.image.load("images/rainbow.png").convert_alpha()
         self.image = py.transform.scale(rainbow_image, (20, 10))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = self.origin_proj
-
+        
         self.theta = to_radian(abs(theta))
         self.ch = 0
         self.dx = 4
-        self.dy = 0
-        self.sign = 1
+        self.height_player = 90
+        # to shoot to rigth or left
+        self.sign = sign
 
         self.f = self.slope_trajectory()
         self.max_range = self.rect.x + abs(self.max_range())
         self.path = []          
 
     def max_range(self):
+        # compute when the projectil will touch the ground
         range1 = (((self.v_init**2)*2*sin(self.theta)*cos(self.theta))/g )
         return round(range1,2)
     
@@ -121,15 +122,13 @@ class Projectil(py.sprite.Sprite):
     
     def position_projectile(self, x):
         # trajectory equation
-        return x * tan(self.theta) - self.f * x ** 2 
+        return x * tan(self.theta) * self.sign - self.f * x ** 2 + self.height_player
 
     def update(self):
-        if self.x >= self.max_range :
-            self.sign = -1
-        self.x += self.dx
+        self.x += self.dx * self.sign
         self.ch = self.position_projectile(self.x - self.origin_proj[0])
 
-        self.path.append((self.x, self.y- self.sign * abs(self.ch)))
+        self.path.append((self.x, self.y- abs(self.ch)))
         self.path = self.path[-50:]
 
         # displlay projectil
@@ -138,7 +137,7 @@ class Projectil(py.sprite.Sprite):
             py.draw.circle(self.player.game.screen, COLOR['white'], pos, 1)
 
         # update rect coord to compare sprites 
-        self.rect.x, self.rect.y = self.x, self.y- self.sign * abs(self.ch)
+        self.rect.x, self.rect.y = self.x, self.y- abs(self.ch)
 
         # kill the projectil when it collides with the enemy
         for enemy in self.player.game.check_collision(self, self.player.game.group_enemy) :
