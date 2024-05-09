@@ -58,7 +58,7 @@ class Game :
         self.origin = (self.player.rect.x+46, self.player.rect.y+5) # at the top of the licorne
         
         self.arct = to_radian(self.theta)       
-        self.end = pos_on_circumeference( self.theta,  self.origin)
+        self.end = pos_on_circumeference( self.theta,  self.origin, self.player.sign)
         self.arcrect = py.Rect(self.origin[0]-30, self.origin[1]-30, 60, 60)
 
 
@@ -137,7 +137,7 @@ class Game :
 
     def start(self):
         self.game_is_running = True
-        self.spawn_enemy()
+        #self.spawn_enemy()
 
     # rest all settings
     def end_game(self):
@@ -239,21 +239,28 @@ class Game :
             if not self.clicked :
                 self.clicked = True
                 self.arcrect = py.Rect(self.origin[0]-30, self.origin[1]-30, 60, 60)
-        
+
         if event.type == py.MOUSEBUTTONUP:
             if self.clicked :
                 self.clicked = False
                 self.pos = event.pos # take the mouse position (x,y)
-                if -90 < self.theta <= 0:
+                # to shoot rihgt
+                if -90 < self.theta <= 0 and not self.player.flip:
                     self.player.launch_projectil(self.theta, self.origin)
-                    self.end = pos_on_circumeference(self.theta, self.origin)
+                    self.end = pos_on_circumeference(self.theta, self.origin,self.player.sign)
+                # to shoot left
+                elif 0 < self.theta < 90 and self.player.flip: 
+                    self.player.launch_projectil(self.theta, self.origin)
+                    self.end = pos_on_circumeference(self.theta, self.origin, self.player.sign)
+
 
         if event.type == py.MOUSEMOTION:
             if self.clicked:
                 self.pos = event.pos # take the mouse position (x,y)
                 self.theta = get_angle(self.pos, self.origin)
-                if -90 < self.theta <= 0:
-                    self.end = pos_on_circumeference(self.theta, self.origin)
+                # to shoot rihgt
+                if -90 < self.theta <= 0 and not self.player.flip:
+                    self.end = pos_on_circumeference(self.theta, self.origin, self.player.sign)
                     self.arct = to_radian(self.theta)
 
                     # display axis to shoot
@@ -262,12 +269,30 @@ class Game :
                     py.draw.line(self.screen, COLOR['white'], self.origin, self.end, 2)
                     py.draw.circle(self.screen, COLOR['yellow'], self.origin, 3)
                     py.draw.arc(self.screen, COLOR['orange'], self.arcrect, 0, -(self.arct), 2)
+                
+                # to shoot left
+                elif 0 < self.theta <= 90 and self.player.flip:
+                    self.end = pos_on_circumeference(self.theta, self.origin, self.player.sign)
+                    self.arct = to_radian(self.theta)
+                    print("arct :",self.arct, "theta :", self.theta)
+
+                    # display axis to shoot
+                    py.draw.aaline(self.screen, COLOR['white'], self.origin, (self.origin[0] - 200, self.origin[1]), 2)
+                    py.draw.aaline(self.screen, COLOR['white'], self.origin, (self.origin[0], self.origin[1] - 200), 2)
+                    py.draw.line(self.screen, COLOR['white'], self.end, self.origin, 2)
+                    py.draw.circle(self.screen, COLOR['yellow'], self.origin, 3)
+                    py.draw.arc(self.screen, COLOR['orange'], self.arcrect, pi,(self.arct) , 2)
+
 
         self.player.group_projectil.update()
         # update origin
         self.origin = (self.player.rect.x+ 46, self.player.rect.y+20)
         # update the end of the guideline to shoot
-        self.end = pos_on_circumeference(self.theta, self.origin)
+        self.end = pos_on_circumeference(self.theta, self.origin, self.player.sign)
+        # update the rectangle of the arc
+        self.arcrect = py.Rect(self.origin[0]-30, self.origin[1]-30, 60, 60)
+
+        #py.draw.arc(self.screen, COLOR["red"], (20, 400, 100, 100), pi/2, pi, 5)
 
         # Info *******************************************************************
         title = self.font.render("Info", True, COLOR['white'])

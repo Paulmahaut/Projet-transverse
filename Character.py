@@ -1,7 +1,7 @@
 #Ici tout ce qui concerne la licorne
 import pygame as py
 from var import *
-import math
+from math import *
 from trajectory import *
 import random
 
@@ -18,11 +18,13 @@ class Character(py.sprite.Sprite):
         self.rect.x = x_init  # Position initiale x
         self.rect.y = y_init  # Position initiale y
         self.flip = False
+        self.sign = 1
+        self.nul = 0
 
         self.group_projectil = py.sprite.Group()
 
         self.velocity = 5
-        self.attack = 150
+        self.attack = 200
         self.jump_vel = 20
         self.jump_state = False
         
@@ -46,12 +48,20 @@ class Character(py.sprite.Sprite):
     def move_rigth(self):
         if not self.game.check_collision(self, self.game.group_enemy):
             self.rect.x+=self.velocity
-            self.flip = False # to flip the image
+
+            # to flip the image and the shoot
+            self.flip = False 
+            self.sign = 1
+            self.nul = 0
         
     def move_left(self):
         if not self.game.check_collision(self, self.game.group_enemy):
             self.rect.x-=self.velocity
-            self.flip = True # to flip the image
+
+            # to flip the image and the shoot
+            self.flip = True 
+            self.sign = -1
+            self.nul = 1
         
 
     def jump(self):
@@ -98,20 +108,20 @@ class Projectil(py.sprite.Sprite):
         self.path = []          
 
     def max_range(self):
-        range1 = (((self.v_init**2)*2*math.sin(self.theta)*math.cos(self.theta))/g )
+        range1 = (((self.v_init**2)*2*sin(self.theta)*cos(self.theta))/g )
         return round(range1,2)
     
     def max_height(self):
-        h = ((self.v_init** 2) * (math.sin(self.theta)) ** 2) / (2 * g)
+        h = ((self.v_init** 2) * (sin(self.theta)) ** 2) / (2 * g)
         return round(h, 2)
     
     def slope_trajectory(self):
         # slope of the trajectory equation
-        return round((g /  (2 * (self.v_init** 2) * (math.cos(self.theta) ** 2))), 4)
+        return round((g /  (2 * (self.v_init** 2) * (cos(self.theta) ** 2))), 4)
     
     def position_projectile(self, x):
         # trajectory equation
-        return x * math.tan(self.theta) - self.f * x ** 2 
+        return x * tan(self.theta) - self.f * x ** 2 
 
     def update(self):
         if self.x >= self.max_range :
