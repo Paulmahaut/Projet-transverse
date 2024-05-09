@@ -216,14 +216,14 @@ class Game :
 
         # move to the left
         keys_pressed = py.key.get_pressed()      
-        if keys_pressed[py.K_q] and self.player.rect.x >10:
+        if (keys_pressed[py.K_q] or keys_pressed[py.K_LEFT]) and self.player.rect.x >10:
             self.player.move_left()
             if self.player.rect.x <= x_init and self.screen_scroll<0:
                 self.direction = 1
                 self.scroll()# move the screen 
 
         # move to the right
-        if keys_pressed[py.K_d] and self.player.rect.x<50000 :
+        if (keys_pressed[py.K_d] or keys_pressed[py.K_RIGHT]) and self.player.rect.x<50000 :
             # collision check 
             self.player.move_rigth()
             if self.player.rect.x >= WIDTH - SCROLL_LIM :
@@ -307,7 +307,7 @@ class Game :
         py.draw.rect(self.screen, COLOR["white"], (0, 0, WIDTH, HEIGHT), 5)
 
         # player jumps if key space is pressed 
-        if keys_pressed[py.K_SPACE]:
+        if keys_pressed[py.K_SPACE]or keys_pressed[py.K_z] or keys_pressed[py.K_UP]:
             self.player.jump_state = True
         if self.player.jump_state :
             self.player.jump()
