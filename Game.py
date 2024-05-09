@@ -118,15 +118,15 @@ class Game :
         start_title = self.font_start_title.render("Welcome in a new adventure !", True, COLOR['blue'])
         self.screen.blit(start_title, (300, 150))
 
-        info = ["Things to know before playing: ",
-                "  - Key Q to move left", 
-                "  - Key D to move right", 
-                "  - Key space to jump",
+        info = ["Things to know before to play: ",
+                "  - Key Q or left arrow to move left", 
+                "  - Key D or right arrow to move right", 
+                "  - Key space or up arrow to jump",
                 "  - use the touch pad to shoot"]
         y = 200
         for line in info:
             start_msg = self.font_start.render(line, True, COLOR['dark_blue'])
-            self.screen.blit(start_msg, (340, y))
+            self.screen.blit(start_msg, (320, y))
             y+=30
        
         msg = self.font_start2.render("You can press the right shift key to start ", True,  COLOR['blue'])
