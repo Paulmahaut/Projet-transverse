@@ -34,8 +34,6 @@ class Mushspawn(py.sprite.Sprite):
             self.rect.x -= self.velocity
             print("Je recule")
 
-
-
     
 class Mush_project(py.sprite.Sprite): #projectiles du lakitu
     def __init__(self, Mushspawn):
@@ -61,7 +59,8 @@ class Mush_project(py.sprite.Sprite): #projectiles du lakitu
         for player in self.Mushspawn.game.check_collision(self, self.Mushspawn.game.group_player) : 
             print("Collision avec le joueur")
             Mush_project.kill(self)
-            player.get_damage(-50)
+            if self.Mushspawn.game.player.current_health == self.Mushspawn.game.player.maximum_health :
+                player.get_damage(-50)
             
     '''''    
     def check_collision(self, sprite, group): 

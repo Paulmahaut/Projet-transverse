@@ -207,24 +207,14 @@ class Game :
         # display all enmies and player's projectils
         self.group_enemy.draw(self.screen)
 
-        ###########################################################################
-            # Move projectils and enemies that are in groups
+        # Move projectils and lakitu that are in groups
         for Mushspawn in self.Groupe_Mush:
-            #Mushspawn.move()
             Mushspawn.Groupe_Mush.draw(self.screen)
             for Mush_project in Mushspawn.Groupe_Mush:
                 Mush_project.move()
-        self.Groupe_Mush.draw(self.screen)
 
-                 
-        for Mushspawn in self.Groupe_Mush:
-            # launch Mushroom randomly
-            if random.randint(0,197)%99 == 0 : #taux de spawn choisi à l'arrache
-               
-                Mushspawn.move()
-                Mushspawn.throw_projectile()
-        
-        ###########################################################################  
+        # display all lakitu's projectil
+        self.Groupe_Mush.draw(self.screen)
     
         #self.song.play()        
             
@@ -309,8 +299,6 @@ class Game :
         # update the rectangle of the arc
         self.arcrect = py.Rect(self.origin[0]-30, self.origin[1]-30, 60, 60)
 
-        #py.draw.arc(self.screen, COLOR["red"], (20, 400, 100, 100), pi/2, pi, 5)
-
         # Info *******************************************************************
         title = self.font.render("Info", True, COLOR['white'])
         fpstext = self.font.render(f"FPS : {int(self.clock.get_fps())}", True, COLOR['white'])
@@ -338,5 +326,10 @@ class Game :
             if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
                 enemy.throw_projectile()
         
+        for Mushspawn in self.Groupe_Mush:
+            # launch Mushroom randomly
+            if random.randint(0,197)%99 == 0 : 
+                Mushspawn.move()
+                Mushspawn.throw_projectile()
 
 
