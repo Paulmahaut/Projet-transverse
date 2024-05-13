@@ -99,6 +99,7 @@ class Projectil(py.sprite.Sprite):
         # image projectil
         rainbow_image = py.image.load("images/rainbow.png").convert_alpha()
         self.image = py.transform.scale(rainbow_image, (20, 10))
+        self.origin_image = self.image
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = self.origin_proj
         self.angle = 1
@@ -130,11 +131,12 @@ class Projectil(py.sprite.Sprite):
     def position_projectile(self, x):
         # trajectory equation
         return x * tan(self.theta) * self.sign - self.f * x ** 2 + self.height_player
-    """
+    
+    # (19:37 min) https://www.youtube.com/watch?v=lmdjyU1YVLw&list=PLMS9Cy4Enq5KsM7GJ4LHnlBQKTQBV8kaR&index=3&ab_channel=Graven-D%C3%A9veloppement
     def rotate(self):
         self.angle +=12
-        self.image = py.transform.rotozoom(self.image, self.angle, 1)
-    """
+        self.image = py.transform.rotozoom(self.origin_image, self.angle, 1)
+    
 
     def update(self):
         self.x += self.dx * self.sign
@@ -144,9 +146,9 @@ class Projectil(py.sprite.Sprite):
         self.path = self.path[-50:]
 
         # displlay projectil
-        #self.rotate()
         self.player.game.screen.blit(self.image, self.path[-1])
         for pos in self.path[:-1:5]:
+            self.rotate()
             py.draw.circle(self.player.game.screen, COLOR['white'], pos, 1)
 
         # update rect coord to compare sprites 
