@@ -9,7 +9,6 @@ from Character import *
 from trajectory import *
 from Mushspawn import *
 
-
 class Game :
     def __init__(self):
         py.init()
@@ -45,7 +44,7 @@ class Game :
         self.song = py.mixer.Sound("sound/tqt.mp3")
         self.explosion_sound = py.mixer.Sound("sound/explosion_sound.mp3")
 
-        # instance of Character and Enemy
+        # instance of Character, Enemy 
         self.group_player = py.sprite.Group()
         self.player = Character(self)
         self.group_player.add(self.player) # add player to a goup to compare it with group_enemy
@@ -149,8 +148,16 @@ class Game :
     # rest all settings
     def end_game(self):
         #self.screen.blit(self.gameover, (320,100))
+
+        # kill elements in class
         for projectil in self.player.group_projectil:
             projectil.kill()
+        for enemy in self.group_enemy:
+            enemy.kill()
+        for lakitu in self.Groupe_Mush:
+            lakitu.kill()
+        # rest groups
+        self.Groupe_Mush = py.sprite.Group()
         self.group_enemy = py.sprite.Group()
         self.game_is_running = False 
         self.current_level = 0
@@ -187,6 +194,7 @@ class Game :
 
         # DISPLAY
         self.draw_bg()
+
         # display player
         self.screen.blit(py.transform.flip(self.player.image, self.player.flip, False), self.player.rect)
 
@@ -200,15 +208,17 @@ class Game :
         for enemy in self.group_enemy:
             enemy.move()
             enemy.update_health_bar(self.screen)
+            # draw projectil
             enemy.group_projectil.draw(self.screen)
             for projectile_tank in enemy.group_projectil:
                 projectile_tank.move()
 
-        # display all enmies and player's projectils
+        # display all enmies
         self.group_enemy.draw(self.screen)
 
         # Move projectils and lakitu that are in groups
         for Mushspawn in self.Groupe_Mush:
+            # draw projectil
             Mushspawn.Groupe_Mush.draw(self.screen)
             for Mush_project in Mushspawn.Groupe_Mush:
                 Mush_project.move()

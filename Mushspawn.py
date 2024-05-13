@@ -8,7 +8,7 @@ class Mushspawn(py.sprite.Sprite):
         self.game=game
         super(Mushspawn, self).__init__()  # Initialise la classe parente Sprite       
         # Load the image
-        original_image = py.image.load("NSMBULakitu.webp").convert_alpha()
+        original_image = py.image.load("images\NSMBULakitu.webp").convert_alpha()
         # Resize at 80x80 pixels
         self.image = py.transform.scale(original_image, (90, 90))
         self.rect = self.image.get_rect()
