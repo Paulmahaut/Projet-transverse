@@ -7,6 +7,7 @@ from var import *
 from Enemy import *
 from Character import *
 from trajectory import *
+from Mushspawn import *
 
 
 class Game :
@@ -49,6 +50,8 @@ class Game :
         self.player = Character(self)
         self.group_player.add(self.player) # add player to a goup to compare it with group_enemy
         self.group_enemy = py.sprite.Group()
+        self.mushspawn = Mushspawn(self)
+        self.Groupe_Mush = py.sprite.Group()
 
         # trajectory
         self.clicked = False
@@ -69,6 +72,9 @@ class Game :
     # create enemy
     def spawn_enemy(self):
         self.group_enemy.add(Enemy(self))
+    
+    def spawn_Mush(self):
+        self.Groupe_Mush.add(Mushspawn(self))
     
     # display background
     def draw_bg(self):
@@ -99,7 +105,7 @@ class Game :
                     exit()
 
                 if event.type == py.KEYDOWN:
-                    if event.key == py.K_RSHIFT:
+                    if event.key == py.K_RSHIFT or event.key == py.K_LSHIFT:
                         self.start() # launch the game
     
             if self.game_is_running :
@@ -129,7 +135,7 @@ class Game :
             self.screen.blit(start_msg, (320, y))
             y+=30
        
-        msg = self.font_start2.render("You can press the right shift key to start ", True,  COLOR['blue'])
+        msg = self.font_start2.render("You can press the shift key to start ", True,  COLOR['blue'])
         self.screen.blit(msg, (280, y+30))
         key = py.image.load("images/shift.png")
         key = py.transform.scale(key, (70, 70))
@@ -138,6 +144,7 @@ class Game :
     def start(self):
         self.game_is_running = True
         self.spawn_enemy()
+        self.spawn_Mush()
 
     # rest all settings
     def end_game(self):
@@ -199,17 +206,26 @@ class Game :
 
         # display all enmies and player's projectils
         self.group_enemy.draw(self.screen)
-        """
-        # à modifeier avec LOOSE
-            elif event.type==screamer:
-            # Marquer le début de l'affichage de l'image
-            image_display_start = current_time
-        if image_display_start:
-            if current_time - image_display_start <= 1000:  # 100 ms = 1/10 de seconde
-                game.screen.blit(special_image, (900, 900))  
-            else:
-                image_display_start = None  # Réinitialiser pour le prochain affichage
-        """
+
+        ###########################################################################
+            # Move projectils and enemies that are in groups
+        for Mushspawn in self.Groupe_Mush:
+            #Mushspawn.move()
+            Mushspawn.Groupe_Mush.draw(self.screen)
+            for Mush_project in Mushspawn.Groupe_Mush:
+                Mush_project.move()
+        self.Groupe_Mush.draw(self.screen)
+
+                 
+        for Mushspawn in self.Groupe_Mush:
+            # launch Mushroom randomly
+            if random.randint(0,197)%99 == 0 : #taux de spawn choisi à l'arrache
+               
+                Mushspawn.move()
+                Mushspawn.throw_projectile()
+        
+        ###########################################################################  
+    
         #self.song.play()        
             
         # list of keys
