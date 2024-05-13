@@ -24,7 +24,7 @@ special_image = py.transform.scale(test, (300, 300))
 # sound
 
 
-#Chan1=py.mixer.Channel(0)     
+#Chan1=py.mixer.Channel(0)  
 #Chan2=py.mixer.Channel(1)
 """
 

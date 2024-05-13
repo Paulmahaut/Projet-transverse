@@ -1,6 +1,9 @@
 #Ici tout ce qui concerne la licorne
 import pygame as py
 from var import *
+from math import *
+from trajectory import *
+import random
 
 class Character(py.sprite.Sprite):
 
@@ -14,12 +17,17 @@ class Character(py.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x_init  # Position initiale x
         self.rect.y = y_init  # Position initiale y
+        self.flip = False
+        self.sign = 1
+        self.nul = 0
+
         self.group_projectil = py.sprite.Group()
 
         self.velocity = 5
-        self.attack = 10
+        self.attack = 200
         self.jump_vel = 20
         self.jump_state = False
+        
         self.current_health = 1000 # Valeur initial de la barre de vie
         self.maximum_health = 1000 # Valeur maximum de la barre de vie
         self.health_bar_length = 200 # Longeur maximal en pixel de la barre de vie
@@ -31,13 +39,6 @@ class Character(py.sprite.Sprite):
             self.current_health -= amount # Baisse la valeur de la barre de vie de X 
 
     def update_health_bar(self, surface):
-        screen_width, screen_height = surface.get_size()
-        # Position et dimensions de la barre de vie
-        bar_width = self.health_bar_length
-        bar_height = 10  # Hauteur de la barre de vie
-        x_position = screen_width - bar_width - 10  # 10 pixels de marge du bord droit
-        y_position = 10  # 10 pixels de marge du haut
-
         # Dessiner la barre de vie
         py.draw.rect(surface, change_color(self.current_health), (self.rect.x, self.rect.y - 20, self.current_health / self.health_ratio, 10))
         py.draw.rect(surface, (255, 255, 255), (self.rect.x, self.rect.y - 20, self.health_bar_length, 10), 2)
@@ -47,10 +48,20 @@ class Character(py.sprite.Sprite):
     def move_rigth(self):
         if not self.game.check_collision(self, self.game.group_enemy):
             self.rect.x+=self.velocity
+
+            # to flip the image and the shoot
+            self.flip = False 
+            self.sign = 1
+            self.nul = 0
         
     def move_left(self):
         if not self.game.check_collision(self, self.game.group_enemy):
             self.rect.x-=self.velocity
+
+            # to flip the image and the shoot
+            self.flip = True 
+            self.sign = -1
+            self.nul = 1
         
 
     def jump(self):
@@ -60,10 +71,12 @@ class Character(py.sprite.Sprite):
             self.jump_state = False
             self.jump_vel = 20
                       
-    def launch_projectil(self):
+    def launch_projectil(self, theta, origin_proj, sign):
         # create a projectil and add it to group_projectil
-        self.group_projectil.add(Projectil(self))
-
+        self.group_projectil.add(Projectil(self, v_init, theta, origin_proj, sign))
+    
+    def super_attack(self):
+        pass
     def change_color(self, color):
         """ Change la couleur du joueur en multipliant les couleurs RGB de l'image originale par la couleur donnée. """
         colored_image = self.original_image.copy()  # Créez une copie pour ne pas modifier l'image originale
@@ -73,21 +86,82 @@ class Character(py.sprite.Sprite):
 
 class Projectil(py.sprite.Sprite):
 
-    def __init__(self, player):
+    def __init__(self, player, v_init, theta, origin_proj, sign):
         super(Projectil, self).__init__() 
         self.player = player
+        self.v_init= v_init
         self.velocity = 20
+
+        # coord projectil
+        self.origin_proj=origin_proj
+        self.x, self.y = self.origin_proj[0], self.origin_proj[1]+90
+
+        # image projectil
         rainbow_image = py.image.load("images/rainbow.png").convert_alpha()
         self.image = py.transform.scale(rainbow_image, (20, 10))
         self.rect = self.image.get_rect()
-        self.rect.x = player.rect.x +32
-        self.rect.y = player.rect.y +32
+        self.rect.x, self.rect.y = self.origin_proj
+        
+        self.theta = to_radian(abs(theta))
+        self.ch = 0
+        self.dx = 4
+        self.height_player = 90
+        # to shoot to rigth or left
+        self.sign = sign
 
-    def move(self):
-        self.rect.x+= self.velocity
+        self.f = self.slope_trajectory()
+        self.max_range = self.rect.x + abs(self.max_range())
+        self.path = []          
+
+    def max_range(self):
+        # compute when the projectil will touch the ground
+        range1 = (((self.v_init**2)*2*sin(self.theta)*cos(self.theta))/g )
+        return round(range1,2)
+    
+    def max_height(self):
+        h = ((self.v_init** 2) * (sin(self.theta)) ** 2) / (2 * g)
+        return round(h, 2)
+    
+    def slope_trajectory(self):
+        # slope of the trajectory equation
+        return round((g /  (2 * (self.v_init** 2) * (cos(self.theta) ** 2))), 4)
+    
+    def position_projectile(self, x):
+        # trajectory equation
+        return x * tan(self.theta) * self.sign - self.f * x ** 2 + self.height_player
+
+    def update(self):
+        self.x += self.dx * self.sign
+        self.ch = self.position_projectile(self.x - self.origin_proj[0])
+
+        self.path.append((self.x, self.y- abs(self.ch)))
+        self.path = self.path[-50:]
+
+        # displlay projectil
+        self.player.game.screen.blit(self.image, self.path[-1])
+        for pos in self.path[:-1:5]:
+            py.draw.circle(self.player.game.screen, COLOR['white'], pos, 1)
+
+        # update rect coord to compare sprites 
+        self.rect.x, self.rect.y = self.x, self.y- abs(self.ch)
+
+        # kill the projectil when it collides with the enemy
         for enemy in self.player.game.check_collision(self, self.player.game.group_enemy) :
             enemy.get_damage(self.player.attack)
-            self.kill() # kill the projectil when it collide with the enemy
+            self.kill() 
 
-        if self.rect.x > WIDTH :
-            self.kill() # kill the projectil when it'sout of the window (to avoid killing the commin enemies)
+        # delete the projectil if it's out of the window or near to the groud
+        if self.rect.x > WIDTH or self.rect.y >= y_init +100:
+                self.kill()
+
+
+
+
+
+
+
+
+
+
+
+
