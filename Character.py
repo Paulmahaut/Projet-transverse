@@ -61,8 +61,7 @@ class Character(py.sprite.Sprite):
             # to flip the image and the shoot
             self.flip = True 
             self.sign = -1
-            self.nul = 1
-        
+            self.nul = 1  
 
     def jump(self):
         self.rect.y-=self.jump_vel
@@ -77,6 +76,7 @@ class Character(py.sprite.Sprite):
     
     def super_attack(self):
         pass
+
     def change_color(self, color):
         """ Change la couleur du joueur en multipliant les couleurs RGB de l'image originale par la couleur donnée. """
         colored_image = self.original_image.copy()  # Créez une copie pour ne pas modifier l'image originale
@@ -101,6 +101,7 @@ class Projectil(py.sprite.Sprite):
         self.image = py.transform.scale(rainbow_image, (20, 10))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = self.origin_proj
+        self.angle = 1
         
         self.theta = to_radian(abs(theta))
         self.ch = 0
@@ -129,6 +130,11 @@ class Projectil(py.sprite.Sprite):
     def position_projectile(self, x):
         # trajectory equation
         return x * tan(self.theta) * self.sign - self.f * x ** 2 + self.height_player
+    """
+    def rotate(self):
+        self.angle +=12
+        self.image = py.transform.rotozoom(self.image, self.angle, 1)
+    """
 
     def update(self):
         self.x += self.dx * self.sign
@@ -138,6 +144,7 @@ class Projectil(py.sprite.Sprite):
         self.path = self.path[-50:]
 
         # displlay projectil
+        #self.rotate()
         self.player.game.screen.blit(self.image, self.path[-1])
         for pos in self.path[:-1:5]:
             py.draw.circle(self.player.game.screen, COLOR['white'], pos, 1)

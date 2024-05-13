@@ -100,6 +100,8 @@ class Game :
             #enemy projectil
             for tank_proj in enemy.group_projectil :
                 tank_proj.rect.x = tank_proj.rect.x - (-1)**self.direction * tank_proj.velocity
+        for small_enemy in self.group_small_enemy :
+            small_enemy.rect.x = small_enemy.rect.x - (-1)**self.direction * self.player.velocity
         self.screen_scroll = self.screen_scroll - (-1)**self.direction * self.player.velocity
 
     def run(self):
@@ -221,6 +223,10 @@ class Game :
             enemy.group_projectil.draw(self.screen)
             for projectile_tank in enemy.group_projectil:
                 projectile_tank.move()
+        
+        # Move small_enemies that are in groups
+        for small_enemy in self.group_small_enemy:
+            small_enemy.move()
 
         # display all enmies and player's projectils
         self.group_enemy.draw(self.screen)
