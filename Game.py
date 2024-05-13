@@ -8,6 +8,7 @@ from Enemy import *
 from Character import *
 from trajectory import *
 from Mushspawn import *
+from Small_Enemy import *
 
 
 class Game :
@@ -50,6 +51,7 @@ class Game :
         self.player = Character(self)
         self.group_player.add(self.player) # add player to a goup to compare it with group_enemy
         self.group_enemy = py.sprite.Group()
+        self.group_small_enemy = py.sprite.Group()
         self.mushspawn = Mushspawn(self)
         self.Groupe_Mush = py.sprite.Group()
 
@@ -72,6 +74,10 @@ class Game :
     # create enemy
     def spawn_enemy(self):
         self.group_enemy.add(Enemy(self))
+    
+    # create small enemy
+    def spawn_small_enemy(self):
+        self.group_small_enemy.add(Small_Enemy(self))
     
     def spawn_Mush(self):
         self.Groupe_Mush.add(Mushspawn(self))
@@ -144,6 +150,7 @@ class Game :
     def start(self):
         self.game_is_running = True
         self.spawn_enemy()
+        self.spawn_small_enemy()
         self.spawn_Mush()
 
     # rest all settings
@@ -152,6 +159,7 @@ class Game :
         for projectil in self.player.group_projectil:
             projectil.kill()
         self.group_enemy = py.sprite.Group()
+        self.group_small_enemy = py.sprite.Group()
         self.game_is_running = False 
         self.current_level = 0
         # reset the first wallpaper
@@ -203,9 +211,16 @@ class Game :
             enemy.group_projectil.draw(self.screen)
             for projectile_tank in enemy.group_projectil:
                 projectile_tank.move()
+        
+        # Move enemies that are in groups
+        for small_enemy in self.group_small_enemy:
+            small_enemy.move()
 
-        # display all enmies and player's projectils
+        # display all enemies
         self.group_enemy.draw(self.screen)
+
+         # display all enemies
+        self.group_small_enemy.draw(self.screen)
 
         # Move projectils and lakitu that are in groups
         for Mushspawn in self.Groupe_Mush:
