@@ -121,7 +121,7 @@ class Game :
         info = ["Things to know before to play: ",
                 "  - Key Q or left arrow to move left", 
                 "  - Key D or right arrow to move right", 
-                "  - Key space or up arrow to jump",
+                "  - Key Z, space or up arrow to jump",
                 "  - use the touch pad to shoot"]
         y = 200
         for line in info:
@@ -314,7 +314,7 @@ class Game :
             self.player.jump()
 
         # special power
-        if keys_pressed[py.K_s]:
+        if keys_pressed[py.K_s] :
             self.player.super_attack()
         
         for enemy in self.group_enemy :
