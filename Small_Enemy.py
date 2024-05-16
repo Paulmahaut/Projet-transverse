@@ -17,7 +17,7 @@ class Small_Enemy(py.sprite.Sprite):
 
         self.rect.x = 2000 + random.randint(0,700)  # Position initiale x
         self.rect.y = 470  # Position initiale y
-        self.velocity = 1
+        self.velocity = 4
         self.initial_health = 1
         self.attack = 200
         self.current_health = 1 # Valeur de la barre de vie

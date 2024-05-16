@@ -154,6 +154,8 @@ class Game :
         self.spawn_enemy()
         self.spawn_small_enemy()
         self.spawn_Mush()
+        self.player = Character(self)
+        self.group_player.add(self.player)
 
     # rest all settings
     def end_game(self):
@@ -166,10 +168,13 @@ class Game :
             enemy.kill()
         for lakitu in self.Groupe_Mush:
             lakitu.kill()
+        for player in self.group_player:
+            player.kill()
         # rest groups
         self.Groupe_Mush = py.sprite.Group()
         self.group_enemy = py.sprite.Group()
         self.group_small_enemy = py.sprite.Group()
+        self.group_player = py.sprite.Group()
         self.game_is_running = False 
         self.current_level = 0
         # reset the first wallpaper
