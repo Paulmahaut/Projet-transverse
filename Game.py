@@ -58,7 +58,7 @@ class Game :
         self.currentp = None
         self.pos = None
         self.theta = -30
-        self.origin = (self.player.rect.x+46, self.player.rect.y+5) # at the top of the licorne
+        self.origin = (self.player.rect.x+128, self.player.rect.y+5) # at the top of the licorne
         
         self.arct = to_radian(self.theta)       
         self.end = pos_on_circumeference( self.theta,  self.origin, self.player.sign)
@@ -293,7 +293,7 @@ class Game :
 
         self.player.group_projectil.update()
         # update origin
-        self.origin = (self.player.rect.x+ 46, self.player.rect.y+20)
+        self.origin = (self.player.rect.x+128, self.player.rect.y+5)
         # update the end of the guideline to shoot
         self.end = pos_on_circumeference(self.theta, self.origin, self.player.sign)
         # update the rectangle of the arc
