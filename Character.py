@@ -154,9 +154,14 @@ class Projectil(py.sprite.Sprite):
         # update rect coord to compare sprites 
         self.rect.x, self.rect.y = self.x, self.y- abs(self.ch)
 
-        # kill the projectil when it collides with the enemy
+        # kill the projectil when it collides with the enemy and damage the enemy
         for enemy in self.player.game.check_collision(self, self.player.game.group_enemy) :
             enemy.get_damage(self.player.attack)
+            self.kill() 
+        
+        # smae for small_enemy
+        for small_enemy in self.player.game.check_collision(self, self.player.game.group_small_enemy) :
+            small_enemy.health = 0
             self.kill() 
 
         # delete the projectil if it's out of the window or near to the groud

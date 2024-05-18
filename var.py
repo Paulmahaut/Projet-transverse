@@ -10,12 +10,11 @@ COLOR={'green':(159,226,191),
        "blue":(0,108,108),
        "dark_blue":(37,60,60)}
 
+# list of dico keys
 color_name = [*COLOR.keys()]
 length_dico = 5
 
-WALLPAPER = {0 :'images/wallpaper1.jpg',
-            1 :'images/wallpaper2.jpg'}
-
+# change the color of the health barre
 def change_color(x):
     if x>=650 :
        return COLOR['green']
@@ -24,14 +23,6 @@ def change_color(x):
     elif 250<=x<350 :
         return COLOR['orange']
     return COLOR['red']
-
-ENEMY = {0 : "images/tank0.png",
-         1: "images/tank1.png"
-         }
-
-ENEMY_PROJ = {0: "images/tank_proj0.png",
-              1: "images/tank_proj1.png"
-              }
 
 PLAYER = {}
 PLAYER_PROJ = {}

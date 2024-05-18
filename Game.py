@@ -21,14 +21,14 @@ class Game :
         # Window
         self.screen = py.display.set_mode((WIDTH,HEIGHT))
         py.display.set_caption('Game')
-        
-        self.current_level = 0
+
         self.game_is_running = False
         self.screen_scroll = 0
         self.direction = 0
+        self.all_scores = []
 
         # Images
-        wallpaper = py.image.load(WALLPAPER[self.current_level])
+        wallpaper = py.image.load("images/wallpaper1.jpg")
         menu = py.image.load("images/Backgroundunicorn.png")
         gameover = py.image.load("images/gameover.png")
         self.wallpaper = py.transform.scale(wallpaper, (WIDTH, HEIGHT))
@@ -37,7 +37,8 @@ class Game :
 
         # layout
         self.font = py.font.SysFont('verdana', 12)
-        self.surface = py.Surface((WIDTH,HEIGHT), py.SRCALPHA)
+        self.surface1 = py.Surface((WIDTH,HEIGHT), py.SRCALPHA)
+        self.surface2 = py.Surface((WIDTH,HEIGHT), py.SRCALPHA)
         self.font_start_title = py.font.SysFont('verdana', 23, bold = True)
         self.font_start = py.font.SysFont('verdana', 19)
         self.font_start2 = py.font.SysFont('verdana', 19, True)
@@ -61,7 +62,6 @@ class Game :
         self.pos = None
         self.theta = -30
         self.origin = (self.player.rect.x+46, self.player.rect.y+5) # at the top of the licorne
-        
         self.arct = to_radian(self.theta)       
         self.end = pos_on_circumeference( self.theta,  self.origin, self.player.sign)
         self.arcrect = py.Rect(self.origin[0]-30, self.origin[1]-30, 60, 60)
@@ -126,28 +126,73 @@ class Game :
             self.clock.tick(FPS)
 
     def start_menu(self):
-        self.screen.blit(self.menu, (bg_x,bg_y))
-        self.screen.blit(self.surface, (0,0))
-        py.draw.rect(self.surface, COLOR["blue_transparent"] , [150,100, 700,400], 0, 10)
-        start_title = self.font_start_title.render("Welcome in a new adventure !", True, COLOR['blue'])
-        self.screen.blit(start_title, (300, 150))
+        # first menu without score
+        if len(self.all_scores) == 0:
+            self.screen.blit(self.menu, (bg_x,bg_y))
+            self.screen.blit(self.surface1, (0,0))
+            py.draw.rect(self.surface1, COLOR["blue_transparent"] , [150,100, 700,400], 0, 10)
+            start_title = self.font_start_title.render("Welcome in a new adventure !", True, COLOR['blue'])
+            self.screen.blit(start_title, (300, 150))
 
-        info = ["Things to know before to play: ",
-                "  - Key Q or left arrow to move left", 
-                "  - Key D or right arrow to move right", 
-                "  - Key Z, space or up arrow to jump",
-                "  - use the touch pad to shoot"]
-        y = 200
-        for line in info:
-            start_msg = self.font_start.render(line, True, COLOR['dark_blue'])
-            self.screen.blit(start_msg, (320, y))
-            y+=30
-       
-        msg = self.font_start2.render("You can press the shift key to start ", True,  COLOR['blue'])
-        self.screen.blit(msg, (280, y+30))
-        key = py.image.load("images/shift.png")
-        key = py.transform.scale(key, (70, 70))
-        self.screen.blit(key, (470, y+60))
+            info = ["Things to know before to play: ",
+                    "  - Key Q or left arrow to move left", 
+                    "  - Key D or right arrow to move right", 
+                    "  - Key Z, space or up arrow to jump",
+                    "  - use the touch pad to shoot"]
+            y = 200
+            for line in info:
+                start_msg = self.font_start.render(line, True, COLOR['dark_blue'])
+                self.screen.blit(start_msg, (320, y))
+                y+=30
+        
+            msg = self.font_start2.render("You can press the shift key to start ", True,  COLOR['blue'])
+            self.screen.blit(msg, (280, y+30))
+            key = py.image.load("images/shift.png")
+            key = py.transform.scale(key, (70, 70))
+            self.screen.blit(key, (470, y+60))
+
+        # second menu with score
+        else:
+            # left block with message
+            print(self.all_scores)
+            self.screen.blit(self.menu, (bg_x,bg_y))
+            self.screen.blit(self.surface2, (0,0))
+            py.draw.rect(self.surface2, COLOR["blue_transparent"] , [100,100, 490,400], 0, 10)
+            start_title = self.font_start_title.render("Welcome back !", True, COLOR['blue'])
+            self.screen.blit(start_title, (130, 150))
+
+            info = ["Reminder: ",
+                    "  - Key Q or left arrow to move left", 
+                    "  - Key D or right arrow to move right", 
+                    "  - Key Z, space or up arrow to jump",
+                    "  - use the touch pad to shoot"]
+            y = 200
+            for line in info:
+                start_msg = self.font_start.render(line, True, COLOR['dark_blue'])
+                self.screen.blit(start_msg, (140, y))
+                y+=30
+        
+            msg = self.font_start2.render("Press the shift key to play again ", True,  COLOR['blue'])
+            self.screen.blit(msg, (150, y+30))
+            key = py.image.load("images/shift.png")
+            key = py.transform.scale(key, (70, 70))
+            self.screen.blit(key, (210, y+60))
+
+            # right block with the score
+            py.draw.rect(self.surface2, COLOR["blue_transparent"] , [600,100, 300,320], 0, 10)
+            score_title = self.font_start_title.render("Your best scores", True, COLOR['blue'])
+            self.screen.blit(score_title, (660, 150))
+            self.all_scores.sort()
+            if len(self.all_scores)<3:
+                lim = len(self.all_scores)
+            else:
+                lim =3
+            y = 200
+            for i in range(lim):
+                score = self.font_start.render(f'{i+1}. '+ str(self.all_scores[i]), True, COLOR['dark_blue'])
+                self.screen.blit(score, (670, y))
+                y+=30
+
 
     def start(self):
         self.game_is_running = True
@@ -160,7 +205,8 @@ class Game :
     # rest all settings
     def end_game(self):
         #self.screen.blit(self.gameover, (320,100))
-
+        # save the score
+        self.all_scores.append(self.player.score)
         # kill elements in class
         for projectil in self.player.group_projectil:
             projectil.kill()
@@ -175,48 +221,33 @@ class Game :
         self.group_enemy = py.sprite.Group()
         self.group_small_enemy = py.sprite.Group()
         self.group_player = py.sprite.Group()
+
         self.game_is_running = False 
-        self.current_level = 0
-        # reset the first wallpaper
-        self.wallpaper = py.transform.scale(py.image.load(WALLPAPER[self.current_level]), (WIDTH, HEIGHT))
         # rest player values
         self.player.current_health = self.player.maximum_health
         self.player.rect.x = x_init
         self.player.rect.y = y_init
         self.player.score = 0
-        
-
-    def level(self): # faire une class
+    
+    def display_score(self):
         # display score
         text_font = py.font.SysFont("Arial", 20)
         self.screen.blit(text_font.render('Score ', True, COLOR['black']),(10, 10))
         score = text_font.render(str(self.player.score), True, COLOR['black'])
         self.screen.blit(score,(60, 10))
-       
-        if self.player.score>= 1000 and self.current_level == 0:
-            self.current_level +=1
-            # change the background
-            self.wallpaper = py.transform.scale(py.image.load(WALLPAPER[self.current_level]), (WIDTH, HEIGHT))
-            # change enemy and its settings
-            self.group_enemy = py.sprite.Group()      
-            self.spawn_enemy()
-            for enemy in self.group_enemy :
-                enemy.velocity += 1
-                enemy.attack += 10
-            #creer des dico d'ennemy, de vitesse et de dégats liés et changer en fct du score
-            # niveau final ?
-
+        
     def play_game(self, event):
 
         # DISPLAY
         self.draw_bg()
+        self.display_score()
 
         # display player
         self.screen.blit(py.transform.flip(self.player.image, self.player.flip, False), self.player.rect)
 
         self.player.update_health_bar(self.screen)
         self.player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
-        self.level()
+
         if self.player.current_health <=0 :
             self.end_game()
 

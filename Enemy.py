@@ -10,7 +10,7 @@ class Enemy(py.sprite.Sprite):
         super(Enemy, self).__init__()  # Initialise la classe parente Sprite
 
         self.game = game
-        tank_image = py.image.load(ENEMY[self.game.current_level]).convert_alpha()
+        tank_image = py.image.load("images/tank0.png").convert_alpha()
         self.image = py.transform.scale(tank_image, (150, 150))
         self.rect = self.image.get_rect()
         explosion = py.image.load("images/explosion.png").convert_alpha()
@@ -80,7 +80,7 @@ class Tank_project(py.sprite.Sprite): #projectiles du Tank
         self.force = 0
         
         self.velocity = 17
-        tank_project_image= py.image.load(ENEMY_PROJ[self.enemy.game.current_level])
+        tank_project_image= py.image.load("images/tank_proj0.png")
         self.image = py.transform.scale(tank_project_image, (10, 10))
         self.rect = self.image.get_rect()
         self.rect.x = enemy.rect.x
