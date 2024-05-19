@@ -8,9 +8,9 @@ class Mushspawn(py.sprite.Sprite):
         self.game=game
         super(Mushspawn, self).__init__()  # Initialise la classe parente Sprite       
         # Load the image
-        original_image = py.image.load("NSMBULakitu.webp").convert_alpha()
+        original_image = py.image.load("images/nuagemushroom.png").convert_alpha()
         # Resize at 80x80 pixels
-        self.image = py.transform.scale(original_image, (90, 90))
+        self.image = py.transform.scale(original_image, (300, 90))
         self.rect = self.image.get_rect()
         self.rect.x = 200  # Position initiale x
         self.Groupe_Mush = py.sprite.Group() 
@@ -42,7 +42,7 @@ class Mush_project(py.sprite.Sprite): #projectiles du lakitu
         self.angle = 0
         self.force = 0
         self.velocity = 5
-        Mush_project_image= py.image.load("images/Mushroom.png")
+        Mush_project_image= py.image.load("images/mushroompixel.png")
         self.image = py.transform.scale(Mush_project_image, (50, 50))
         self.rect = self.image.get_rect()
         self.rect.x = Mushspawn.rect.x 

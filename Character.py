@@ -97,8 +97,8 @@ class Projectil(py.sprite.Sprite):
         self.x, self.y = self.origin_proj[0], self.origin_proj[1]+90
 
         # image projectil
-        rainbow_image = py.image.load("images/rainbow.png").convert_alpha()
-        self.image = py.transform.scale(rainbow_image, (20, 10))
+        rainbow_image = py.image.load("images/projectileunicorn.png").convert_alpha()
+        self.image = py.transform.scale(rainbow_image, (30, 20))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = self.origin_proj
         
