@@ -11,9 +11,9 @@ class Character(py.sprite.Sprite):
         super(Character, self).__init__()  # Initialise la classe parente Sprite
         self.game = game
         # Load the image
-        original_image = py.image.load("images/playerlicorne.png").convert_alpha()
+        original_image = py.image.load("images/playerlicorne2.png").convert_alpha()
         # Resize at 80x80 pixels
-        self.image = py.transform.scale(original_image, (90, 90))
+        self.image = py.transform.scale(original_image, (150, 90))
         self.rect = self.image.get_rect()
         self.rect.x = x_init  # Position initiale x
         self.rect.y = y_init  # Position initiale y
@@ -97,9 +97,8 @@ class Projectil(py.sprite.Sprite):
         self.x, self.y = self.origin_proj[0], self.origin_proj[1]+90
 
         # image projectil
-        rainbow_image = py.image.load("images/rainbow.png").convert_alpha()
-        self.image = py.transform.scale(rainbow_image, (20, 10))
-        self.origin_image = self.image
+        rainbow_image = py.image.load("images/projectileunicorn.png").convert_alpha()
+        self.image = py.transform.scale(rainbow_image, (30, 20))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = self.origin_proj
         self.angle = 1

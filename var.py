@@ -14,7 +14,9 @@ COLOR={'green':(159,226,191),
 color_name = [*COLOR.keys()]
 length_dico = 5
 
-# change the color of the health barre
+WALLPAPER = {0 :'images/wallpaper.png',
+            1 :'images/wallpaper2.jpg'}
+
 def change_color(x):
     if x>=650 :
        return COLOR['green']
@@ -42,4 +44,4 @@ x_init, y_init = 100,430
 g = 11  
 v_init = 80
 
-cloud="images/cloud.png"
+cloud="images/cloud.jpg"
