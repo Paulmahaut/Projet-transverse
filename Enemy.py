@@ -54,10 +54,8 @@ class Enemy(py.sprite.Sprite):
         
     def move(self):
     # collision check
-        if self.game.check_collision(self, self.game.group_player) == True:
+        if self.game.check_collision(self, self.game.group_player):
             self.game.player.get_damage(10)
-            self.game.check_collision(self, self.game.group_player) == False
-            print('in')
         self.rect.x-= self.velocity
     
         if self.rect.x <-300:
