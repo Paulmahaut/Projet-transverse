@@ -30,10 +30,8 @@ class Game :
         # Images
         wallpaper = py.image.load("images/wallpaper.png")
         menu = py.image.load("images/Backgroundunicorn.png")
-        gameover = py.image.load("images/gameover.png")
         self.wallpaper = py.transform.scale(wallpaper, (WIDTH, HEIGHT))
         self.menu = py.transform.scale(menu, (WIDTH, HEIGHT))
-        self.gameover = py.transform.scale(gameover, (400, 200))
 
         # layout
         self.font = py.font.SysFont('verdana', 12)
@@ -54,7 +52,7 @@ class Game :
         self.group_enemy = py.sprite.Group()
         self.group_small_enemy = py.sprite.Group()
         self.mushspawn = Mushspawn(self)
-        self.Groupe_Mush = py.sprite.Group()
+        self.group_cloud = py.sprite.Group()
 
         # trajectory
         self.clicked = False
@@ -80,8 +78,8 @@ class Game :
     def spawn_small_enemy(self):
         self.group_small_enemy.add(Small_Enemy(self))
     
-    def spawn_Mush(self):
-        self.Groupe_Mush.add(Mushspawn(self))
+    def spawn_cloud(self):
+        self.group_cloud.add(Mushspawn(self))
     
     # display background
     def draw_bg(self):
@@ -93,6 +91,11 @@ class Game :
     def scroll(self):
         # update elements coord according to player's velocity
         self.player.rect.x = self.player.rect.x - (-1)**self.direction * self.player.velocity
+        # cloud
+        for cloud in self.group_cloud:
+            cloud.rect.x = cloud.rect.x - (-1)**self.direction * self.player.velocity
+            for mushroom in cloud.group_mush:
+                mushroom.rect.x =  mushroom.rect.x - (-1)**self.direction * self.player.velocity
         # player projectil
         for projectil in self.player.group_projectil:
             projectil.rect.x = projectil.rect.x - (-1)**self.direction * self.player.velocity
@@ -114,7 +117,7 @@ class Game :
                     exit()
 
                 if event.type == py.KEYDOWN:
-                    if event.key == py.K_RSHIFT or event.key == py.K_LSHIFT:
+                    if (event.key == py.K_RSHIFT or event.key == py.K_LSHIFT) and self.game_is_running == False:
                         self.start() # launch the game
     
             if self.game_is_running :
@@ -182,11 +185,11 @@ class Game :
             py.draw.rect(self.surface2, COLOR["blue_transparent"] , [600,100, 300,320], 0, 10)
             score_title = self.font_start_title.render("Your best scores", True, COLOR['blue'])
             self.screen.blit(score_title, (640, 150))
-            self.all_scores.sort()
-            if len(self.all_scores)<3:
+            self.all_scores.sort(reverse = True)
+            if len(self.all_scores)<5:
                 lim = len(self.all_scores)
             else:
-                lim =3
+                lim = 5
             y = 200
             for i in range(lim):
                 score = self.font_start.render(f'{i+1}. '+ str(self.all_scores[i]), True, COLOR['dark_blue'])
@@ -198,26 +201,30 @@ class Game :
         self.game_is_running = True
         self.spawn_enemy()
         self.spawn_small_enemy()
-        self.spawn_Mush()
+        self.spawn_cloud()
         self.player = Character(self)
         self.group_player.add(self.player)
 
     # rest all settings
     def end_game(self):
-        #self.screen.blit(self.gameover, (320,100))
         # save the score
         self.all_scores.append(self.player.score)
         # kill elements in class
-        for projectil in self.player.group_projectil:
-            projectil.kill()
         for enemy in self.group_enemy:
+            for proj in enemy.group_projectil:
+                proj.kill()
             enemy.kill()
-        for lakitu in self.Groupe_Mush:
-            lakitu.kill()
+        for cloud in self.group_cloud:
+            for mushroom in cloud.group_mush:
+                mushroom.kill()
+            cloud.kill()
+
         for player in self.group_player:
+            for projectil in player.group_projectil:
+                projectil.kill()
             player.kill()
         # rest groups
-        self.Groupe_Mush = py.sprite.Group()
+        self.group_cloud = py.sprite.Group()
         self.group_enemy = py.sprite.Group()
         self.group_small_enemy = py.sprite.Group()
         self.group_player = py.sprite.Group()
@@ -238,10 +245,12 @@ class Game :
         
     def play_game(self, event):
 
+        print(self.player.current_health)
+
         # DISPLAY
         self.draw_bg()
         self.display_score()
-
+        
         # display player
         self.screen.blit(py.transform.flip(self.player.image, self.player.flip, False), self.player.rect)
 
@@ -264,21 +273,22 @@ class Game :
         for small_enemy in self.group_small_enemy:
             small_enemy.move()
 
-        # display all enmies and player's projectils
+        # display all enmies
         self.group_enemy.draw(self.screen)
 
          # display all enemies
         self.group_small_enemy.draw(self.screen)
 
-        # Move projectils and lakitu that are in groups
-        for Mushspawn in self.Groupe_Mush:
+        # Move mushrooms and clouds that are in groups
+        for cloud in self.group_cloud:
+            cloud.move()
             # draw projectil
-            Mushspawn.Groupe_Mush.draw(self.screen)
-            for Mush_project in Mushspawn.Groupe_Mush:
-                Mush_project.move()
+            cloud.group_mush.draw(self.screen)
+            for cloud_proj in cloud.group_mush:
+                cloud_proj.move()
 
-        # display all lakitu's projectil
-        self.Groupe_Mush.draw(self.screen)
+        # display all clouds
+        self.group_cloud.draw(self.screen)
     
         #self.song.play()        
             
@@ -323,7 +333,6 @@ class Game :
                 elif 0 < self.theta < 90 and self.player.flip: 
                     self.player.launch_projectil(self.theta, self.origin, self.player.sign)
                     self.end = pos_on_circumeference(self.theta, self.origin, self.player.sign)
-
 
         if event.type == py.MOUSEMOTION:
             if self.clicked:
@@ -387,13 +396,12 @@ class Game :
         
         for enemy in self.group_enemy :
             # launch enemy's projectils randomly
-            if random.randint(0,40)%20 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
+            if random.randint(0,100)%30 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
                 enemy.throw_projectile()
         
-        for Mushspawn in self.Groupe_Mush:
+        for cloud in self.group_cloud:
             # launch Mushroom randomly
             if random.randint(0,197)%99 == 0 : 
-                Mushspawn.move()
-                Mushspawn.throw_projectile()
+                cloud.throw_projectile()
 
 

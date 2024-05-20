@@ -39,7 +39,7 @@ SCROLL_LIM = 500
 #coord of background
 bg_x, bg_y=0,0
 #initial coord of player
-x_init, y_init = 100,430            
+x_init, y_init = 100,450            
 # trajector var
 g = 11  
 v_init = 80

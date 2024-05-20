@@ -13,13 +13,13 @@ class Small_Enemy(py.sprite.Sprite):
         self.image = py.transform.scale(tank_image, (60, 50))
         self.rect = self.image.get_rect()
         explosion = py.image.load("images/explosion2.png").convert_alpha()
-        self.explose = py.transform.scale(explosion, (100, 100))
+        self.explose = py.transform.scale(explosion, (90, 90))
 
         self.rect.x = 2000 + random.randint(0,700)  # Position initiale x
-        self.rect.y = 470  # Position initiale y
+        self.rect.y = y_init +30  # Position initiale y
         self.velocity = 4
         self.health = 1
-        self.attack = 200
+        self.attack = 150
 
 
     def blast(self):

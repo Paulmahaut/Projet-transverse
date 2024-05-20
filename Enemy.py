@@ -13,13 +13,13 @@ class Enemy(py.sprite.Sprite):
         tank_image = py.image.load("images/tank0.png").convert_alpha()
         self.image = py.transform.scale(tank_image, (150, 150))
         self.rect = self.image.get_rect()
-        explosion = py.image.load("images/explosion.png").convert_alpha()
+        explosion = py.image.load("images/explosion.jpg").convert_alpha()
         self.explose = py.transform.scale(explosion, (150, 150))
 
         self.rect.x = 1000 + random.randint(0,700)  # Position initiale x
-        self.rect.y = 400  # Position initiale y
+        self.rect.y = y_init -37  # Position initiale y
         self.velocity = 1
-        self.attack = 10
+        self.attack = 8 
         self.initial_health = 1000
         self.current_health = 1000 # Valeur initial de la barre de vie
         self.maximum_health = 1000 # Valeur maximum de la barre de vie
@@ -45,14 +45,8 @@ class Enemy(py.sprite.Sprite):
         self.current_health = self.initial_health
     
     def update_health_bar(self, surface):
-        screen_width, screen_height = surface.get_size()
-        # Position et dimensions de la barre de vie
-        bar_width = self.health_bar_length
-        bar_height = 10  # Hauteur de la barre de vie
-        x_position = screen_width - bar_width - 10  # 10 pixels de marge du bord droit
-        y_position = 10  # 10 pixels de marge du haut
 
-        # Dessiner la barre de vie
+        # draw health bar
         if self.current_health >=0:
             py.draw.rect(surface, change_color(self.current_health), (self.rect.x, self.rect.y - 20, self.current_health / self.health_ratio, 10))
             py.draw.rect(surface, (255, 255, 255), (self.rect.x, self.rect.y - 20, self.health_bar_length, 10), 2)
@@ -60,10 +54,11 @@ class Enemy(py.sprite.Sprite):
         
     def move(self):
     # collision check
-        if not self.game.check_collision(self, self.game.group_player):
-            self.rect.x-= self.velocity
-        else :
+        if self.game.check_collision(self, self.game.group_player) == True:
             self.game.player.get_damage(10)
+            self.game.check_collision(self, self.game.group_player) == False
+            print('in')
+        self.rect.x-= self.velocity
     
         if self.rect.x <-300:
             self.replace() # if the enemy step out of the screen we replace it 
@@ -87,9 +82,7 @@ class Tank_project(py.sprite.Sprite): #projectiles du Tank
         self.rect.y = enemy.rect.y + 60    
        
     def move(self): #lancer les projectiles avec un angle variable choisit aleatoirement
-        #self.angle = random.uniform(0, 90)  
-        #self.force = random.uniform(10, 50)
-        
+    
         self.rect.x-=self.velocity
         
         # if collision or not on screen the projectil is removed
@@ -99,16 +92,5 @@ class Tank_project(py.sprite.Sprite): #projectiles du Tank
 
         if self.rect.x > WIDTH :
             self.kill()
-        #je sais pas trop ce que ca fait je vais verifier apres mais c'est cense etre la trajectoire
-        #time_of_flight = (2 * self.force * math.sin(math.radians(self.angle))) / 9.8
-        #horizontal_distance = self.force * math.cos(math.radians(self.angle)) * time_of_flight
-             
-
-# pour que ca continue l'action automatiquement
-'''
-while True:
-    Tank.throw_projectile()
-    time.sleep(random.randint(0,10)) #pour qu'il y'ait un delai entre les lancers de projectiles
-'''
 
 

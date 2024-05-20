@@ -13,7 +13,7 @@ class Character(py.sprite.Sprite):
         # Load the image
         original_image = py.image.load("images/playerlicorne2.png").convert_alpha()
         # Resize at 80x80 pixels
-        self.image = py.transform.scale(original_image, (150, 90))
+        self.image = py.transform.scale(original_image, (140, 80))
         self.rect = self.image.get_rect()
         self.rect.x = x_init  # Position initiale x
         self.rect.y = y_init  # Position initiale y
@@ -35,8 +35,15 @@ class Character(py.sprite.Sprite):
         self.score = 0
     #--------------------------------------------
     def get_damage(self,amount):
-        if self.current_health > 0:
-            self.current_health -= amount # Baisse la valeur de la barre de vie de X 
+        if amount>0 : # to make damage
+            if self.current_health > 0:
+                self.current_health -= amount 
+        else:
+            print("bonus vie")
+            for i in range(abs(amount)):
+                if self.current_health <self.maximum_health:
+                    self.current_health += 1
+
 
     def update_health_bar(self, surface):
         # Dessiner la barre de vie
