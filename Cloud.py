@@ -1,3 +1,4 @@
+
 class Cloud (self,game):
         super(cloud, self).__init__()  # Initialise la classe parente Sprite
         self.game = game

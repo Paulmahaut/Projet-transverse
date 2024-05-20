@@ -99,7 +99,6 @@ class Projectil(py.sprite.Sprite):
         # image projectil
         rainbow_image = py.image.load("images/projectileunicorn.png").convert_alpha()
         self.image = py.transform.scale(rainbow_image, (30, 20))
-        self.origin_image = self.image
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = self.origin_proj
         self.angle = 1
@@ -148,7 +147,7 @@ class Projectil(py.sprite.Sprite):
         # displlay projectil
         self.player.game.screen.blit(self.image, self.path[-1])
         for pos in self.path[:-1:5]:
-            self.rotate()
+            #self.rotate()
             py.draw.circle(self.player.game.screen, COLOR['white'], pos, 1)
 
         # update rect coord to compare sprites 
@@ -165,17 +164,5 @@ class Projectil(py.sprite.Sprite):
             self.kill() 
 
         # delete the projectil if it's out of the window or near to the groud
-        if self.rect.x > WIDTH or self.rect.y >= y_init +100:
+        if self.rect.x > WIDTH or self.rect.y >= y_init +80:
                 self.kill()
-
-
-
-
-
-
-
-
-
-
-
-

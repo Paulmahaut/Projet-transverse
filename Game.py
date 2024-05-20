@@ -28,7 +28,7 @@ class Game :
         self.all_scores = []
 
         # Images
-        wallpaper = py.image.load("images/wallpaper1.jpg")
+        wallpaper = py.image.load("images/wallpaper.png")
         menu = py.image.load("images/Backgroundunicorn.png")
         gameover = py.image.load("images/gameover.png")
         self.wallpaper = py.transform.scale(wallpaper, (WIDTH, HEIGHT))
@@ -155,7 +155,6 @@ class Game :
         # second menu with score
         else:
             # left block with message
-            print(self.all_scores)
             self.screen.blit(self.menu, (bg_x,bg_y))
             self.screen.blit(self.surface2, (0,0))
             py.draw.rect(self.surface2, COLOR["blue_transparent"] , [100,100, 490,400], 0, 10)
@@ -177,12 +176,12 @@ class Game :
             self.screen.blit(msg, (150, y+30))
             key = py.image.load("images/shift.png")
             key = py.transform.scale(key, (70, 70))
-            self.screen.blit(key, (210, y+60))
+            self.screen.blit(key, (240, y+60))
 
             # right block with the score
             py.draw.rect(self.surface2, COLOR["blue_transparent"] , [600,100, 300,320], 0, 10)
             score_title = self.font_start_title.render("Your best scores", True, COLOR['blue'])
-            self.screen.blit(score_title, (660, 150))
+            self.screen.blit(score_title, (640, 150))
             self.all_scores.sort()
             if len(self.all_scores)<3:
                 lim = len(self.all_scores)
