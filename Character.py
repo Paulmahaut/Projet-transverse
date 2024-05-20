@@ -99,6 +99,7 @@ class Projectil(py.sprite.Sprite):
         # image projectil
         rainbow_image = py.image.load("images/projectileunicorn.png").convert_alpha()
         self.image = py.transform.scale(rainbow_image, (30, 20))
+        self.origin_image = self.image
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = self.origin_proj
         self.angle = 1
