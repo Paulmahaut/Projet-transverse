@@ -39,6 +39,7 @@ class Small_Enemy(py.sprite.Sprite):
         else :
             self.game.player.get_damage(self.attack)
             self.health = 0
+            self.replace() 
     
-        if self.rect.x <-300 or self.health == 0:
+        if self.rect.x <-300 :
             self.replace() # if the enemy step out of the screen we replace it 
