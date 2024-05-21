@@ -1,9 +1,24 @@
 # Projet-transverse
-On va créer un jeu vidéo qui va révolutionner l'industrie ! 
+# Unicorn vs Tanks
 
-Liste des tâches 
--Courbe des projectiles selon le temps où la souris est enfoncée : Sophie 
-En pause, elle carry tout le projet : Aube 
--Champignon hallucinogène qui font gagner de la vie avec un petit effet licorne qui brille :  Doit être attrapé en plein vol   Paul 
-Ariel : Ecran de fin de jeu (meilleur score et restart button) 
-Raphaël : Plateforme et régler le problème de tir  
+## Authors
+
+* Ariel WANTOU - [@Savratis56](https://github.com/Savratis56)
+* Aube RAMASSAMY - [@auberamas](https://github.com/auberamas)
+* Sophie JAFFAL - [@irmnjk](https://github.com/irmnjk)
+* Paul MAHAUT - [@Paulmahaut](https://github.com/Paulmahaut)
+* Raphaël BRUN - [@BrunRaphael](https://github.com/BrunRaphael)
+ 
+[***➜ Link of our project : Unicorn vs Tanks***](https://github.com/Paulmahaut/Projet-transverse)
+
+## Description of the project
+
+We play a licorne that must shoot the invadors of their word.
+
+### Features
+
+We used some physique components to build the trajectory of licorne's projectils. 
+
+### Trajectory
+We implemented this code to build the trajectory : [***➜ click here***](https://github.com/pyGuru123/Simulations/tree/main/Projectile%20Motion)
+

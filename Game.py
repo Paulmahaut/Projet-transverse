@@ -184,7 +184,7 @@ class Game :
             # right block with the score
             py.draw.rect(self.surface2, COLOR["blue_transparent"] , [600,100, 300,320], 0, 10)
             score_title = self.font_start_title.render("Your best scores", True, COLOR['blue'])
-            self.screen.blit(score_title, (660, 150))
+            self.screen.blit(score_title, (640, 150))
             self.all_scores.sort(reverse = True)
             if len(self.all_scores)<5:
                 lim = len(self.all_scores)
