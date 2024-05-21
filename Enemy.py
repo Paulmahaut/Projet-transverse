@@ -56,7 +56,8 @@ class Enemy(py.sprite.Sprite):
     # collision check
         if self.game.check_collision(self, self.game.group_player):
             self.game.player.get_damage(10)
-        self.rect.x-= self.velocity
+        else:
+            self.rect.x-= self.velocity
     
         if self.rect.x <-300:
             self.replace() # if the enemy step out of the screen we replace it 
