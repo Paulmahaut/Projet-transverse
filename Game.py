@@ -162,7 +162,7 @@ class Game :
             self.screen.blit(self.surface2, (0,0))
             py.draw.rect(self.surface2, COLOR["blue_transparent"] , [100,100, 490,400], 0, 10)
             start_title = self.font_start_title.render("Welcome back !", True, COLOR['blue'])
-            self.screen.blit(start_title, (130, 150))
+            self.screen.blit(start_title, (190, 150))
 
             info = ["Reminder: ",
                     "  - Key Q or left arrow to move left", 
@@ -290,7 +290,7 @@ class Game :
         # display all clouds
         self.group_cloud.draw(self.screen)
     
-        #self.song.play()        
+        self.song.play()        
             
         # list of keys
         keys_pressed = py.key.get_pressed()
