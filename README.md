@@ -13,12 +13,8 @@
 
 ## Description of the project
 
-We play a licorne that must shoot the invadors of their word.
-
-### Features
-
-We used some physique components to build the trajectory of licorne's projectils. 
+We play a licorne that must shoot the invadors of their word. 
 
 ### Trajectory
-We implemented this code to build the trajectory : [***➜ click here***](https://github.com/pyGuru123/Simulations/tree/main/Projectile%20Motion)
+We used some physique components to build the trajectory of licorne's projectils. We implemented this code to build the trajectory : [***➜ click here***](https://github.com/pyGuru123/Simulations/tree/main/Projectile%20Motion)
 
