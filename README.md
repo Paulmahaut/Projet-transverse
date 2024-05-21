@@ -1,5 +1,4 @@
-# Projet-transverse
-# Unicorn vs Tanks
+# Projet-transverse : Unicorn vs Tanks
 
 ## Authors
 
