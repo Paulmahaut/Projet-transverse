@@ -43,5 +43,3 @@ x_init, y_init = 100,450
 # trajector var
 g = 11  
 v_init = 80
-
-cloud="images/cloud.jpg"

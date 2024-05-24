@@ -20,7 +20,7 @@ class Game :
 
         # Window
         self.screen = py.display.set_mode((WIDTH,HEIGHT))
-        py.display.set_caption('Game')
+        py.display.set_caption('UNICORN VS TANKS')
 
         self.game_is_running = False
         self.screen_scroll = 0
@@ -45,10 +45,10 @@ class Game :
         self.song = py.mixer.Sound("sound/tqt.mp3")
         self.explosion_sound = py.mixer.Sound("sound/explosion_sound.mp3")
 
-        # instance of Character, Enemy 
+        # Instances 
         self.group_player = py.sprite.Group()
         self.player = Character(self)
-        self.group_player.add(self.player) # add player to a goup to compare it with group_enemy
+        self.group_player.add(self.player) # add player to a goup to compare it with groups
         self.group_enemy = py.sprite.Group()
         self.group_small_enemy = py.sprite.Group()
         self.mushspawn = Mushspawn(self)
@@ -109,7 +109,6 @@ class Game :
         self.screen_scroll = self.screen_scroll - (-1)**self.direction * self.player.velocity
 
     def run(self):
-        # Main loop of the game
         while True:
             for event in py.event.get():
                 if event.type == py.QUIT:
@@ -117,8 +116,9 @@ class Game :
                     exit()
 
                 if event.type == py.KEYDOWN:
+                    # launch the game if a key shift is pressed
                     if (event.key == py.K_RSHIFT or event.key == py.K_LSHIFT) and self.game_is_running == False:
-                        self.start() # launch the game
+                        self.start()
     
             if self.game_is_running :
                 py.event.clear
@@ -245,18 +245,23 @@ class Game :
         
     def play_game(self, event):
 
-        print(self.player.current_health)
-
         # DISPLAY
         self.draw_bg()
+
+        # border of the screen
+        py.draw.rect(self.screen, COLOR["white"], (0, 0, WIDTH, HEIGHT), 5)
+
         self.display_score()
         
         # display player
         self.screen.blit(py.transform.flip(self.player.image, self.player.flip, False), self.player.rect)
 
         self.player.update_health_bar(self.screen)
-        self.player.update() #Pour mettre à jour chaque frame la barre de vie afin de pouvoir la changer 
+        self.player.update() # update health bar of the player
 
+        self.song.play()  
+        
+        # game over
         if self.player.current_health <=0 :
             self.end_game()
 
@@ -275,8 +280,6 @@ class Game :
 
         # display all enmies
         self.group_enemy.draw(self.screen)
-
-         # display all enemies
         self.group_small_enemy.draw(self.screen)
 
         # Move mushrooms and clouds that are in groups
@@ -288,9 +291,7 @@ class Game :
                 cloud_proj.move()
 
         # display all clouds
-        self.group_cloud.draw(self.screen)
-    
-        self.song.play()        
+        self.group_cloud.draw(self.screen)     
             
         # list of keys
         keys_pressed = py.key.get_pressed()
@@ -310,12 +311,19 @@ class Game :
             if self.player.rect.x >= WIDTH - SCROLL_LIM :
                 self.direction = 0
                 self.scroll()# move the screen
+
+        # player jumps if key space is pressed 
+        if keys_pressed[py.K_SPACE]or keys_pressed[py.K_z] or keys_pressed[py.K_UP]:
+            self.player.jump_state = True
+        if self.player.jump_state :
+            self.player.jump()
         
         # reset screen_scroll if it's biggier than the screen width  
         if abs(self.screen_scroll) > WIDTH : 
             self.screen_scroll = 0 
-        
-        # Projectil
+
+        # https://github.com/pyGuru123/Simulations/blob/main/Projectile%20Motion/main.py        
+        # Projectil ******************************************************************
         if event.type == py.MOUSEBUTTONDOWN:
             if not self.clicked :
                 self.clicked = True
@@ -376,31 +384,19 @@ class Game :
         title = self.font.render("Info", True, COLOR['white'])
         fpstext = self.font.render(f"FPS : {int(self.clock.get_fps())}", True, COLOR['white'])
         thetatext = self.font.render(f"Angle : {int(abs(self.theta))}", True, COLOR['white'])
-        degreetext = self.font.render(f"{int(abs(self.theta))}°", True, COLOR['white'])
         self.screen.blit(title, (20, 40))
         self.screen.blit(fpstext, (20, 60))
         self.screen.blit(thetatext, (20, 80))
 
-        # border of the screen
-        py.draw.rect(self.screen, COLOR["white"], (0, 0, WIDTH, HEIGHT), 5)
-
-        # player jumps if key space is pressed 
-        if keys_pressed[py.K_SPACE]or keys_pressed[py.K_z] or keys_pressed[py.K_UP]:
-            self.player.jump_state = True
-        if self.player.jump_state :
-            self.player.jump()
-
-        # special power
-        if keys_pressed[py.K_s] :
-            self.player.super_attack()
+        # *************************************************************************
         
+        # launch enemy's projectils randomly
         for enemy in self.group_enemy :
-            # launch enemy's projectils randomly
             if random.randint(0,100)%30 == 0 and enemy.current_health >0 and enemy.rect.x < WIDTH and self.player.current_health >0:
                 enemy.throw_projectile()
         
+        # launch Mushroom randomly
         for cloud in self.group_cloud:
-            # launch Mushroom randomly
             if random.randint(0,197)%99 == 0 : 
                 cloud.throw_projectile()
 

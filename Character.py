@@ -8,7 +8,7 @@ import random
 class Character(py.sprite.Sprite):
 
     def __init__(self, game):
-        super(Character, self).__init__()  # Initialise la classe parente Sprite
+        super(Character, self).__init__()
         self.game = game
         # Load the image
         original_image = py.image.load("images/playerlicorne2.png").convert_alpha()
@@ -28,10 +28,10 @@ class Character(py.sprite.Sprite):
         self.jump_vel = 20
         self.jump_state = False
         
-        self.current_health = 1000 # Valeur initial de la barre de vie
-        self.maximum_health = 1000 # Valeur maximum de la barre de vie
-        self.health_bar_length = 200 # Longeur maximal en pixel de la barre de vie
-        self.health_ratio = self.maximum_health / self.health_bar_length # Ratio utiliser pour remplir la barre de vie
+        self.current_health = 1000 # Initial value of health bar
+        self.maximum_health = 1000 # Maximal value of health bar
+        self.health_bar_length = 200
+        self.health_ratio = self.maximum_health / self.health_bar_length # Ratio to fill the bar
         self.score = 0
     #--------------------------------------------
     def get_damage(self,amount):
@@ -39,7 +39,6 @@ class Character(py.sprite.Sprite):
             if self.current_health > 0:
                 self.current_health -= amount 
         else:
-            print("bonus vie")
             for i in range(abs(amount)):
                 if self.current_health <self.maximum_health:
                     self.current_health += 1
@@ -80,17 +79,8 @@ class Character(py.sprite.Sprite):
     def launch_projectil(self, theta, origin_proj, sign):
         # create a projectil and add it to group_projectil
         self.group_projectil.add(Projectil(self, v_init, theta, origin_proj, sign))
-    
-    def super_attack(self):
-        pass
 
-    def change_color(self, color):
-        """ Change la couleur du joueur en multipliant les couleurs RGB de l'image originale par la couleur donnée. """
-        colored_image = self.original_image.copy()  # Créez une copie pour ne pas modifier l'image originale
-        colored_image.fill(color, special_flags=py.BLEND_RGB_MULT)  # Appliquez la nouvelle couleur
-        self.image = py.transform.scale(colored_image, (90, 90))  # Remettre à l'échelle si nécessaire
-
-
+#https://github.com/pyGuru123/Simulations/blob/main/Projectile%20Motion/main.py 
 class Projectil(py.sprite.Sprite):
 
     def __init__(self, player, v_init, theta, origin_proj, sign):
@@ -138,11 +128,6 @@ class Projectil(py.sprite.Sprite):
         # trajectory equation
         return x * tan(self.theta) * self.sign - self.f * x ** 2 + self.height_player
     
-    # (19:37 min) https://www.youtube.com/watch?v=lmdjyU1YVLw&list=PLMS9Cy4Enq5KsM7GJ4LHnlBQKTQBV8kaR&index=3&ab_channel=Graven-D%C3%A9veloppement
-    def rotate(self):
-        self.angle +=12
-        self.image = py.transform.rotozoom(self.origin_image, self.angle, 1)
-    
 
     def update(self):
         self.x += self.dx * self.sign
@@ -151,10 +136,9 @@ class Projectil(py.sprite.Sprite):
         self.path.append((self.x, self.y- abs(self.ch)))
         self.path = self.path[-50:]
 
-        # displlay projectil
+        # display projectil
         self.player.game.screen.blit(self.image, self.path[-1])
         for pos in self.path[:-1:5]:
-            #self.rotate()
             py.draw.circle(self.player.game.screen, COLOR['white'], pos, 1)
 
         # update rect coord to compare sprites 
@@ -165,7 +149,7 @@ class Projectil(py.sprite.Sprite):
             enemy.get_damage(self.player.attack)
             self.kill() 
         
-        # smae for small_enemy
+        # same for small_enemy
         for small_enemy in self.player.game.check_collision(self, self.player.game.group_small_enemy) :
             small_enemy.health = 0
             self.kill() 

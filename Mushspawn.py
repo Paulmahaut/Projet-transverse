@@ -6,7 +6,7 @@ import math
 class Mushspawn(py.sprite.Sprite):
     def __init__(self,game):  
         self.game=game
-        super(Mushspawn, self).__init__()  # Initialise la classe parente Sprite       
+        super(Mushspawn, self).__init__()       
         # Load the image
         original_image = py.image.load("images/nuagemushroom.png").convert_alpha()
         # Resize at 80x80 pixels
@@ -19,7 +19,7 @@ class Mushspawn(py.sprite.Sprite):
     def throw_projectile(self): 
         self.group_mush.add(Mush_project(self)) 
     
-    def move(self):
+    def move(self): # move the cloud
        if self.rect.x < 0:
            self.count=0
        if self.rect.x > WIDTH:
@@ -29,7 +29,7 @@ class Mushspawn(py.sprite.Sprite):
        else:
             self.rect.x -= self.velocity
             
-class Mush_project(py.sprite.Sprite): #projectiles du lakit
+class Mush_project(py.sprite.Sprite): # cloud's projectils
     def __init__(self, mushspawn):
         super(Mush_project, self).__init__() 
         self.mushspawn = mushspawn
@@ -42,7 +42,7 @@ class Mush_project(py.sprite.Sprite): #projectiles du lakit
         self.rect.x = mushspawn.rect.x 
         self.rect.y = mushspawn.rect.y + 60  
     
-    def move(self): #lancer les projectiles avec un angle variable choisit aleatoirement
+    def move(self): #launch projectils
         
         self.rect.y+=self.velocity
         if self.rect.x > WIDTH or self.rect.y > y_init+80:

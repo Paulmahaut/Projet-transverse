@@ -80,7 +80,7 @@ class Tank_project(py.sprite.Sprite): #projectiles du Tank
         self.rect.x = enemy.rect.x
         self.rect.y = enemy.rect.y + 60    
        
-    def move(self): #lancer les projectiles avec un angle variable choisit aleatoirement
+    def move(self):
     
         self.rect.x-=self.velocity
         

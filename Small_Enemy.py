@@ -6,7 +6,7 @@ from var import *
 class Small_Enemy(py.sprite.Sprite):
 
     def __init__(self, game):
-        super(Small_Enemy, self).__init__()  # Initialise la classe parente Sprite
+        super(Small_Enemy, self).__init__()
 
         self.game = game
         tank_image = py.image.load("images/small_enemy.png").convert_alpha()
@@ -15,8 +15,8 @@ class Small_Enemy(py.sprite.Sprite):
         explosion = py.image.load("images/explosion2.png").convert_alpha()
         self.explose = py.transform.scale(explosion, (90, 90))
 
-        self.rect.x = 2000 + random.randint(0,700)  # Position initiale x
-        self.rect.y = y_init +30  # Position initiale y
+        self.rect.x = 2000 + random.randint(0,700)  # initial position x
+        self.rect.y = y_init +30  # initial position y
         self.velocity = 4
         self.health = 1
         self.attack = 150
@@ -24,7 +24,6 @@ class Small_Enemy(py.sprite.Sprite):
 
     def blast(self):
         self.game.screen.blit(self.explose,(self.rect.x, self.rect.y))
-        #self.game.explosion_sound.play() # ne se déclanche pas
 
     def replace(self):
         self.blast()

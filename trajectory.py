@@ -1,5 +1,7 @@
 from math import *
 
+#https://github.com/pyGuru123/Simulations/blob/main/Projectile%20Motion/functions.py
+
 radius = 160
 
 def to_radian(theta):
