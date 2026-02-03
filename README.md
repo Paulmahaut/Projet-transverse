@@ -20,13 +20,18 @@ We used some physique components to build the trajectory of licorne's projectils
 ### Installation and launch
 Prerequisite: install Python 3.10+
 You can check your Python version by typing the following command in your terminal:
-```python --version
+```bash
+python --version
 ```
+
 Required libraries: pygame
 You can install it by typing the following command in your terminal:
-```pip install pygame
+```bash
+pip install pygame
 ```
+
 To launch the game, go to the folder where you downloaded the project and type the following command in your terminal:
-```python main.py
+```bash
+python main.py
 ```
 
